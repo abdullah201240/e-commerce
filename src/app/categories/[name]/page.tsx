@@ -30,6 +30,12 @@ function CategoryContent() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>('all');
   const [loading, setLoading] = useState(true);
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage, setProductsPerPage] = useState(12);
+  const [displayedProducts, setDisplayedProducts] = useState<typeof products>([]);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   useEffect(() => {
     const categoryName = params.name as string;
@@ -101,6 +107,42 @@ function CategoryContent() {
 
     return filtered;
   }, [category, selectedSubcategory, searchQuery, sortBy]);
+
+  // Calculate pagination
+  const totalProducts = filteredProducts.length;
+  const totalPages = Math.ceil(totalProducts / productsPerPage);
+  const hasMoreProducts = displayedProducts.length < totalProducts;
+  
+  // Reset pagination when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+    setDisplayedProducts(filteredProducts.slice(0, productsPerPage));
+  }, [filteredProducts, productsPerPage]);
+
+  // Load more products function
+  const loadMoreProducts = async () => {
+    if (isLoadingMore || !hasMoreProducts) return;
+    
+    setIsLoadingMore(true);
+    
+    // Simulate loading delay for better UX
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const nextPage = currentPage + 1;
+    const startIndex = 0;
+    const endIndex = nextPage * productsPerPage;
+    
+    setDisplayedProducts(filteredProducts.slice(startIndex, endIndex));
+    setCurrentPage(nextPage);
+    setIsLoadingMore(false);
+  };
+
+  // Handle products per page change
+  const handleProductsPerPageChange = (newCount: number) => {
+    setProductsPerPage(newCount);
+    setCurrentPage(1);
+    setDisplayedProducts(filteredProducts.slice(0, newCount));
+  };
 
   if (loading) {
     return (
@@ -234,31 +276,54 @@ function CategoryContent() {
           {/* Results */}
           {filteredProducts.length > 0 ? (
             <div className="space-y-6">
-              {/* Results Summary */}
-              <div className="flex items-center justify-between">
-                <p className="text-gray-600">
-                  Showing {filteredProducts.length} of {products.filter(p => p.category === category.id).length} products
-                  {searchQuery && ` for "${searchQuery}"`}
-                  {selectedSubcategory !== 'all' && (
-                    <span>
-                      {' '}in {category.subcategories?.find(sub => sub.id === selectedSubcategory)?.name}
-                    </span>
+              {/* Results Summary and Display Controls */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+                <div className="flex-1">
+                  <p className="text-gray-600">
+                    Showing {displayedProducts.length} of {totalProducts} products
+                    {searchQuery && ` for "${searchQuery}"`}
+                    {selectedSubcategory !== 'all' && (
+                      <span>
+                        {' '}in {category.subcategories?.find(sub => sub.id === selectedSubcategory)?.name}
+                      </span>
+                    )}
+                  </p>
+                  {totalProducts > 0 && (
+                    <p className="text-sm text-gray-500 mt-1">
+                      Page {currentPage} of {totalPages}
+                    </p>
                   )}
-                </p>
+                </div>
+                
+                {/* Products per page selector */}
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600">Show:</span>
+                  <select
+                    className="text-sm border rounded-lg px-3 py-1 bg-white min-w-[80px]"
+                    value={productsPerPage}
+                    onChange={(e) => handleProductsPerPageChange(Number(e.target.value))}
+                  >
+                    <option value={6}>6</option>
+                    <option value={12}>12</option>
+                    <option value={24}>24</option>
+                    <option value={48}>48</option>
+                  </select>
+                  <span className="text-sm text-gray-600">per page</span>
+                </div>
               </div>
 
               {/* Products Grid */}
               <div className={`${
                 viewMode === 'grid'
-                  ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'
+                  ? 'grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'
                   : 'space-y-4'
               }`}>
-                {filteredProducts.map((product, index) => (
+                {displayedProducts.map((product, index) => (
                   <div
                     key={product.id}
                     className="animate-fadeInUp"
                     style={{
-                      animationDelay: `${index * 0.1}s`,
+                      animationDelay: `${(index % productsPerPage) * 0.1}s`,
                       animationFillMode: 'both'
                     }}
                   >
@@ -266,6 +331,46 @@ function CategoryContent() {
                   </div>
                 ))}
               </div>
+              
+              {/* Load More Button */}
+              {hasMoreProducts && (
+                <div className="flex justify-center mt-8">
+                  <Button
+                    onClick={loadMoreProducts}
+                    disabled={isLoadingMore}
+                    className="px-8 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors"
+                  >
+                    {isLoadingMore ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Loading...
+                      </>
+                    ) : (
+                      <>Load More Products ({totalProducts - displayedProducts.length} remaining)</>
+                    )}
+                  </Button>
+                </div>
+              )}
+              
+              {/* Pagination Info */}
+              {!hasMoreProducts && totalProducts > productsPerPage && (
+                <div className="text-center mt-8 p-4 bg-gray-100 rounded-lg">
+                  <p className="text-gray-600">
+                    You've viewed all {totalProducts} products in this category.
+                  </p>
+                  <Button
+                    onClick={() => {
+                      setCurrentPage(1);
+                      setDisplayedProducts(filteredProducts.slice(0, productsPerPage));
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    variant="outline"
+                    className="mt-3"
+                  >
+                    Back to Top
+                  </Button>
+                </div>
+              )}
             </div>
           ) : (
             <div className="text-center py-12">

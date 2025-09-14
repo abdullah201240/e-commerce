@@ -42,7 +42,7 @@ export default function CheckoutPage() {
   // Order confirmation view
   if (orderPlaced) {
     return (
-      <MobileLayout mobileTitle="Order Confirmation">
+      <MobileLayout>
         <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
           <div className="container mx-auto px-4 max-w-md">
             <Card className="border-0 shadow-sm">

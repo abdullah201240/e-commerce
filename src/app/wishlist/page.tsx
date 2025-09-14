@@ -13,10 +13,7 @@ import {
   Grid3X3,
   List,
   Star,
-  ArrowLeft,
   Calendar,
-  Clock,
-  X
 } from 'lucide-react';
 import MobileLayout from '@/components/layout/MobileLayout';
 import { useWishlist } from '@/contexts/WishlistContext';

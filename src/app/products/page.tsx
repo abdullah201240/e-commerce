@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import ProductGrid from '@/components/product/ProductGrid';
 import CategoryFilter from '@/components/product/CategoryFilter';
 import { products, categories } from '@/data/products';
-import { Search, SlidersHorizontal, Loader2 } from 'lucide-react';
+import { Search, SlidersHorizontal, Loader2, ChevronDown } from 'lucide-react';
 import MobileLayout from '@/components/layout/MobileLayout';
 import { useSearchParams } from 'next/navigation';
 
@@ -17,6 +17,11 @@ function ProductsContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState('featured');
+  
+  // Pagination state
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   // Sync URL search params with local state
   useEffect(() => {
@@ -29,6 +34,11 @@ function ProductsContent() {
       setSelectedCategory(category);
     }
   }, [searchParams]);
+
+  // Reset pagination when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, searchQuery, sortBy]);
 
   const filteredProducts = useMemo(() => {
     let filtered = products;
@@ -69,6 +79,33 @@ function ProductsContent() {
 
     return filtered;
   }, [selectedCategory, searchQuery, sortBy]);
+
+  // Paginated products for display
+  const paginatedProducts = useMemo(() => {
+    const startIndex = 0;
+    const endIndex = currentPage * itemsPerPage;
+    return filteredProducts.slice(startIndex, endIndex);
+  }, [filteredProducts, currentPage, itemsPerPage]);
+
+  const hasMoreProducts = paginatedProducts.length < filteredProducts.length;
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
+  // Load more functionality
+  const handleLoadMore = async () => {
+    if (hasMoreProducts && !isLoadingMore) {
+      setIsLoadingMore(true);
+      // Simulate loading delay for better UX
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setCurrentPage(prev => prev + 1);
+      setIsLoadingMore(false);
+    }
+  };
+
+  // Handle items per page change
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1);
+  };
 
   return (
     <MobileLayout>
@@ -133,30 +170,113 @@ function ProductsContent() {
                   </p>
                 )}
                 <p className="text-sm text-gray-500 mt-1">
-                  {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} found
+                  Showing {paginatedProducts.length} of {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''}
+                  {currentPage > 1 && ` (page ${currentPage} of ${totalPages})`}
                 </p>
               </div>
               
-              {/* Sort dropdown */}
-              <div className="flex items-center gap-3 flex-shrink-0">
-                <span className="text-sm text-gray-600 font-medium">Sort by:</span>
-                <select
-                  className="text-sm border border-gray-300 rounded-md px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                >
-                  <option value="featured">Featured</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
-                  <option value="rating">Top Rated</option>
-                  <option value="newest">Newest</option>
-                </select>
+              {/* Controls: Items per page and Sort */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-shrink-0">
+                {/* Items per page selector */}
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600 font-medium">Show:</span>
+                  <select
+                    className="text-sm border border-gray-300 rounded-md px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={itemsPerPage}
+                    onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+                  >
+                    <option value={8}>8 per page</option>
+                    <option value={12}>12 per page</option>
+                    <option value={16}>16 per page</option>
+                    <option value={24}>24 per page</option>
+                  </select>
+                </div>
+                
+                {/* Sort dropdown */}
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-gray-600 font-medium">Sort by:</span>
+                  <select
+                    className="text-sm border border-gray-300 rounded-md px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                  >
+                    <option value="featured">Featured</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="rating">Top Rated</option>
+                    <option value="newest">Newest</option>
+                  </select>
+                </div>
               </div>
             </div>
             
             {/* Products display */}
             {filteredProducts.length > 0 ? (
-              <ProductGrid products={filteredProducts} />
+              <div>
+                <ProductGrid 
+                  products={paginatedProducts} 
+                  startIndex={0} // Always start from 0 since we show accumulated products
+                />
+                
+                {/* Load More Button and Pagination Info */}
+                {hasMoreProducts && (
+                  <div className="mt-8 text-center">
+                    <Button
+                      onClick={handleLoadMore}
+                      disabled={isLoadingMore}
+                      className="px-8 py-3 text-base font-medium"
+                      variant="outline"
+                    >
+                      {isLoadingMore ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Loading more products...
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="h-4 w-4 mr-2" />
+                          Load More ({filteredProducts.length - paginatedProducts.length} remaining)
+                        </>
+                      )}
+                    </Button>
+                    
+                    <div className="mt-4 text-sm text-gray-600">
+                      <div className="flex items-center justify-center gap-2">
+                        <span>Page {currentPage} of {totalPages}</span>
+                        <span>•</span>
+                        <span>{paginatedProducts.length} of {filteredProducts.length} products loaded</span>
+                      </div>
+                      
+                      {/* Progress bar */}
+                      <div className="w-full max-w-xs mx-auto mt-2 bg-gray-200 rounded-full h-2">
+                        <div 
+                          className="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
+                          style={{ width: `${(paginatedProducts.length / filteredProducts.length) * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                {/* All products loaded message */}
+                {!hasMoreProducts && filteredProducts.length > itemsPerPage && (
+                  <div className="mt-8 text-center py-6 border-t border-gray-200">
+                    <p className="text-gray-600">
+                      ✅ All {filteredProducts.length} products loaded
+                    </p>
+                    <Button
+                      onClick={() => {
+                        setCurrentPage(1);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      variant="ghost"
+                      className="mt-2 text-blue-600 hover:text-blue-700"
+                    >
+                      Back to top
+                    </Button>
+                  </div>
+                )}
+              </div>
             ) : (
               <div className="text-center py-16">
                 <div className="max-w-md mx-auto">

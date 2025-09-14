@@ -14,7 +14,7 @@ export default function CategoriesPage() {
   const displayCategories = categories.filter(cat => cat.id !== 'all');
 
   return (
-    <MobileLayout mobileTitle="Categories">
+    <MobileLayout >
       <div className="min-h-screen bg-gray-50 py-2 md:py-4">
         <div className="container mx-auto px-3">
           {/* Categories Grid */}

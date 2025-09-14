@@ -80,7 +80,7 @@ export default function PremiumHeroSlider({ slides, autoPlayInterval = 6000 }: H
   }
 
   return (
-    <div className="relative w-full h-[40vh] xs:h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[75vh] xl:h-[80vh] overflow-hidden rounded-xl mx-auto max-w-[1500px] shadow-lg">
+    <div className="relative w-full h-[40vh] xs:h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[75vh] xl:h-[80vh] overflow-hidden mx-auto max-w-[1500px] shadow-lg mt-2">
       {/* Background Particles Effect */}
       <div className="absolute inset-0 opacity-20 pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:50px_50px] animate-pulse"></div>
@@ -111,13 +111,11 @@ export default function PremiumHeroSlider({ slides, autoPlayInterval = 6000 }: H
                   alt={slide.title}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
-                  className="object-contain sm:object-cover object-center"
+                  className="object-cover object-center"
                   style={{
                     objectPosition: 'center center',
                     width: '100%',
                     height: '100%',
-                    maxWidth: '100%',
-                    maxHeight: '100%',
                   }}
                   priority={index <= 1}
                   quality={90}
@@ -135,7 +133,7 @@ export default function PremiumHeroSlider({ slides, autoPlayInterval = 6000 }: H
             <div className="absolute inset-0 flex flex-col justify-center items-start z-15 p-4 sm:p-6 md:p-8 lg:p-12">
               <div className="max-w-2xl">
                 {/* Category Badge */}
-                <div className="inline-block mb-3 sm:mb-4 px-3 py-1 sm:px-4 sm:py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-sm rounded-full border border-white/20">
+                <div className="inline-block mb-3 sm:mb-4 px-3 py-1 sm:px-4 sm:py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-sm  border border-white/20">
                   <span className="text-xs sm:text-sm font-medium text-white/90 uppercase tracking-wider">
                     {slide.category}
                   </span>

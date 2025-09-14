@@ -135,7 +135,7 @@ export default function AccountPage() {
   };
 
   return (
-    <MobileLayout mobileTitle="Account">
+    <MobileLayout>
       <div className="min-h-screen bg-gray-50 py-4 md:py-8">
         <div className="container mx-auto px-4">
           {/* Profile Header */}

@@ -1,12 +1,6 @@
 'use client';
-
-import { useState } from 'react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import ProductCard from './ProductCard';
 import { Product } from '@/data/products';
-import { ArrowRight, Sparkles, TrendingUp, Clock } from 'lucide-react';
 
 interface NewArrivalsProps {
   products: Product[];
@@ -31,15 +25,7 @@ export default function NewArrivals({
     );
   }
 
-  const getDaysAgo = (arrivalDate: string | undefined) => {
-    if (!arrivalDate) return '';
-    const days = Math.floor((Date.now() - new Date(arrivalDate).getTime()) / (1000 * 60 * 60 * 24));
-    if (days === 0) return 'Today';
-    if (days === 1) return '1 day ago';
-    if (days < 7) return `${days} days ago`;
-    if (days < 14) return '1 week ago';
-    return `${Math.floor(days / 7)} weeks ago`;
-  };
+
 
   return (
     <div className="relative">
@@ -59,7 +45,7 @@ export default function NewArrivals({
       </div>
 
       {/* Products Grid with Staggered Animation */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {displayProducts.map((product, index) => (
           <div
             key={product.id}

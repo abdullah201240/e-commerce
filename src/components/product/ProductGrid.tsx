@@ -7,9 +7,10 @@ interface ProductGridProps {
   products: Product[];
   title?: string;
   className?: string;
+  startIndex?: number; // For proper animation delays in paginated content
 }
 
-export default function ProductGrid({ products, title, className = '' }: ProductGridProps) {
+export default function ProductGrid({ products, title, className = '', startIndex = 0 }: ProductGridProps) {
   if (products.length === 0) {
     return (
       <div className={`py-12 text-center ${className}`}>
@@ -29,7 +30,7 @@ export default function ProductGrid({ products, title, className = '' }: Product
             key={product.id}
             className="animate-fadeInUp"
             style={{
-              animationDelay: `${index * 0.1}s`,
+              animationDelay: `${(startIndex + index) * 0.1}s`,
               animationFillMode: 'both'
             }}
           >

@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
+import { useOrders } from '@/contexts/OrderContext';
 import { categories } from '@/data/products';
 import { 
   Search, 
@@ -22,7 +23,9 @@ import {
   Clock,
   TrendingUp,
   Star,
-  Filter
+  Filter,
+  CheckCircle,
+  Truck
 } from 'lucide-react';
 
 export default function Header() {
@@ -37,6 +40,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const { state } = useCart();
   const { state: wishlistState } = useWishlist();
+  const { state: orderState } = useOrders();
 
   // Mock search suggestions
   const popularSearches = [
@@ -129,12 +133,47 @@ export default function Header() {
     }
   };
 
-  // Mock recent orders
-  const recentOrders = [
-    { id: '12345', date: '2024-01-15', status: 'Delivered', total: 299.99 },
-    { id: '12344', date: '2024-01-10', status: 'In Transit', total: 599.99 },
-    { id: '12343', date: '2024-01-05', status: 'Processing', total: 149.99 }
-  ];
+  // Get recent orders from context
+  const recentOrders = orderState.recentOrders;
+
+  // Helper functions for order status
+  const getStatusIcon = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'delivered':
+        return <CheckCircle className="h-4 w-4 text-green-600" />;
+      case 'in transit':
+      case 'out for delivery':
+      case 'shipped':
+        return <Truck className="h-4 w-4 text-blue-600" />;
+      case 'processing':
+      case 'confirmed':
+        return <Clock className="h-4 w-4 text-orange-600" />;
+      case 'cancelled':
+      case 'returned':
+        return <X className="h-4 w-4 text-red-600" />;
+      default:
+        return <Package className="h-4 w-4 text-gray-600" />;
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'delivered':
+        return 'bg-green-100 text-green-700';
+      case 'in transit':
+      case 'out for delivery':
+      case 'shipped':
+        return 'bg-blue-100 text-blue-700';
+      case 'processing':
+      case 'confirmed':
+        return 'bg-orange-100 text-orange-700';
+      case 'cancelled':
+      case 'returned':
+        return 'bg-red-100 text-red-700';
+      default:
+        return 'bg-gray-100 text-gray-700';
+    }
+  };
 
   // Filter categories for display
   const displayCategories = categories.filter(cat => cat.id !== 'all');
@@ -473,12 +512,11 @@ export default function Header() {
                         {recentOrders.map((order, index) => (
                           <div key={order.id} className="border border-gray-100 rounded-xl p-4 hover:bg-gray-50 transition-all duration-200 hover:shadow-md animate-fadeInUp" style={{ animationDelay: `${index * 100}ms` }}>
                             <div className="flex items-center justify-between mb-3">
-                              <span className="font-bold text-gray-900">Order #{order.id}</span>
-                              <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                                order.status === 'Delivered' ? 'bg-green-100 text-green-700' :
-                                order.status === 'In Transit' ? 'bg-blue-100 text-blue-700' :
-                                'bg-orange-100 text-orange-700'
-                              }`}>
+                              <div className="flex items-center gap-2">
+                                {getStatusIcon(order.status)}
+                                <span className="font-bold text-gray-900">#{order.id}</span>
+                              </div>
+                              <span className={`px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(order.status)}`}>
                                 {order.status}
                               </span>
                             </div>
@@ -487,8 +525,13 @@ export default function Header() {
                                 <Clock className="h-3 w-3" />
                                 {new Date(order.date).toLocaleDateString()}
                               </span>
-                              <span className="font-bold text-gray-900 text-lg">${order.total}</span>
+                              <span className="font-bold text-gray-900 text-lg">${order.total.toFixed(2)}</span>
                             </div>
+                            {order.shippingInfo.tracking && (
+                              <div className="mt-2 pt-2 border-t border-gray-100">
+                                <span className="text-xs text-gray-500">Tracking: {order.shippingInfo.tracking}</span>
+                              </div>
+                            )}
                           </div>
                         ))}
                         <div className="pt-4 border-t border-gray-200">
