@@ -745,41 +745,42 @@ export default function ProductDetailPage() {
         </div>
 
         {/* Product Details Tabs */}
-        <Card className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl border border-white/20 dark:border-gray-700/50 shadow-2xl animate-fadeInUp" style={{ animationDelay: '0.3s' }}>
+        <Card className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl animate-fadeInUp" style={{ animationDelay: '0.3s' }}>
           {/* Tab Navigation */}
-          <div className="flex border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
+          <div className="flex border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 overflow-x-auto scrollbar-hide">
             {[
-              { key: 'description', label: 'Description' },
-              { key: 'specifications', label: 'Specifications' },
-              { key: 'reviews', label: `Reviews (${product.reviews})` }
-            ].map(({ key, label }) => (
+              { key: 'description', label: 'Description', shortLabel: 'Desc' },
+              { key: 'specifications', label: 'Specifications', shortLabel: 'Specs' },
+              { key: 'reviews', label: `Reviews (${product.reviews})`, shortLabel: `Reviews (${product.reviews})` }
+            ].map(({ key, label, shortLabel }) => (
               <Button
                 key={key}
                 variant="ghost"
                 onClick={() => setActiveTab(key as any)}
-                className={`px-8 py-5 text-sm font-semibold rounded-none transition-all duration-300 ${
+                className={`flex-shrink-0 px-3 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5 text-xs sm:text-sm font-semibold rounded-none transition-all duration-300 min-w-fit ${
                   activeTab === key
-                    ? 'border-b-3 border-primary text-primary bg-gradient-to-b from-primary/10 to-transparent shadow-lg'
+                    ? 'border-b-2 sm:border-b-3 border-primary text-primary bg-gradient-to-b from-primary/10 to-transparent shadow-lg'
                     : 'text-muted-foreground hover:text-foreground hover:bg-primary/5 hover:scale-105'
                 }`}
               >
-                {label}
+                <span className="block sm:hidden">{shortLabel}</span>
+                <span className="hidden sm:block">{label}</span>
               </Button>
             ))}
           </div>
 
           {/* Tab Content */}
-          <CardContent className="p-8">
+          <CardContent className="p-4 sm:p-6 md:p-8">
             {activeTab === 'description' && (
-              <div className="space-y-6 animate-fade-in">
+              <div className="space-y-4 sm:space-y-6 animate-fade-in">
                 <div>
-                  <h3 className="text-lg font-semibold mb-3 text-foreground">Description</h3>
-                  <p className="text-muted-foreground leading-relaxed">{product.description}</p>
+                  <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3 text-foreground">Description</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{product.description}</p>
                 </div>
                 
                 {product.features && product.features.length > 0 && (
                   <div>
-                    <h3 className="text-lg font-semibold mb-3 text-foreground">Key Features</h3>
+                    <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3 text-foreground">Key Features</h3>
                     <ul className="space-y-2">
                       {product.features.map((feature, index) => (
                         <li 
@@ -787,8 +788,8 @@ export default function ProductDetailPage() {
                           className="flex items-start gap-2 animate-slide-up"
                           style={{ animationDelay: `${index * 0.1}s` }}
                         >
-                          <span className="text-success mt-1 font-bold">✓</span>
-                          <span className="text-muted-foreground">{feature}</span>
+                          <span className="text-success mt-1 font-bold text-sm sm:text-base">✓</span>
+                          <span className="text-sm sm:text-base text-muted-foreground">{feature}</span>
                         </li>
                       ))}
                     </ul>
@@ -797,8 +798,8 @@ export default function ProductDetailPage() {
 
                 {product.dimensions && (
                   <div className="animate-fade-in">
-                    <h3 className="text-lg font-semibold mb-3 text-foreground">Dimensions</h3>
-                    <p className="text-muted-foreground">
+                    <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3 text-foreground">Dimensions</h3>
+                    <p className="text-sm sm:text-base text-muted-foreground">
                       {product.dimensions.length}" L × {product.dimensions.width}" W × {product.dimensions.height}" H
                       {product.weight && ` • Weight: ${product.weight}`}
                     </p>
@@ -809,54 +810,54 @@ export default function ProductDetailPage() {
 
             {activeTab === 'specifications' && (
               <div className="animate-fade-in">
-                <h3 className="text-lg font-semibold mb-4 text-foreground">Product Specifications</h3>
+                <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-foreground">Product Specifications</h3>
                 {product.specifications ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-3 sm:gap-4">
                     {Object.entries(product.specifications).map(([key, value], index) => (
                       <div 
                         key={key} 
-                        className="flex justify-between py-4 px-6 bg-gradient-to-r from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 animate-slideIn group"
+                        className="flex flex-col sm:flex-row sm:justify-between py-3 sm:py-4 px-4 sm:px-6 bg-gradient-to-r from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 animate-slideIn group"
                         style={{ animationDelay: `${index * 0.05}s` }}
                       >
-                        <span className="font-semibold text-foreground group-hover:text-primary transition-colors">{key}:</span>
-                        <span className="text-muted-foreground font-medium">{value}</span>
+                        <span className="font-semibold text-foreground group-hover:text-primary transition-colors text-sm sm:text-base mb-1 sm:mb-0">{key}:</span>
+                        <span className="text-muted-foreground font-medium text-sm sm:text-base">{value}</span>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-12">
-                    <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Shield className="h-8 w-8 text-gray-400" />
+                  <div className="text-center py-8 sm:py-12">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
                     </div>
-                    <p className="text-muted-foreground text-lg">No specifications available.</p>
+                    <p className="text-muted-foreground text-base sm:text-lg">No specifications available.</p>
                   </div>
                 )}
               </div>
             )}
 
             {activeTab === 'reviews' && (
-              <div className="space-y-6 animate-fade-in">
+              <div className="space-y-4 sm:space-y-6 animate-fade-in">
                 <div>
-                  <h3 className="text-lg font-semibold mb-4 text-foreground">Customer Reviews</h3>
+                  <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-foreground">Customer Reviews</h3>
                   
                   {/* Rating Summary */}
-                  <Card className="bg-gradient-to-br from-primary/5 to-blue-50 dark:from-primary/10 dark:to-blue-950 border border-primary/20 mb-8 shadow-lg">
-                    <CardContent className="p-6">
-                      <div className="flex items-center gap-8">
+                  <Card className="bg-gradient-to-br from-primary/5 to-blue-50 dark:from-primary/10 dark:to-blue-950 border border-primary/20 mb-6 sm:mb-8 shadow-lg">
+                    <CardContent className="p-4 sm:p-6">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
                         <div className="text-center">
-                          <div className="text-4xl font-bold text-primary animate-bounce-in mb-2">{product.rating}</div>
+                          <div className="text-3xl sm:text-4xl font-bold text-primary animate-bounce-in mb-2">{product.rating}</div>
                           <div className="flex justify-center mb-2">
                             {renderStars(product.rating)}
                           </div>
-                          <div className="text-sm text-muted-foreground font-medium">{product.reviews} reviews</div>
+                          <div className="text-xs sm:text-sm text-muted-foreground font-medium">{product.reviews} reviews</div>
                         </div>
                         <div className="flex-1">
-                          <div className="space-y-3">
+                          <div className="space-y-2 sm:space-y-3">
                             {[5, 4, 3, 2, 1].map((rating, index) => (
-                              <div key={rating} className="flex items-center gap-3">
-                                <span className="text-sm w-3 font-medium">{rating}</span>
-                                <Star className="h-4 w-4 text-amber-400 fill-current" />
-                                <div className="flex-1 h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                              <div key={rating} className="flex items-center gap-2 sm:gap-3">
+                                <span className="text-xs sm:text-sm w-3 font-medium">{rating}</span>
+                                <Star className="h-3 w-3 sm:h-4 sm:w-4 text-amber-400 fill-current" />
+                                <div className="flex-1 h-2 sm:h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                                   <div 
                                     className="h-full bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full transition-all duration-1000 animate-slideIn"
                                     style={{ 
@@ -865,7 +866,7 @@ export default function ProductDetailPage() {
                                     }}
                                   />
                                 </div>
-                                <span className="text-xs text-muted-foreground w-8">{Math.floor(Math.random() * 50 + 10)}</span>
+                                <span className="text-xs text-muted-foreground w-6 sm:w-8">{Math.floor(Math.random() * 50 + 10)}</span>
                               </div>
                             ))}
                           </div>
@@ -876,44 +877,44 @@ export default function ProductDetailPage() {
 
                   {/* Reviews List */}
                       {product.reviewsList && product.reviewsList.length > 0 ? (
-                        <div className="space-y-6">
+                        <div className="space-y-4 sm:space-y-6">
                           {product.reviewsList.map((review, index) => (
                             <Card 
                               key={review.id} 
                               className="border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 animate-slideIn bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm hover:scale-[1.02]"
                               style={{ animationDelay: `${index * 0.15}s` }}
                             >
-                              <CardContent className="p-6">
-                                <div className="flex items-start justify-between mb-4">
-                                  <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                              <CardContent className="p-4 sm:p-6">
+                                <div className="flex items-start justify-between mb-3 sm:mb-4">
+                                  <div className="flex items-center gap-3 sm:gap-4">
+                                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg shadow-lg">
                                       {review.user.name.charAt(0)}
                                     </div>
                                     <div>
-                                      <div className="flex items-center gap-3 mb-1">
-                                        <span className="font-semibold text-foreground text-lg">{review.user.name}</span>
+                                      <div className="flex items-center gap-2 sm:gap-3 mb-1">
+                                        <span className="font-semibold text-foreground text-sm sm:text-lg">{review.user.name}</span>
                                         {review.user.verified && (
-                                          <Verified className="h-5 w-5 text-green-500" />
+                                          <Verified className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
                                         )}
                                       </div>
-                                      <div className="flex items-center gap-3">
+                                      <div className="flex items-center gap-2 sm:gap-3">
                                         <div className="flex">{renderStars(review.rating)}</div>
-                                        <span className="text-sm text-muted-foreground">{review.date}</span>
+                                        <span className="text-xs sm:text-sm text-muted-foreground">{review.date}</span>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
                                 
-                                <h4 className="font-semibold mb-3 text-foreground text-lg">{review.title}</h4>
-                                <p className="text-muted-foreground mb-4 leading-relaxed">{review.comment}</p>
+                                <h4 className="font-semibold mb-2 sm:mb-3 text-foreground text-sm sm:text-lg">{review.title}</h4>
+                                <p className="text-muted-foreground mb-3 sm:mb-4 leading-relaxed text-sm sm:text-base">{review.comment}</p>
                                 
-                                <div className="flex items-center gap-4 text-sm">
+                                <div className="flex items-center gap-4 text-xs sm:text-sm">
                                   <Button 
                                     variant="ghost" 
                                     size="sm"
-                                    className="text-muted-foreground hover:text-primary p-0 h-auto font-normal hover:bg-primary/5 px-3 py-2 rounded-lg transition-all duration-200"
+                                    className="text-muted-foreground hover:text-primary p-0 h-auto font-normal hover:bg-primary/5 px-2 sm:px-3 py-1 sm:py-2 rounded-lg transition-all duration-200"
                                   >
-                                    <ThumbsUp className="h-4 w-4 mr-2" />
+                                    <ThumbsUp className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                                     Helpful ({review.helpful})
                                   </Button>
                                 </div>
@@ -922,11 +923,11 @@ export default function ProductDetailPage() {
                           ))}
                         </div>
                       ) : (
-                        <div className="text-center py-12">
-                          <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <Star className="h-8 w-8 text-gray-400" />
+                        <div className="text-center py-8 sm:py-12">
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <Star className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
                           </div>
-                          <p className="text-muted-foreground text-lg">No reviews yet. Be the first to review this product!</p>
+                          <p className="text-muted-foreground text-sm sm:text-lg">No reviews yet. Be the first to review this product!</p>
                         </div>
                       )}
                 </div>

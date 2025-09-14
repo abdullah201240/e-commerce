@@ -9,6 +9,7 @@ import {
   ShoppingCart, 
   Heart,
   User,
+  Package,
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
@@ -40,6 +41,12 @@ const navigationItems = [
     name: 'Cart',
     href: '/cart',
     icon: ShoppingCart,
+    exact: false
+  },
+  {
+    name: 'Orders',
+    href: '/orders',
+    icon: Package,
     exact: false
   },
   {
