@@ -1,16 +1,17 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { Suspense, useState, useMemo, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import ProductGrid from '@/components/product/ProductGrid';
 import CategoryFilter from '@/components/product/CategoryFilter';
 import { products } from '@/data/products';
-import { Search, SlidersHorizontal } from 'lucide-react';
+import { Search, SlidersHorizontal, Loader2 } from 'lucide-react';
 import MobileLayout from '@/components/layout/MobileLayout';
 import { useSearchParams } from 'next/navigation';
 
-export default function ProductsPage() {
+// Move the main component logic to a separate component
+function ProductsContent() {
   const searchParams = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -53,9 +54,8 @@ export default function ProductsPage() {
         filtered = [...filtered].sort((a, b) => b.rating - a.rating);
         break;
       case 'newest':
-        filtered = [...filtered].sort((a, b) => parseInt(b.id) - parseInt(a.id));
-        break;
-      default: // featured
+      default:
+        // Default sorting (featured)
         filtered = [...filtered].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
     }
 
@@ -64,98 +64,77 @@ export default function ProductsPage() {
 
   return (
     <MobileLayout>
-      <div className="container mx-auto px-4 py-8">
-        {/* Page Header */}
-        <div className="text-center mb-8 animate-fadeInUp">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            All Products
-          </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Discover our complete collection of premium furniture and home decor
-          </p>
+      <div className="container mx-auto px-4 py-6">
+        {/* Search and filter bar */}
+        <div className="flex flex-col md:flex-row gap-4 mb-6">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              type="text"
+              placeholder="Search products..."
+              className="pl-10 w-full"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <Button
+            variant="outline"
+            className="md:hidden"
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            <SlidersHorizontal className="h-4 w-4 mr-2" />
+            Filters
+          </Button>
         </div>
 
-        {/* Search and Filters */}
-        <div className="mb-8">
-          <div className="flex flex-col lg:flex-row gap-4 items-center justify-between mb-6">
-            {/* Search Bar */}
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                type="text"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full bg-white"
-              />
-            </div>
-
-            {/* Sort and Filter Controls */}
-            <div className="flex items-center gap-4">
-              {/* Sort Dropdown */}
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-              >
-                <option value="featured">Featured</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="rating">Highest Rated</option>
-                <option value="newest">Newest</option>
-              </select>
-
-              {/* Mobile Filter Toggle */}
-              <Button
-                variant="outline"
-                onClick={() => setShowFilters(!showFilters)}
-                className="lg:hidden"
-              >
-                <SlidersHorizontal className="h-4 w-4 mr-2" />
-                Filters
-              </Button>
-            </div>
+        <div className="flex flex-col md:flex-row gap-6">
+          {/* Category filter - hidden on mobile when filters are closed */}
+          <div className={`${showFilters ? 'block' : 'hidden'} md:block w-full md:w-64 flex-shrink-0`}>
+            <CategoryFilter
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+            />
           </div>
 
-          {/* Results Count */}
-          <div className="text-gray-600">
-            Showing {filteredProducts.length} of {products.length} products
-            {selectedCategory !== 'all' && (
-              <span className="ml-2">
-                in <span className="font-medium capitalize">{selectedCategory.replace('-', ' ')}</span>
-              </span>
-            )}
-          </div>
-        </div>
-
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar Filters */}
-          <div className={`lg:w-64 ${showFilters ? 'block' : 'hidden'} lg:block`}>
-            <div className="sticky top-24">
-              <CategoryFilter
-                selectedCategory={selectedCategory}
-                onCategoryChange={setSelectedCategory}
-              />
-            </div>
-          </div>
-
-          {/* Products Grid */}
+          {/* Product grid */}
           <div className="flex-1">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">
+                {selectedCategory === 'all' ? 'All Products' : 
+                 categories.find(c => c.id === selectedCategory)?.name || 'Products'}
+                {searchQuery && ` matching "${searchQuery}"`}
+              </h2>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-500">Sort by:</span>
+                <select
+                  className="text-sm border rounded p-1"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                >
+                  <option value="featured">Featured</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="price-high">Price: High to Low</option>
+                  <option value="rating">Top Rated</option>
+                  <option value="newest">Newest</option>
+                </select>
+              </div>
+            </div>
+            
             {filteredProducts.length > 0 ? (
               <ProductGrid products={filteredProducts} />
             ) : (
               <div className="text-center py-12">
-                <p className="text-gray-500 text-lg mb-4">
-                  No products found matching your criteria.
-                </p>
+                <h3 className="text-lg font-medium text-gray-900">No products found</h3>
+                <p className="mt-1 text-gray-500">Try adjusting your search or filter criteria</p>
                 <Button
                   variant="outline"
+                  className="mt-4"
                   onClick={() => {
                     setSelectedCategory('all');
                     setSearchQuery('');
                   }}
                 >
-                  Clear Filters
+                  Clear filters
                 </Button>
               </div>
             )}
@@ -165,3 +144,27 @@ export default function ProductsPage() {
     </MobileLayout>
   );
 }
+
+// Main page component with Suspense boundary
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+      </div>
+    }>
+      <ProductsContent />
+    </Suspense>
+  );
+}
+
+// Add categories constant if not already imported
+const categories = [
+  { id: 'all', name: 'All Categories' },
+  { id: 'sofa', name: 'Sofas & Couches' },
+  { id: 'chair', name: 'Chairs' },
+  { id: 'table', name: 'Tables' },
+  { id: 'bed', name: 'Beds & Mattresses' },
+  { id: 'storage', name: 'Storage & Organization' },
+  { id: 'decor', name: 'Home Decor' },
+];
