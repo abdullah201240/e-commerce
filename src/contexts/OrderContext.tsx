@@ -23,6 +23,9 @@ export interface OrderTimeline {
 
 export interface OrderShipping {
   address: string;
+  city: string;
+  state: string;
+  zip: string;
   method: string;
   tracking?: string;
   estimatedDelivery?: string;
@@ -63,7 +66,7 @@ type OrderAction =
 const initialState: OrderState = {
   orders: [],
   recentOrders: [],
-  isLoading: false,
+  isLoading: true, // Start with loading true
   error: null,
 };
 
@@ -90,7 +93,10 @@ const sampleOrders: Order[] = [
       }
     ],
     shippingInfo: {
-      address: '123 Main Street, Apartment 4B, New York, NY 10001',
+      address: '123 Main Street, Apartment 4B',
+      city: 'New York',
+      state: 'NY',
+      zip: '10001',
       method: 'Standard Shipping (3-5 business days)',
       tracking: 'TRK123456789',
       estimatedDelivery: '2024-01-15'
@@ -125,7 +131,10 @@ const sampleOrders: Order[] = [
       }
     ],
     shippingInfo: {
-      address: '456 Oak Avenue, Suite 12, Los Angeles, CA 90210',
+      address: '456 Oak Avenue, Suite 12',
+      city: 'Los Angeles',
+      state: 'CA',
+      zip: '90210',
       method: 'Express Shipping (1-2 business days)',
       tracking: 'TRK987654321',
       estimatedDelivery: '2024-01-12'
@@ -159,7 +168,10 @@ const sampleOrders: Order[] = [
       }
     ],
     shippingInfo: {
-      address: '789 Pine Street, House 15, Chicago, IL 60601',
+      address: '789 Pine Street, House 15',
+      city: 'Chicago',
+      state: 'IL',
+      zip: '60601',
       method: 'Standard Shipping (3-5 business days)',
       estimatedDelivery: '2024-01-10'
     },
@@ -199,7 +211,10 @@ const sampleOrders: Order[] = [
       }
     ],
     shippingInfo: {
-      address: '321 Elm Drive, Building B, Miami, FL 33101',
+      address: '321 Elm Drive, Building B',
+      city: 'Miami',
+      state: 'FL',
+      zip: '33101',
       method: 'White Glove Delivery',
       tracking: 'TRK456789123',
       estimatedDelivery: '2023-12-30'
@@ -224,16 +239,18 @@ function orderReducer(state: OrderState, action: OrderAction): OrderState {
       return { ...state, error: action.payload, isLoading: false };
 
     case 'LOAD_ORDERS':
+      // Sort orders by date (most recent first) and get the 3 most recent
+      const sortedOrders = action.payload.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
       return {
         ...state,
-        orders: action.payload,
-        recentOrders: action.payload.slice(0, 3),
+        orders: sortedOrders,
+        recentOrders: sortedOrders.slice(0, 3),
         isLoading: false,
         error: null,
       };
 
     case 'ADD_ORDER':
-      const newOrders = [action.payload, ...state.orders];
+      const newOrders = [action.payload, ...state.orders].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
       return {
         ...state,
         orders: newOrders,
@@ -249,7 +266,7 @@ function orderReducer(state: OrderState, action: OrderAction): OrderState {
               timeline: action.payload.timeline || order.timeline,
             }
           : order
-      );
+      ).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
       return {
         ...state,
         orders: updatedOrders,
@@ -361,7 +378,7 @@ export function OrderProvider({ children }: { children: ReactNode }) {
 export function useOrders() {
   const context = useContext(OrderContext);
   if (context === undefined) {
-    throw new Error('useOrders must be used within an OrderProvider');
+    throw new Error('useOrders must be used within an OrderProvider. Make sure to wrap your app with the OrderProvider component.');
   }
   return context;
 }

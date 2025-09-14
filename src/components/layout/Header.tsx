@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useOrders } from '@/contexts/OrderContext';
@@ -30,7 +29,6 @@ import {
 
 export default function Header() {
   const [isCategoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
-  const [isOrderDropdownOpen, setOrderDropdownOpen] = useState(false);
   const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -77,7 +75,6 @@ export default function Header() {
     setIsMenuOpen(!isMenuOpen);
     if (!isMenuOpen) {
       setCategoryDropdownOpen(false);
-      setOrderDropdownOpen(false);
       setProfileDropdownOpen(false);
       setIsSearchFocused(false);
     }
@@ -89,15 +86,9 @@ export default function Header() {
     setIsSearchFocused(false);
   };
   
-  const toggleOrderDropdown = () => {
-    setOrderDropdownOpen(!isOrderDropdownOpen);
-    setProfileDropdownOpen(false);
-    setIsSearchFocused(false);
-  };
-  
-  const toggleProfileDropdown = () => {
+  const toggleProfileDropdown = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
     setProfileDropdownOpen(!isProfileDropdownOpen);
-    setOrderDropdownOpen(false);
     setIsSearchFocused(false);
   };
 
@@ -110,7 +101,6 @@ export default function Header() {
   const handleSearchFocus = () => {
     setIsSearchFocused(true);
     setCategoryDropdownOpen(false);
-    setOrderDropdownOpen(false);
     setProfileDropdownOpen(false);
   };
 
@@ -134,7 +124,7 @@ export default function Header() {
   };
 
   // Get recent orders from context
-  const recentOrders = orderState.recentOrders;
+  const recentOrders = orderState.recentOrders || [];
 
   // Helper functions for order status
   const getStatusIcon = (status: string) => {
@@ -218,7 +208,10 @@ export default function Header() {
 
             {/* Enhanced Category Dropdown */}
             {isCategoryDropdownOpen && (
-              <div className="absolute top-full left-0 mt-3 flex bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 animate-slideDown overflow-hidden min-w-max">
+              <div 
+                className="absolute top-full left-0 mt-3 flex bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 animate-slideDown overflow-hidden min-w-max"
+                onClick={(e) => e.stopPropagation()}
+              >
                 {/* Main Categories */}
                 <div className="w-72">
                   
@@ -338,7 +331,10 @@ export default function Header() {
 
               {/* Enhanced Search Suggestions */}
               {isSearchFocused && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 overflow-hidden animate-slideDown">
+                <div 
+                  className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 overflow-hidden animate-slideDown"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   {searchSuggestions.length > 0 ? (
                     <div className="p-4">
                       <div className="flex items-center gap-2 mb-3">
@@ -424,7 +420,10 @@ export default function Header() {
 
               {/* Enhanced Profile Dropdown */}
               {isProfileDropdownOpen && (
-                <div className="absolute top-full right-0 mt-3 w-64 bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 animate-slideDown overflow-hidden">
+                <div 
+                  className="absolute top-full right-0 mt-3 w-64 bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 animate-slideDown overflow-hidden"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <div className="p-6">
                     <div className="flex items-center gap-4 mb-4 pb-4 border-b border-gray-100">
                       <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
@@ -476,19 +475,14 @@ export default function Header() {
               )}
             </div>
 
-            {/* Enhanced Order Dropdown */}
-            <div className="relative hidden sm:block">
+            {/* Enhanced Order Link */}
+            <Link href="/orders" className="hidden sm:block">
               <Button
                 variant="ghost"
                 size="lg"
-                className={`p-3 relative transition-all duration-300 hover:scale-110 hover:bg-blue-50 rounded-xl ${
-                  isOrderDropdownOpen ? 'bg-blue-50 text-blue-600 scale-105 shadow-md' : 'hover:text-blue-600'
-                }`}
-                onClick={toggleOrderDropdown}
+                className="p-3 relative transition-all duration-300 hover:scale-110 hover:bg-blue-50 hover:text-blue-600 rounded-xl"
               >
-                <Package className={`h-6 w-6 transition-all duration-300 ${
-                  isOrderDropdownOpen ? 'text-blue-600' : ''
-                }`} />
+                <Package className="h-6 w-6 transition-all duration-300" />
                 {recentOrders.length > 0 && (
                   <Badge 
                     variant="destructive" 
@@ -498,71 +492,7 @@ export default function Header() {
                   </Badge>
                 )}
               </Button>
-
-              {/* Enhanced Order Dropdown */}
-              {isOrderDropdownOpen && (
-                <div className="absolute top-full right-0 mt-3 w-96 bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 animate-slideDown overflow-hidden">
-                  <div className="p-6">
-                    <div className="flex items-center gap-2 mb-4">
-                      <Package className="h-5 w-5 text-blue-600" />
-                      <h3 className="font-bold text-gray-900 text-lg">Recent Orders</h3>
-                    </div>
-                    {recentOrders.length > 0 ? (
-                      <div className="space-y-4">
-                        {recentOrders.map((order, index) => (
-                          <div key={order.id} className="border border-gray-100 rounded-xl p-4 hover:bg-gray-50 transition-all duration-200 hover:shadow-md animate-fadeInUp" style={{ animationDelay: `${index * 100}ms` }}>
-                            <div className="flex items-center justify-between mb-3">
-                              <div className="flex items-center gap-2">
-                                {getStatusIcon(order.status)}
-                                <span className="font-bold text-gray-900">#{order.id}</span>
-                              </div>
-                              <span className={`px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(order.status)}`}>
-                                {order.status}
-                              </span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm text-gray-600 flex items-center gap-2">
-                                <Clock className="h-3 w-3" />
-                                {new Date(order.date).toLocaleDateString()}
-                              </span>
-                              <span className="font-bold text-gray-900 text-lg">${order.total.toFixed(2)}</span>
-                            </div>
-                            {order.shippingInfo.tracking && (
-                              <div className="mt-2 pt-2 border-t border-gray-100">
-                                <span className="text-xs text-gray-500">Tracking: {order.shippingInfo.tracking}</span>
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                        <div className="pt-4 border-t border-gray-200">
-                          <Link
-                            href="/orders"
-                            className="flex items-center justify-center gap-2 w-full py-3 text-sm font-semibold text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition-all duration-200"
-                            onClick={() => setOrderDropdownOpen(false)}
-                          >
-                            <Package className="h-4 w-4" />
-                            <span>View All Orders</span>
-                          </Link>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="text-center py-8">
-                        <Package className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                        <p className="text-gray-500 mb-4 font-medium">No orders yet</p>
-                        <Link
-                          href="/products"
-                          className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 font-semibold"
-                          onClick={() => setOrderDropdownOpen(false)}
-                        >
-                          <ShoppingCart className="h-4 w-4" />
-                          <span>Start Shopping</span>
-                        </Link>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
+            </Link>
 
             {/* Enhanced Cart */}
             <Link href="/cart">
@@ -738,14 +668,16 @@ export default function Header() {
       </div>
 
       {/* Overlay for dropdowns */}
-      {(isCategoryDropdownOpen || isOrderDropdownOpen || isProfileDropdownOpen || isSearchFocused) && (
+      {(isCategoryDropdownOpen || isProfileDropdownOpen || isSearchFocused) && (
         <div 
           className="fixed inset-0 z-40 bg-black/5" 
-          onClick={() => {
-            setCategoryDropdownOpen(false);
-            setOrderDropdownOpen(false);
-            setProfileDropdownOpen(false);
-            setIsSearchFocused(false);
+          onClick={(e) => {
+            e.preventDefault();
+            setTimeout(() => {
+              setCategoryDropdownOpen(false);
+              setProfileDropdownOpen(false);
+              setIsSearchFocused(false);
+            }, 50);
           }}
         />
       )}

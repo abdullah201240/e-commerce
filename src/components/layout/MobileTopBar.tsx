@@ -4,13 +4,9 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { 
   Search, 
-  ShoppingCart, 
-  Menu,
   X,
-  ArrowLeft
 } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useRouter } from 'next/navigation';
@@ -23,9 +19,6 @@ interface MobileTopBarProps {
 }
 
 export default function MobileTopBar({ 
-  showSearch = true, 
-  showBack = false, 
-  onBack,
   title 
 }: MobileTopBarProps) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -96,73 +89,72 @@ export default function MobileTopBar({
   return (
     <>
       <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        {/* Main top bar */}
-        <div className="flex items-center justify-between px-4 py-3">
-          {/* Left side */}
-          <div className="flex items-center flex-1">
-            {title ? (
-              <h1 className="text-lg font-semibold text-gray-900 truncate">{title}</h1>
-            ) : (
-              <Link href="/" className="text-xl font-bold text-gray-900">
+        {/* First Line - Company Name */}
+        <div className="flex items-center justify-center px-4 py-2 border-b border-gray-100">
+          {title ? (
+            <h1 className="text-lg font-semibold text-gray-900 truncate">{title}</h1>
+          ) : (
+            <Link href="/" className="text-2xl lg:text-3xl font-bold text-gray-900 hover:text-gray-700 transition-all duration-300 flex-shrink-0 hover:scale-105">
+              <span className="bg-gradient-to-r from-gray-900 via-blue-600 to-gray-900 bg-clip-text text-transparent">
                 FurniStore
-              </Link>
-            )}
-          </div>
+              </span>
+            </Link>
+          )}
+        </div>
 
-          {/* Right side */}
-          <div className="flex items-center space-x-2">
-            <form onSubmit={handleSearchSubmit} className="flex-1 max-w-xs relative" ref={searchRef}>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  type="text"
-                  placeholder="Search furniture, decor..."
-                  className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-full focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300"
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    if (e.target.value.trim() === '') {
-                      setShowResults(false);
-                    }
+        {/* Second Line - Search Options */}
+        <div className="px-4 py-3">
+          <form onSubmit={handleSearchSubmit} className="relative" ref={searchRef}>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                type="text"
+                placeholder="Search furniture, decor..."
+                className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-full focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  if (e.target.value.trim() === '') {
+                    setShowResults(false);
+                  }
+                }}
+                onFocus={() => searchQuery.trim() !== '' && setShowResults(true)}
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setSearchResults([]);
+                    setShowResults(false);
                   }}
-                  onFocus={() => searchQuery.trim() !== '' && setShowResults(true)}
-                />
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSearchQuery('');
-                      setSearchResults([]);
-                      setShowResults(false);
-                    }}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                )}
-              </div>
-              
-              {/* Search Results Dropdown */}
-              {showResults && searchResults.length > 0 && (
-                <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
-                  <div className="py-1">
-                    {searchResults.map((result, index) => (
-                      <button
-                        key={index}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors duration-200"
-                        onClick={() => handleResultClick(result)}
-                      >
-                        <div className="flex items-center">
-                          <Search className="h-4 w-4 mr-2 text-gray-400" />
-                          <span>{result}</span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <X className="h-4 w-4" />
+                </button>
               )}
-            </form>
-          </div>
+            </div>
+            
+            {/* Search Results Dropdown */}
+            {showResults && searchResults.length > 0 && (
+              <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+                <div className="py-1">
+                  {searchResults.map((result, index) => (
+                    <button
+                      key={index}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors duration-200"
+                      onClick={() => handleResultClick(result)}
+                    >
+                      <div className="flex items-center">
+                        <Search className="h-4 w-4 mr-2 text-gray-400" />
+                        <span>{result}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </form>
         </div>
 
         {/* Mobile Menu Overlay */}
