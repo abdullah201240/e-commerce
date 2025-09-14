@@ -28,6 +28,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'flowbite.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'commondatastorage.googleapis.com',
+      },
     ],
   },
 };

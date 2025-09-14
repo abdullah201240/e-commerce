@@ -1,3 +1,18 @@
+export interface Review {
+  id: string;
+  user: {
+    name: string;
+    avatar?: string;
+    verified?: boolean;
+  };
+  rating: number;
+  title: string;
+  comment: string;
+  date: string;
+  helpful: number;
+  images?: string[];
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -6,14 +21,28 @@ export interface Product {
   category: string;
   image: string;
   images: string[];
+  videos?: string[];
   description: string;
+  features?: string[];
+  specifications?: { [key: string]: string };
   rating: number;
   reviews: number;
+  reviewsList?: Review[];
   inStock: boolean;
   featured: boolean;
   discount?: number;
   isNewArrival?: boolean;
   arrivalDate?: string;
+  tags?: string[];
+  colors?: string[];
+  sizes?: string[];
+  weight?: string;
+  dimensions?: {
+    length: number;
+    width: number;
+    height: number;
+    unit: string;
+  };
 }
 
 export interface Category {
@@ -145,12 +174,70 @@ export const products: Product[] = [
     category: 'sofa',
     image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&h=400&fit=crop',
     images: [
-      'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&h=400&fit=crop',
-      'https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=500&h=400&fit=crop'
+      'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop'
     ],
-    description: 'Comfortable modern 3-seater sofa with premium fabric upholstery and sturdy wooden frame.',
+    videos: [
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+    ],
+    description: 'Comfortable modern 3-seater sofa with premium fabric upholstery and sturdy wooden frame. Perfect for contemporary living rooms.',
+    features: [
+      'Premium fabric upholstery',
+      'Sturdy wooden frame',
+      'High-density foam cushions',
+      'Easy assembly',
+      '5-year warranty'
+    ],
+    specifications: {
+      'Material': 'Fabric and Wood',
+      'Seating Capacity': '3 People',
+      'Frame Material': 'Solid Wood',
+      'Cushion Fill': 'High-density Foam',
+      'Assembly Required': 'Yes'
+    },
+    dimensions: {
+      length: 84,
+      width: 36,
+      height: 33,
+      unit: 'inches'
+    },
+    weight: '120 lbs',
+    colors: ['Gray', 'Navy Blue', 'Beige', 'Charcoal'],
+    tags: ['modern', 'comfortable', 'living room', 'premium'],
     rating: 4.5,
     reviews: 124,
+    reviewsList: [
+      {
+        id: 'r1',
+        user: { name: 'Sarah Johnson', verified: true },
+        rating: 5,
+        title: 'Excellent quality and comfort!',
+        comment: 'This sofa exceeded my expectations. The fabric is soft yet durable, and it\'s incredibly comfortable. Assembly was straightforward and the instructions were clear.',
+        date: '2024-01-15',
+        helpful: 23,
+        images: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop']
+      },
+      {
+        id: 'r2',
+        user: { name: 'Mike Chen' },
+        rating: 4,
+        title: 'Great value for money',
+        comment: 'Really happy with this purchase. The sofa looks exactly like the pictures and fits perfectly in our living room.',
+        date: '2024-01-10',
+        helpful: 18
+      },
+      {
+        id: 'r3',
+        user: { name: 'Emily Davis', verified: true },
+        rating: 5,
+        title: 'Perfect for our space',
+        comment: 'Love the modern design and the gray color matches our decor perfectly. Very comfortable for movie nights!',
+        date: '2024-01-08',
+        helpful: 15
+      }
+    ],
     inStock: true,
     featured: true,
     discount: 25
@@ -197,11 +284,60 @@ export const products: Product[] = [
     category: 'chair',
     image: 'https://images.unsplash.com/photo-1581539250439-c96689b516dd?w=500&h=400&fit=crop',
     images: [
-      'https://images.unsplash.com/photo-1581539250439-c96689b516dd?w=500&h=400&fit=crop'
+      'https://images.unsplash.com/photo-1581539250439-c96689b516dd?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=800&h=600&fit=crop'
     ],
-    description: 'Professional ergonomic office chair with lumbar support and adjustable height.',
+    videos: [
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'
+    ],
+    description: 'Professional ergonomic office chair with lumbar support and adjustable height. Designed for long hours of comfortable work.',
+    features: [
+      'Ergonomic lumbar support',
+      'Height adjustable',
+      'Breathable mesh back',
+      '360-degree swivel',
+      'Smooth rolling casters',
+      'Weight capacity: 300 lbs'
+    ],
+    specifications: {
+      'Material': 'Mesh and Plastic',
+      'Adjustable Height': '17.5"-21.5"',
+      'Weight Capacity': '300 lbs',
+      'Base Material': 'Nylon',
+      'Armrests': 'Fixed'
+    },
+    dimensions: {
+      length: 26,
+      width: 26,
+      height: 40,
+      unit: 'inches'
+    },
+    weight: '35 lbs',
+    colors: ['Black', 'Gray', 'White'],
+    tags: ['ergonomic', 'office', 'adjustable', 'comfortable'],
     rating: 4.6,
     reviews: 203,
+    reviewsList: [
+      {
+        id: 'r4',
+        user: { name: 'David Wilson', verified: true },
+        rating: 5,
+        title: 'Best office chair I\'ve owned',
+        comment: 'After working from home for 2 years, this chair has been a game-changer. The lumbar support is excellent and it\'s very comfortable for long work sessions.',
+        date: '2024-01-12',
+        helpful: 31
+      },
+      {
+        id: 'r5',
+        user: { name: 'Lisa Brown' },
+        rating: 4,
+        title: 'Good value ergonomic chair',
+        comment: 'Assembly was easy and the chair feels sturdy. The height adjustment works smoothly.',
+        date: '2024-01-09',
+        helpful: 22
+      }
+    ],
     inStock: true,
     featured: true,
     discount: 25

@@ -45,7 +45,7 @@ export default function CategoriesPage() {
                     </h2>
                     <p className="text-gray-600">{category.description}</p>
                   </div>
-                  <Link href={`/products?category=${category.id}`}>
+                  <Link href={`/categories/${category.id}`}>
                     <Button variant="outline" className="hidden md:flex">
                       View All
                       <ArrowRight className="ml-2 h-4 w-4" />
@@ -56,7 +56,7 @@ export default function CategoriesPage() {
                 {/* Main Category Card */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                   <Link 
-                    href={`/products?category=${category.id}`}
+                    href={`/categories/${category.id}`}
                     className="lg:col-span-2"
                   >
                     <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-lg transition-all duration-300 h-full">
@@ -122,7 +122,7 @@ export default function CategoriesPage() {
                       {category.subcategories.map((subcategory) => (
                         <Link
                           key={subcategory.id}
-                          href={`/products?category=${category.id}&subcategory=${subcategory.id}`}
+                          href={`/categories/${category.id}?subcategory=${subcategory.id}`}
                         >
                           <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-lg transition-all duration-300">
                             <div className="relative aspect-square">
@@ -153,7 +153,7 @@ export default function CategoriesPage() {
                 
                 {/* Mobile View All Button */}
                 <div className="md:hidden mt-6">
-                  <Link href={`/products?category=${category.id}`}>
+                  <Link href={`/categories/${category.id}`}>
                     <Button className="w-full">
                       View All {category.name}
                       <ArrowRight className="ml-2 h-4 w-4" />

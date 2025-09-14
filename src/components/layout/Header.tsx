@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { useCart } from '@/contexts/CartContext';
+import { useWishlist } from '@/contexts/WishlistContext';
 import { categories } from '@/data/products';
 import { 
   Search, 
@@ -35,6 +36,7 @@ export default function Header() {
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const { state } = useCart();
+  const { state: wishlistState } = useWishlist();
 
   // Mock search suggestions
   const popularSearches = [
@@ -408,6 +410,11 @@ export default function Header() {
                       >
                         <Heart className="h-4 w-4 group-hover:text-red-500" />
                         <span className="group-hover:text-red-500">Wishlist</span>
+                        {wishlistState.itemCount > 0 && (
+                          <Badge variant="secondary" className="ml-auto bg-red-100 text-red-600 text-xs">
+                            {wishlistState.itemCount}
+                          </Badge>
+                        )}
                       </Link>
                       <hr className="my-3" />
                       <button className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200">
@@ -625,8 +632,15 @@ export default function Header() {
                   </Button>
                 </Link>
                 <Link href="/wishlist" onClick={toggleMenu}>
-                  <Button variant="ghost" className="flex flex-col items-center justify-center space-y-2 w-full py-4 hover:bg-red-50 hover:text-red-600 transition-all duration-300 rounded-xl group h-20">
-                    <Heart className="h-6 w-6 group-hover:scale-110 transition-transform duration-300" />
+                  <Button variant="ghost" className="flex flex-col items-center justify-center space-y-2 w-full py-4 hover:bg-red-50 hover:text-red-600 transition-all duration-300 rounded-xl group h-20 relative">
+                    <div className="relative">
+                      <Heart className="h-6 w-6 group-hover:scale-110 transition-transform duration-300" />
+                      {wishlistState.itemCount > 0 && (
+                        <Badge variant="secondary" className="absolute -top-2 -right-2 h-4 w-4 p-0 bg-red-500 text-white text-xs flex items-center justify-center">
+                          {wishlistState.itemCount > 99 ? '99+' : wishlistState.itemCount}
+                        </Badge>
+                      )}
+                    </div>
                     <span className="font-semibold text-sm">Wishlist</span>
                   </Button>
                 </Link>

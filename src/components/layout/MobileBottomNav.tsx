@@ -7,9 +7,11 @@ import {
   Home, 
   Grid3X3, 
   ShoppingCart, 
+  Heart,
   User
 } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
+import { useWishlist } from '@/contexts/WishlistContext';
 
 const navigationItems = [
   {
@@ -22,6 +24,12 @@ const navigationItems = [
     name: 'Categories',
     href: '/categories',
     icon: Grid3X3,
+    exact: false
+  },
+  {
+    name: 'Wishlist',
+    href: '/wishlist',
+    icon: Heart,
     exact: false
   },
   {
@@ -41,6 +49,7 @@ const navigationItems = [
 export default function MobileBottomNav() {
   const pathname = usePathname();
   const { state } = useCart();
+  const { state: wishlistState } = useWishlist();
 
   const isActiveRoute = (item: typeof navigationItems[0]) => {
     if (item.exact) {
@@ -74,6 +83,14 @@ export default function MobileBottomNav() {
                     className="absolute -top-2 -right-2 h-4 w-4 flex items-center justify-center p-0 text-xs"
                   >
                     {state.itemCount > 9 ? '9+' : state.itemCount}
+                  </Badge>
+                )}
+                {item.name === 'Wishlist' && wishlistState.itemCount > 0 && (
+                  <Badge 
+                    variant="destructive" 
+                    className="absolute -top-2 -right-2 h-4 w-4 flex items-center justify-center p-0 text-xs bg-red-500"
+                  >
+                    {wishlistState.itemCount > 9 ? '9+' : wishlistState.itemCount}
                   </Badge>
                 )}
               </div>
