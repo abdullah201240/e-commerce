@@ -41,7 +41,7 @@ export default function MobileLayout({
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Desktop Header */}
       {!isMobile && showDesktopHeader && <Header />}
       
@@ -55,14 +55,14 @@ export default function MobileLayout({
       )}
 
       {/* Main Content */}
-      <main className={`${isMobile && showMobileFooter ? 'pb-16' : ''}`}>
+      <main className={`flex-1 ${isMobile && showMobileFooter ? 'pb-16' : ''}`}>
         {children}
       </main>
 
-      {/* Desktop Footer */}
-      {!isMobile && showDesktopFooter && <Footer />}
+      {/* Footer - Show on both mobile and desktop */}
+      {((isMobile && showMobileFooter) || (!isMobile && showDesktopFooter)) && <Footer />}
       
-      {/* Mobile Footer */}
+      {/* Mobile Bottom Navigation */}
       {isMobile && showMobileFooter && <MobileBottomNav />}
     </div>
   );
