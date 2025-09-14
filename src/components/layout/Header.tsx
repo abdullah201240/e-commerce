@@ -117,7 +117,16 @@ export default function Header() {
   const handleSearchSelect = (suggestion: string) => {
     setSearchQuery(suggestion);
     setIsSearchFocused(false);
-    // Handle search logic here
+    // Navigate to products page with search query
+    window.location.href = `/products?search=${encodeURIComponent(suggestion)}`;
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      setIsSearchFocused(false);
+      window.location.href = `/products?search=${encodeURIComponent(searchQuery.trim())}`;
+    }
   };
 
   // Mock recent orders
@@ -185,7 +194,7 @@ export default function Header() {
                           style={{ animationDelay: `${index * 50}ms` }}
                         >
                           <Link
-                            href={`/products?category=${category.id}`}
+                            href={`/categories/${category.id}`}
                             className="flex-1 flex items-center justify-between"
                             onClick={() => setCategoryDropdownOpen(false)}
                           >
@@ -221,7 +230,7 @@ export default function Header() {
                             {category.subcategories.map((subcategory, index) => (
                               <Link
                                 key={subcategory.id}
-                                href={`/products?category=${category.id}&subcategory=${subcategory.id}`}
+                                href={`/categories/${category.id}?subcategory=${subcategory.id}`}
                                 className="flex items-center justify-between p-3 hover:bg-white hover:shadow-md rounded-xl transition-all duration-300 group animate-fadeInUp border border-transparent hover:border-blue-100"
                                 style={{ animationDelay: `${index * 50}ms` }}
                                 onClick={() => setCategoryDropdownOpen(false)}
@@ -263,7 +272,7 @@ export default function Header() {
 
           {/* Enhanced Search Bar */}
           <div className="flex items-center flex-1 max-w-2xl relative">
-            <div className="relative w-full group">
+            <form onSubmit={handleSearchSubmit} className="relative w-full group">
               <Search className={`absolute left-5 top-1/2 transform -translate-y-1/2 h-5 w-5 transition-all duration-300 ${
                 isSearchFocused || searchQuery ? 'text-blue-500 scale-110' : 'text-gray-400'
               }`} />
@@ -281,6 +290,7 @@ export default function Header() {
                 } hover:shadow-md focus:shadow-lg`}
               />
               <Button
+                type="submit"
                 size="sm"
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-xl transition-all duration-300 hover:scale-105"
               >
@@ -353,7 +363,7 @@ export default function Header() {
                   )}
                 </div>
               )}
-            </div>
+            </form>
           </div>
 
           {/* Enhanced Right Side Actions */}

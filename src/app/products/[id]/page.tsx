@@ -123,11 +123,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, onClose }) => {
   };
 
   return (
-    <div className="relative w-full h-64 bg-black rounded-lg overflow-hidden group">
+    <div className="relative w-full h-0 pb-[56.25%] bg-black rounded-lg overflow-hidden group">
       <video
         ref={videoRef}
         src={src}
-        className="w-full h-full object-cover"
+        className="absolute top-0 left-0 w-full h-full object-cover"
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
       />
@@ -617,7 +617,7 @@ export default function ProductDetailPage() {
 
             {/* Price */}
             <div className="flex items-center gap-4 animate-slideIn" style={{ animationDelay: '0.1s' }}>
-              <span className="text-4xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+              <span className="text-4xl font-bold bg-black bg-clip-text text-transparent">
                 ${product.price.toFixed(2)}
               </span>
               {product.originalPrice && (
@@ -718,7 +718,7 @@ export default function ProductDetailPage() {
                 className={`w-full text-lg font-semibold transition-all duration-300 shadow-xl h-14 rounded-xl ${
                   addedToCart 
                     ? 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700' 
-                    : 'bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-500 hover:scale-[1.02] hover:shadow-2xl'
+                    : 'bg-black hover:shadow-2xl'
                 } border-0 text-white`}
                 disabled={!product.inStock}
                 onClick={handleAddToCart}
@@ -741,26 +741,6 @@ export default function ProductDetailPage() {
               </Button>
             </div>
 
-            {/* Features */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-              {[
-                { icon: Truck, text: 'Free Shipping', color: 'text-green-600', bg: 'bg-green-100 dark:bg-green-900/20' },
-                { icon: Shield, text: 'Warranty', color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-900/20' },
-                { icon: RotateCcw, text: '30-Day Returns', color: 'text-amber-600', bg: 'bg-amber-100 dark:bg-amber-900/20' },
-                { icon: Award, text: 'Quality Assured', color: 'text-purple-600', bg: 'bg-purple-100 dark:bg-purple-900/20' }
-              ].map(({ icon: Icon, text, color, bg }, index) => (
-                <div 
-                  key={text}
-                  className="flex items-center gap-3 p-3 rounded-xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 hover:scale-105 transition-all duration-300 animate-fadeInUp shadow-lg"
-                  style={{ animationDelay: `${0.6 + index * 0.1}s` }}
-                >
-                  <div className={`p-2 rounded-lg ${bg}`}>
-                    <Icon className={`h-4 w-4 sm:h-5 sm:w-5 ${color}`} />
-                  </div>
-                  <span className="text-xs sm:text-sm font-semibold text-foreground">{text}</span>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
 

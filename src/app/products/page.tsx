@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import ProductGrid from '@/components/product/ProductGrid';
 import CategoryFilter from '@/components/product/CategoryFilter';
-import { products } from '@/data/products';
+import { products, categories } from '@/data/products';
 import { Search, SlidersHorizontal, Loader2 } from 'lucide-react';
 import MobileLayout from '@/components/layout/MobileLayout';
 import { useSearchParams } from 'next/navigation';
@@ -18,11 +18,15 @@ function ProductsContent() {
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState('featured');
 
-  // Sync URL search param with local state
+  // Sync URL search params with local state
   useEffect(() => {
     const search = searchParams.get('search');
+    const category = searchParams.get('category');
     if (search) {
       setSearchQuery(search);
+    }
+    if (category && category !== 'all') {
+      setSelectedCategory(category);
     }
   }, [searchParams]);
 
@@ -34,11 +38,15 @@ function ProductsContent() {
       filtered = filtered.filter(product => product.category === selectedCategory);
     }
 
-    // Filter by search query
+    // Filter by search query - enhanced search
     if (searchQuery) {
+      const query = searchQuery.toLowerCase();
       filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchQuery.toLowerCase())
+        product.name.toLowerCase().includes(query) ||
+        product.description.toLowerCase().includes(query) ||
+        product.category.toLowerCase().includes(query) ||
+        (product.tags && product.tags.some(tag => tag.toLowerCase().includes(query))) ||
+        (product.features && product.features.some(feature => feature.toLowerCase().includes(query)))
       );
     }
 
@@ -66,48 +74,74 @@ function ProductsContent() {
     <MobileLayout>
       <div className="container mx-auto px-4 py-6">
         {/* Search and filter bar */}
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row gap-4 mb-8">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
             <Input
               type="text"
-              placeholder="Search products..."
-              className="pl-10 w-full"
+              placeholder="Search products by name, category, or features..."
+              className="pl-11 pr-4 py-3 w-full text-base border-gray-300 focus:border-blue-500 focus:ring-blue-500"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            )}
           </div>
+          
+          {/* Mobile filter toggle */}
           <Button
             variant="outline"
-            className="md:hidden"
+            className="lg:hidden flex-shrink-0"
             onClick={() => setShowFilters(!showFilters)}
           >
             <SlidersHorizontal className="h-4 w-4 mr-2" />
-            Filters
+            {showFilters ? 'Hide Filters' : 'Show Filters'}
           </Button>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-6">
-          {/* Category filter - hidden on mobile when filters are closed */}
-          <div className={`${showFilters ? 'block' : 'hidden'} md:block w-full md:w-64 flex-shrink-0`}>
-            <CategoryFilter
-              selectedCategory={selectedCategory}
-              onCategoryChange={setSelectedCategory}
-            />
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Category filter - responsive sidebar */}
+          <div className={`${
+            showFilters ? 'block' : 'hidden'
+          } lg:block w-full lg:w-72 flex-shrink-0`}>
+            <div className="sticky top-4">
+              <CategoryFilter
+                selectedCategory={selectedCategory}
+                onCategoryChange={setSelectedCategory}
+              />
+            </div>
           </div>
 
           {/* Product grid */}
-          <div className="flex-1">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">
-                {selectedCategory === 'all' ? 'All Products' : 
-                 categories.find(c => c.id === selectedCategory)?.name || 'Products'}
-                {searchQuery && ` matching "${searchQuery}"`}
-              </h2>
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500">Sort by:</span>
+          <div className="flex-1 min-w-0">
+            {/* Results header */}
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900">
+                  {selectedCategory === 'all' ? 'All Products' : 
+                   categories.find(c => c.id === selectedCategory)?.name || 'Products'}
+                </h2>
+                {searchQuery && (
+                  <p className="text-sm text-gray-600 mt-1">
+                    Showing results for "{searchQuery}"
+                  </p>
+                )}
+                <p className="text-sm text-gray-500 mt-1">
+                  {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} found
+                </p>
+              </div>
+              
+              {/* Sort dropdown */}
+              <div className="flex items-center gap-3 flex-shrink-0">
+                <span className="text-sm text-gray-600 font-medium">Sort by:</span>
                 <select
-                  className="text-sm border rounded p-1"
+                  className="text-sm border border-gray-300 rounded-md px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                 >
@@ -120,22 +154,39 @@ function ProductsContent() {
               </div>
             </div>
             
+            {/* Products display */}
             {filteredProducts.length > 0 ? (
               <ProductGrid products={filteredProducts} />
             ) : (
-              <div className="text-center py-12">
-                <h3 className="text-lg font-medium text-gray-900">No products found</h3>
-                <p className="mt-1 text-gray-500">Try adjusting your search or filter criteria</p>
-                <Button
-                  variant="outline"
-                  className="mt-4"
-                  onClick={() => {
-                    setSelectedCategory('all');
-                    setSearchQuery('');
-                  }}
-                >
-                  Clear filters
-                </Button>
+              <div className="text-center py-16">
+                <div className="max-w-md mx-auto">
+                  <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
+                  <p className="text-gray-500 mb-6">
+                    {searchQuery 
+                      ? `No products match "${searchQuery}" in the selected category.`
+                      : 'No products found in the selected category.'
+                    }
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <Button
+                      variant="outline"
+                      onClick={() => setSearchQuery('')}
+                      disabled={!searchQuery}
+                    >
+                      Clear search
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setSelectedCategory('all');
+                        setSearchQuery('');
+                      }}
+                    >
+                      View all products
+                    </Button>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -158,13 +209,4 @@ export default function ProductsPage() {
   );
 }
 
-// Add categories constant if not already imported
-const categories = [
-  { id: 'all', name: 'All Categories' },
-  { id: 'sofa', name: 'Sofas & Couches' },
-  { id: 'chair', name: 'Chairs' },
-  { id: 'table', name: 'Tables' },
-  { id: 'bed', name: 'Beds & Mattresses' },
-  { id: 'storage', name: 'Storage & Organization' },
-  { id: 'decor', name: 'Home Decor' },
-];
+
