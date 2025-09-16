@@ -1,7 +1,6 @@
 'use client';
 
 import { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
-import { Product } from '@/data/products';
 
 // Types
 export interface OrderItem {
@@ -10,6 +9,7 @@ export interface OrderItem {
   price: number;
   quantity: number;
   image: string;
+  sku: string;
   selectedSize?: string;
   selectedColor?: string;
 }
@@ -29,6 +29,7 @@ export interface OrderShipping {
   city: string;
   state: string;
   zip: string;
+  country?: string;
   method: string;
   tracking?: string;
   estimatedDelivery?: string;
@@ -129,6 +130,7 @@ function generateDemoOrders(): Order[] {
         image: product.image,
         price: price,
         quantity: quantity,
+        sku: product.id, // Added sku field
         selectedColor: colors[Math.floor(Math.random() * colors.length)],
         selectedSize: sizes[Math.floor(Math.random() * sizes.length)]
       });

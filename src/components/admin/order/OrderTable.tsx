@@ -5,6 +5,14 @@ import { Order } from '@/contexts/OrderContext';
 import { OrderRow } from './OrderRow';
 import { MobileOrderCard } from './MobileOrderCard';
 import { ShoppingCart } from 'lucide-react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 interface OrderTableProps {
   orders: Order[];
@@ -19,28 +27,21 @@ export function OrderTable({ orders, onView, onEdit, onUpdateStatus, onPrintInvo
     <div className="flex-1 flex flex-col min-h-0">
       {/* Desktop Table View */}
       <div className="hidden lg:flex flex-col h-full">
-        {/* Fixed Table Header */}
-        <div className="flex-shrink-0 bg-muted/50 dark:bg-muted/30 border-b border-border">
-          <table className="w-full">
-            <thead>
-              <tr>
-                <th className="text-left py-3 px-4 font-medium text-muted-foreground w-[12%]">Order ID & Date</th>
-                <th className="text-left py-3 px-4 font-medium text-muted-foreground w-[18%]">Delivery Address</th>
-                <th className="text-left py-3 px-4 font-medium text-muted-foreground w-[20%]">Products & Quantities</th>
-                <th className="text-left py-3 px-4 font-medium text-muted-foreground w-[15%]">Pricing Details</th>
-                <th className="text-left py-3 px-4 font-medium text-muted-foreground w-[12%]">Status & Tracking</th>
-                <th className="text-left py-3 px-4 font-medium text-muted-foreground w-[13%]">Payment & Notes</th>
-                <th className="text-left py-3 px-4 font-medium text-muted-foreground w-[5%]">Invoice</th>
-                <th className="text-left py-3 px-4 font-medium text-muted-foreground w-[5%]">Actions</th>
-              </tr>
-            </thead>
-          </table>
-        </div>
-        
-        {/* Scrollable Table Body */}
-        <div className="flex-1 overflow-auto">
-          <table className="w-full">
-            <tbody>
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader className="bg-muted/50 dark:bg-muted/30">
+              <TableRow>
+                <TableHead className="w-[12%]">Order ID & Date</TableHead>
+                <TableHead className="w-[18%]">Delivery Address</TableHead>
+                <TableHead className="w-[20%]">Products & Quantities</TableHead>
+                <TableHead className="w-[15%]">Pricing Details</TableHead>
+                <TableHead className="w-[12%]">Status & Tracking</TableHead>
+                <TableHead className="w-[13%]">Payment & Notes</TableHead>
+                <TableHead className="w-[5%]">Invoice</TableHead>
+                <TableHead className="w-[5%]">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {orders.length > 0 ? (
                 orders.map((order: Order) => (
                   <OrderRow
@@ -53,18 +54,18 @@ export function OrderTable({ orders, onView, onEdit, onUpdateStatus, onPrintInvo
                   />
                 ))
               ) : (
-                <tr>
-                  <td colSpan={8} className="py-12 text-center">
+                <TableRow>
+                  <TableCell colSpan={8} className="py-12 text-center">
                     <ShoppingCart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <p className="text-foreground">No orders found</p>
                     <p className="text-sm text-muted-foreground mt-1">
                       Try adjusting your search or filter criteria
                     </p>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
 

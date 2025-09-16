@@ -14,6 +14,11 @@ import {
   DollarSign,
   Clock,
 } from 'lucide-react';
+import {
+  TableRow,
+  TableCell,
+}
+from "@/components/ui/table"
 
 interface OrderRowProps {
   order: Order;
@@ -46,9 +51,9 @@ export function OrderRow({ order, onEdit, onUpdateStatus, onPrintInvoice }: Orde
 
   return (
     <>
-      <tr className="border-b border-border hover:bg-muted/50 transition-colors">
+      <TableRow className="hover:bg-muted/50">
         {/* Order ID & Date */}
-        <td className="py-4 px-4">
+        <TableCell className="py-4 px-4">
           <div className="flex flex-col">
             <span className="font-medium text-foreground truncate" title={order.id}>
               {order.id}
@@ -57,10 +62,10 @@ export function OrderRow({ order, onEdit, onUpdateStatus, onPrintInvoice }: Orde
               {new Date(order.date).toLocaleDateString()}
             </span>
           </div>
-        </td>
+        </TableCell>
 
         {/* Delivery Address */}
-        <td className="py-4 px-4">
+        <TableCell className="py-4 px-4">
           <div className="flex flex-col">
             <span className="font-medium text-foreground truncate" title={order.shippingInfo?.address || 'N/A'}>
               {order.shippingInfo?.address || 'N/A'}
@@ -72,10 +77,10 @@ export function OrderRow({ order, onEdit, onUpdateStatus, onPrintInvoice }: Orde
               {order.shippingInfo?.method}
             </span>
           </div>
-        </td>
+        </TableCell>
 
         {/* Products & Quantities */}
-        <td className="py-4 px-4">
+        <TableCell className="py-4 px-4">
           <div className="space-y-2">
             <div className="flex items-center space-x-2">
               <span className="font-medium text-foreground">{order.items.length} items</span>
@@ -107,10 +112,10 @@ export function OrderRow({ order, onEdit, onUpdateStatus, onPrintInvoice }: Orde
               ))}
             </div>
           </div>
-        </td>
+        </TableCell>
 
         {/* Pricing Details */}
-        <td className="py-4 px-4">
+        <TableCell className="py-4 px-4">
           <div className="flex flex-col text-right">
             <span className="font-semibold text-foreground">${order.total.toFixed(2)}</span>
             <div className="text-xs text-muted-foreground space-y-0.5 mt-1">
@@ -128,10 +133,10 @@ export function OrderRow({ order, onEdit, onUpdateStatus, onPrintInvoice }: Orde
               </div>
             </div>
           </div>
-        </td>
+        </TableCell>
 
         {/* Status & Tracking */}
-        <td className="py-4 px-4">
+        <TableCell className="py-4 px-4">
           <div className="flex flex-col space-y-2">
             <OrderStatusBadge status={order.status} />
             {order.shippingInfo?.tracking && (
@@ -142,10 +147,10 @@ export function OrderRow({ order, onEdit, onUpdateStatus, onPrintInvoice }: Orde
               </span>
             )}
           </div>
-        </td>
+        </TableCell>
 
         {/* Payment & Notes */}
-        <td className="py-4 px-4">
+        <TableCell className="py-4 px-4">
           <div className="flex flex-col">
             <span className="text-sm font-medium text-foreground truncate" title={order.paymentMethod || 'Credit Card'}>
               {order.paymentMethod || 'Credit Card'}
@@ -157,10 +162,10 @@ export function OrderRow({ order, onEdit, onUpdateStatus, onPrintInvoice }: Orde
               </span>
             )}
           </div>
-        </td>
+        </TableCell>
 
         {/* Invoice */}
-        <td className="py-4 px-4">
+        <TableCell className="py-4 px-4">
           <Button
             variant="ghost"
             size="sm"
@@ -170,10 +175,10 @@ export function OrderRow({ order, onEdit, onUpdateStatus, onPrintInvoice }: Orde
           >
             <Printer className="h-4 w-4" />
           </Button>
-        </td>
+        </TableCell>
 
         {/* Actions */}
-        <td className="py-4 px-4">
+        <TableCell className="py-4 px-4">
           <div className="flex items-center space-x-1">
             <Button
               variant="ghost"
@@ -201,230 +206,157 @@ export function OrderRow({ order, onEdit, onUpdateStatus, onPrintInvoice }: Orde
                   e.stopPropagation();
                   setShowActions(!showActions);
                 }}
-                className="text-muted-foreground hover:text-foreground p-1"
-                title="More Actions"
+                className="text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 p-1"
+                title="More actions"
               >
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
               {showActions && (
-                <div 
-                  className="absolute right-0 top-8 bg-card border border-border rounded-lg shadow-lg z-10 min-w-32"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <button
-                    onClick={() => {
-                      onUpdateStatus(order.id, 'Confirmed');
-                      setShowActions(false);
-                    }}
-                    className="block w-full px-3 py-2 text-left text-sm hover:bg-muted text-foreground"
-                  >
-                    Mark Confirmed
-                  </button>
-                  <button
-                    onClick={() => {
-                      onUpdateStatus(order.id, 'Shipped');
-                      setShowActions(false);
-                    }}
-                    className="block w-full px-3 py-2 text-left text-sm hover:bg-muted text-foreground"
-                  >
-                    Mark Shipped
-                  </button>
-                  <button
-                    onClick={() => {
-                      onUpdateStatus(order.id, 'Delivered');
-                      setShowActions(false);
-                    }}
-                    className="block w-full px-3 py-2 text-left text-sm hover:bg-muted text-foreground"
-                  >
-                    Mark Delivered
-                  </button>
-                  <div className="border-t border-border my-1"></div>
-                  <button
-                    onClick={() => {
-                      onUpdateStatus(order.id, 'Cancelled');
-                      setShowActions(false);
-                    }}
-                    className="block w-full px-3 py-2 text-left text-sm hover:bg-muted text-red-600 dark:text-red-400  dark:hover:bg-red-900/20"
-                  >
-                    Cancel Order
-                  </button>
+                <div className="absolute right-0 mt-1 w-48 rounded-md shadow-lg bg-background border border-border z-10">
+                  <div className="py-1">
+                    <button
+                      onClick={() => onUpdateStatus(order.id, 'Processing')}
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-muted flex items-center"
+                    >
+                      <Package className="h-4 w-4 mr-2" />
+                      Mark as Processing
+                    </button>
+                    <button
+                      onClick={() => onUpdateStatus(order.id, 'Shipped')}
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-muted flex items-center"
+                    >
+                      <Truck className="h-4 w-4 mr-2" />
+                      Mark as Shipped
+                    </button>
+                    <button
+                      onClick={() => onUpdateStatus(order.id, 'Delivered')}
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-muted flex items-center"
+                    >
+                      <DollarSign className="h-4 w-4 mr-2" />
+                      Mark as Delivered
+                    </button>
+                    <button
+                      onClick={() => onUpdateStatus(order.id, 'Cancelled')}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-muted flex items-center"
+                    >
+                      <Clock className="h-4 w-4 mr-2" />
+                      Cancel Order
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
           </div>
-        </td>
-      </tr>
-      
-      {/* Expanded Details Row */}
+        </TableCell>
+      </TableRow>
+
+      {/* Expanded details */}
       {expanded && (
-        <tr className="bg-muted/30 dark:bg-muted/20">
-          <td colSpan={8} className="py-6 px-4">
-            <div className="space-y-6">
-              {/* Products Detail */}
+        <TableRow className="bg-muted/10">
+          <TableCell colSpan={8} className="p-4">
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <h4 className="font-medium mb-2">Customer Information</h4>
+                  <div className="text-sm space-y-1">
+                    <p className="font-medium">{order.shippingInfo?.name}</p>
+                    <p className="text-muted-foreground">{order.shippingInfo?.email}</p>
+                    <p className="text-muted-foreground">{order.shippingInfo?.phone || 'No phone provided'}</p>
+                  </div>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-2">Shipping Information</h4>
+                  <div className="text-sm space-y-1">
+                    <p>{order.shippingInfo?.address}</p>
+                    <p className="text-muted-foreground">
+                      {order.shippingInfo?.city}, {order.shippingInfo?.state} {order.shippingInfo?.zip}
+                    </p>
+                    <p className="text-muted-foreground">
+                      {order.shippingInfo?.country || 'United States'}
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-2">Order Details</h4>
+                  <div className="text-sm space-y-1">
+                    <p>Order ID: {order.id}</p>
+                    <p>Date: {new Date(order.date).toLocaleString()}</p>
+                    <p>Payment: {order.paymentMethod || 'Credit Card'}</p>
+                    <p>Status: <OrderStatusBadge status={order.status} /></p>
+                  </div>
+                </div>
+              </div>
+
               <div>
-                <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center">
-                  <Package className="h-4 w-4 mr-2" />
-                  Order Items
-                </h4>
-                <div className="space-y-3">
-                  {order.items.map((item: OrderItem, index: number) => (
-                    <div key={index} className="flex items-center space-x-4 bg-background dark:bg-card p-3 rounded-lg border border-border">
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="w-16 h-16 object-cover rounded-lg"
-                      />
-                      <div className="flex-1">
-                        <h5 className="font-medium text-foreground">{item.name}</h5>
-                        <div className="flex items-center space-x-4 text-sm text-muted-foreground mt-1">
-                          {item.selectedColor && (
-                            <span className="flex items-center">
-                              <div 
-                                className="w-3 h-3 rounded-full mr-1 border border-border" 
-                                style={{ backgroundColor: item.selectedColor.toLowerCase() }}
+                <h4 className="font-medium mb-2">Order Items</h4>
+                <div className="border rounded-md overflow-hidden">
+                  <table className="w-full">
+                    <thead className="bg-muted/50">
+                      <tr>
+                        <th className="text-left p-3 text-sm font-medium text-muted-foreground">Product</th>
+                        <th className="text-right p-3 text-sm font-medium text-muted-foreground">Price</th>
+                        <th className="text-right p-3 text-sm font-medium text-muted-foreground">Quantity</th>
+                        <th className="text-right p-3 text-sm font-medium text-muted-foreground">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                      {order.items.map((item: OrderItem, index: number) => (
+                        <tr key={index}>
+                          <td className="p-3">
+                            <div className="flex items-center space-x-3">
+                              <img
+                                src={item.image}
+                                alt={item.name}
+                                className="w-10 h-10 rounded object-cover"
                               />
-                              {item.selectedColor}
-                            </span>
-                          )}
-                          {item.selectedSize && (
-                            <span>Size: {item.selectedSize}</span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-medium text-foreground">Qty: {item.quantity}</div>
-                        <div className="text-sm text-muted-foreground">${item.price.toFixed(2)} each</div>
-                        <div className="font-semibold text-foreground">${(item.price * item.quantity).toFixed(2)}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Delivery Information */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center">
-                    <Truck className="h-4 w-4 mr-2" />
-                    Delivery Information
-                  </h4>
-                  <div className="bg-background dark:bg-card p-4 rounded-lg border border-border space-y-2">
-                    <div>
-                      <span className="text-sm text-muted-foreground">Address:</span>
-                      <p className="text-sm font-medium text-foreground">{order.shippingInfo?.address}</p>
-                      <p className="text-sm text-foreground">{order.shippingInfo?.city}, {order.shippingInfo?.state} {order.shippingInfo?.zip}</p>
-                    </div>
-                    <div>
-                      <span className="text-sm text-muted-foreground">Shipping Method:</span>
-                      <p className="text-sm font-medium text-foreground">{order.shippingInfo?.method}</p>
-                    </div>
-                    {order.shippingInfo?.estimatedDelivery && (
-                      <div>
-                        <span className="text-sm text-muted-foreground">Estimated Delivery:</span>
-                        <p className="text-sm font-medium text-foreground">
-                          {new Date(order.shippingInfo.estimatedDelivery).toLocaleDateString()}
-                        </p>
-                      </div>
-                    )}
-                    {order.shippingInfo?.tracking && (
-                      <div>
-                        <span className="text-sm text-muted-foreground">Tracking Number:</span>
-                        <p className="text-sm font-medium text-blue-600 dark:text-blue-400 font-mono">
-                          {order.shippingInfo.tracking}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center">
-                    <DollarSign className="h-4 w-4 mr-2" />
-                    Payment & Pricing
-                  </h4>
-                  <div className="bg-background dark:bg-card p-4 rounded-lg border border-border space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Subtotal:</span>
-                      <span className="text-sm font-medium text-foreground">${order.subtotal.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Shipping:</span>
-                      <span className="text-sm font-medium text-foreground">${order.shipping.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Tax:</span>
-                      <span className="text-sm font-medium text-foreground">${order.tax.toFixed(2)}</span>
-                    </div>
-                    <div className="border-t border-border pt-2 mt-2">
-                      <div className="flex justify-between">
-                        <span className="text-sm font-semibold text-foreground">Total:</span>
-                        <span className="text-sm font-bold text-foreground">${order.total.toFixed(2)}</span>
-                      </div>
-                    </div>
-                    <div className="mt-3">
-                      <span className="text-sm text-muted-foreground">Payment Method:</span>
-                      <p className="text-sm font-medium text-foreground">{order.paymentMethod}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Order Timeline */}
-              {order.timeline && order.timeline.length > 0 && (
-                <div>
-                  <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center">
-                    <Clock className="h-4 w-4 mr-2" />
-                    Order Timeline
-                  </h4>
-                  <div className="bg-background dark:bg-card p-4 rounded-lg border border-border">
-                    <div className="space-y-3">
-                      {order.timeline.map((event: OrderTimeline, index: number) => (
-                        <div key={index} className="flex items-start space-x-3">
-                          <div className={`w-3 h-3 rounded-full mt-1 ${
-                            event.completed 
-                              ? 'bg-green-500' 
-                              : 'bg-muted-foreground'
-                          }`} />
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between">
-                              <span className={`text-sm font-medium ${
-                                event.completed 
-                                  ? 'text-foreground' 
-                                  : 'text-muted-foreground'
-                              }`}>
-                                {event.status}
-                              </span>
-                              {event.date && (
-                                <span className="text-xs text-muted-foreground">
-                                  {new Date(event.date).toLocaleDateString()}
-                                </span>
-                              )}
+                              <div>
+                                <p className="font-medium text-sm">{item.name}</p>
+                                <p className="text-xs text-muted-foreground">SKU: {item.sku || 'N/A'}</p>
+                              </div>
                             </div>
-                            {event.description && (
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {event.description}
-                              </p>
-                            )}
-                          </div>
-                        </div>
+                          </td>
+                          <td className="p-3 text-right text-sm">${item.price.toFixed(2)}</td>
+                          <td className="p-3 text-right text-sm">{item.quantity}</td>
+                          <td className="p-3 text-right text-sm font-medium">
+                            ${(item.price * item.quantity).toFixed(2)}
+                          </td>
+                        </tr>
                       ))}
-                    </div>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div className="flex justify-end">
+                <div className="w-full max-w-xs space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span>${order.subtotal.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Shipping</span>
+                    <span>${order.shipping.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Tax</span>
+                    <span>${order.tax.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between pt-2 border-t font-medium">
+                    <span>Total</span>
+                    <span>${order.total.toFixed(2)}</span>
                   </div>
                 </div>
-              )}
+              </div>
 
-              {/* Notes */}
               {order.notes && (
-                <div>
-                  <h4 className="text-sm font-semibold text-foreground mb-3">Order Notes</h4>
-                  <div className="bg-background dark:bg-card p-4 rounded-lg border border-border">
-                    <p className="text-sm text-foreground">{order.notes}</p>
-                  </div>
+                <div className="mt-4 pt-4 border-t">
+                  <h4 className="font-medium mb-2">Order Notes</h4>
+                  <p className="text-sm text-muted-foreground">{order.notes}</p>
                 </div>
               )}
             </div>
-          </td>
-        </tr>
+          </TableCell>
+        </TableRow>
       )}
     </>
   );
