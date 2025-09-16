@@ -57,6 +57,7 @@ type OrderAction =
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_ERROR'; payload: string | null }
   | { type: 'ADD_ORDER'; payload: Order }
+  | { type: 'UPDATE_ORDER'; payload: Order }
   | { type: 'UPDATE_ORDER_STATUS'; payload: { id: string; status: Order['status']; timeline?: OrderTimeline[] } }
   | { type: 'LOAD_ORDERS'; payload: Order[] }
   | { type: 'CANCEL_ORDER'; payload: string }
@@ -70,164 +71,109 @@ const initialState: OrderState = {
   error: null,
 };
 
-// Sample orders data for demonstration
-const sampleOrders: Order[] = [
-  {
-    id: 'ORD-2024-001',
-    date: '2024-01-15',
-    status: 'Delivered',
-    total: 329.99,
-    subtotal: 299.99,
-    shipping: 15.00,
-    tax: 15.00,
-    paymentMethod: 'Credit Card (**** 4532)',
-    items: [
-      {
-        id: '1',
-        name: 'Modern 3-Seater Sofa',
-        image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop',
-        price: 299.99,
-        quantity: 1,
-        selectedColor: 'Dark Grey',
-        selectedSize: 'Large'
-      }
-    ],
-    shippingInfo: {
-      address: '123 Main Street, Apartment 4B',
-      city: 'New York',
-      state: 'NY',
-      zip: '10001',
-      method: 'Standard Shipping (3-5 business days)',
-      tracking: 'TRK123456789',
-      estimatedDelivery: '2024-01-15'
-    },
-    timeline: [
-      { status: 'Order Placed', date: '2024-01-12', completed: true, description: 'Your order has been received and is being processed.' },
-      { status: 'Confirmed', date: '2024-01-12', completed: true, description: 'Payment confirmed and order details verified.' },
-      { status: 'Processing', date: '2024-01-13', completed: true, description: 'Items are being prepared for shipment.' },
-      { status: 'Shipped', date: '2024-01-14', completed: true, description: 'Your order has been dispatched from our warehouse.' },
-      { status: 'Delivered', date: '2024-01-15', completed: true, description: 'Order delivered successfully. Thank you for shopping with us!' }
-    ],
-    notes: 'Thank you for your purchase! We hope you love your new sofa.'
-  },
-  {
-    id: 'ORD-2024-002',
-    date: '2024-01-10',
-    status: 'In Transit',
-    total: 649.99,
-    subtotal: 599.99,
-    shipping: 25.00,
-    tax: 25.00,
-    paymentMethod: 'PayPal',
-    items: [
-      {
-        id: '8',
-        name: 'Wooden Dining Table',
-        image: 'https://images.unsplash.com/photo-1549497538-303791108f95?w=400&h=300&fit=crop',
-        price: 599.99,
-        quantity: 1,
-        selectedColor: 'Natural Oak',
-        selectedSize: '6-Seater'
-      }
-    ],
-    shippingInfo: {
-      address: '456 Oak Avenue, Suite 12',
-      city: 'Los Angeles',
-      state: 'CA',
-      zip: '90210',
-      method: 'Express Shipping (1-2 business days)',
-      tracking: 'TRK987654321',
-      estimatedDelivery: '2024-01-12'
-    },
-    timeline: [
-      { status: 'Order Placed', date: '2024-01-08', completed: true, description: 'Your order has been received and is being processed.' },
-      { status: 'Confirmed', date: '2024-01-08', completed: true, description: 'Payment confirmed and order details verified.' },
-      { status: 'Processing', date: '2024-01-09', completed: true, description: 'Items are being prepared for shipment.' },
-      { status: 'Shipped', date: '2024-01-10', completed: true, description: 'Your order has been dispatched from our warehouse.' },
-      { status: 'In Transit', date: '2024-01-11', completed: false, description: 'Your package is on its way to you.' }
-    ]
-  },
-  {
-    id: 'ORD-2024-003',
-    date: '2024-01-05',
-    status: 'Processing',
-    total: 169.99,
-    subtotal: 149.99,
-    shipping: 10.00,
-    tax: 10.00,
-    paymentMethod: 'Credit Card (**** 8765)',
-    items: [
-      {
-        id: '13',
-        name: 'Storage Ottoman',
-        image: 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=400&h=300&fit=crop',
-        price: 149.99,
-        quantity: 1,
-        selectedColor: 'Cream White',
-        selectedSize: 'Medium'
-      }
-    ],
-    shippingInfo: {
-      address: '789 Pine Street, House 15',
-      city: 'Chicago',
-      state: 'IL',
-      zip: '60601',
-      method: 'Standard Shipping (3-5 business days)',
-      estimatedDelivery: '2024-01-10'
-    },
-    timeline: [
-      { status: 'Order Placed', date: '2024-01-05', completed: true, description: 'Your order has been received and is being processed.' },
-      { status: 'Confirmed', date: '2024-01-05', completed: true, description: 'Payment confirmed and order details verified.' },
-      { status: 'Processing', date: '2024-01-06', completed: false, description: 'Items are being prepared for shipment.' },
-      { status: 'Shipped', date: '', completed: false, description: 'Your order will be shipped once processing is complete.' },
-      { status: 'Delivered', date: '', completed: false, description: 'Your order will be delivered once shipped.' }
-    ]
-  },
-  {
-    id: 'ORD-2024-004',
-    date: '2023-12-28',
-    status: 'Delivered',
-    total: 899.99,
-    subtotal: 799.99,
-    shipping: 50.00,
-    tax: 50.00,
-    paymentMethod: 'Credit Card (**** 1234)',
-    items: [
-      {
-        id: '15',
-        name: 'Executive Office Chair',
-        image: 'https://images.unsplash.com/photo-1541558869434-2840d308329a?w=400&h=300&fit=crop',
-        price: 399.99,
-        quantity: 1,
-        selectedColor: 'Black Leather'
+// Function to generate demo orders
+function generateDemoOrders(): Order[] {
+  const statuses: Order['status'][] = ['Processing', 'Confirmed', 'Shipped', 'In Transit', 'Out for Delivery', 'Delivered', 'Cancelled', 'Returned'];
+  const cities = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Philadelphia', 'San Antonio', 'San Diego', 'Dallas', 'San Jose'];
+  const states = ['NY', 'CA', 'IL', 'TX', 'AZ', 'PA', 'TX', 'CA', 'TX', 'CA'];
+  const paymentMethods = ['Credit Card (**** 1234)', 'Credit Card (**** 5678)', 'PayPal', 'Credit Card (**** 9012)', 'Apple Pay', 'Google Pay'];
+  const shippingMethods = [
+    'Standard Shipping (3-5 business days)',
+    'Express Shipping (1-2 business days)',
+    'Overnight Shipping',
+    'White Glove Delivery',
+    'Local Pickup'
+  ];
+  
+  const products = [
+    { id: '1', name: 'Modern 3-Seater Sofa', image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop', basePrice: 299.99 },
+    { id: '2', name: 'Wooden Dining Table', image: 'https://images.unsplash.com/photo-1549497538-303791108f95?w=400&h=300&fit=crop', basePrice: 599.99 },
+    { id: '3', name: 'Storage Ottoman', image: 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=400&h=300&fit=crop', basePrice: 149.99 },
+    { id: '4', name: 'Executive Office Chair', image: 'https://images.unsplash.com/photo-1541558869434-2840d308329a?w=400&h=300&fit=crop', basePrice: 399.99 },
+    { id: '5', name: 'Standing Desk', image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop', basePrice: 499.99 },
+    { id: '6', name: 'Bookshelf Unit', image: 'https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=400&h=300&fit=crop', basePrice: 259.99 },
+    { id: '7', name: 'Coffee Table', image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop', basePrice: 199.99 },
+    { id: '8', name: 'Accent Chair', image: 'https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=400&h=300&fit=crop', basePrice: 179.99 },
+    { id: '9', name: 'Floor Lamp', image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop', basePrice: 89.99 },
+    { id: '10', name: 'Area Rug', image: 'https://images.unsplash.com/photo-1549497538-303791108f95?w=400&h=300&fit=crop', basePrice: 129.99 }
+  ];
+
+  const colors = ['Dark Grey', 'Natural Oak', 'Cream White', 'Black Leather', 'White', 'Brown', 'Blue', 'Green'];
+  const sizes = ['Small', 'Medium', 'Large', 'XL', '6-Seater', '4-Seater', 'Twin', 'Queen', 'King'];
+
+  const orders: Order[] = [];
+  
+  for (let i = 1; i <= 50; i++) {
+    const orderNumber = String(i).padStart(3, '0');
+    const randomDate = new Date(2024, 0, Math.floor(Math.random() * 365));
+    const status = statuses[Math.floor(Math.random() * statuses.length)];
+    const cityIndex = Math.floor(Math.random() * cities.length);
+    
+    // Generate 1-4 random items per order
+    const itemCount = Math.floor(Math.random() * 4) + 1;
+    const orderItems: OrderItem[] = [];
+    let subtotal = 0;
+    
+    for (let j = 0; j < itemCount; j++) {
+      const product = products[Math.floor(Math.random() * products.length)];
+      const quantity = Math.floor(Math.random() * 3) + 1;
+      const priceVariation = (Math.random() - 0.5) * 0.2; // ±10% price variation
+      const price = Math.round((product.basePrice * (1 + priceVariation)) * 100) / 100;
+      
+      orderItems.push({
+        id: product.id,
+        name: product.name,
+        image: product.image,
+        price: price,
+        quantity: quantity,
+        selectedColor: colors[Math.floor(Math.random() * colors.length)],
+        selectedSize: sizes[Math.floor(Math.random() * sizes.length)]
+      });
+      
+      subtotal += price * quantity;
+    }
+    
+    const shipping = Math.round((Math.random() * 50 + 10) * 100) / 100; // $10-$60 shipping
+    const tax = Math.round((subtotal * 0.08) * 100) / 100; // 8% tax
+    const total = Math.round((subtotal + shipping + tax) * 100) / 100;
+    
+    const order: Order = {
+      id: `ORD-2024-${orderNumber}`,
+      date: randomDate.toISOString().split('T')[0],
+      status: status,
+      total: total,
+      subtotal: subtotal,
+      shipping: shipping,
+      tax: tax,
+      paymentMethod: paymentMethods[Math.floor(Math.random() * paymentMethods.length)],
+      items: orderItems,
+      shippingInfo: {
+        address: `${Math.floor(Math.random() * 9999) + 1} ${['Main', 'Oak', 'Pine', 'Elm', 'Maple'][Math.floor(Math.random() * 5)]} Street`,
+        city: cities[cityIndex],
+        state: states[cityIndex],
+        zip: String(Math.floor(Math.random() * 90000) + 10000),
+        method: shippingMethods[Math.floor(Math.random() * shippingMethods.length)],
+        tracking: Math.random() > 0.3 ? `TRK${Math.floor(Math.random() * 1000000000)}` : undefined,
+        estimatedDelivery: new Date(randomDate.getTime() + Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
       },
-      {
-        id: '16',
-        name: 'Standing Desk',
-        image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop',
-        price: 399.99,
-        quantity: 1,
-        selectedColor: 'White'
-      }
-    ],
-    shippingInfo: {
-      address: '321 Elm Drive, Building B',
-      city: 'Miami',
-      state: 'FL',
-      zip: '33101',
-      method: 'White Glove Delivery',
-      tracking: 'TRK456789123',
-      estimatedDelivery: '2023-12-30'
-    },
-    timeline: [
-      { status: 'Order Placed', date: '2023-12-25', completed: true, description: 'Your order has been received and is being processed.' },
-      { status: 'Confirmed', date: '2023-12-25', completed: true, description: 'Payment confirmed and order details verified.' },
-      { status: 'Processing', date: '2023-12-26', completed: true, description: 'Items are being prepared for shipment.' },
-      { status: 'Shipped', date: '2023-12-27', completed: true, description: 'Your order has been dispatched from our warehouse.' },
-      { status: 'Delivered', date: '2023-12-30', completed: true, description: 'Order delivered successfully with white glove service.' }
-    ]
+      timeline: [
+        { status: 'Order Placed', date: randomDate.toISOString().split('T')[0], completed: true, description: 'Your order has been received and is being processed.' },
+        { status: 'Confirmed', date: randomDate.toISOString().split('T')[0], completed: true, description: 'Payment confirmed and order details verified.' },
+        { status: 'Processing', date: new Date(randomDate.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0], completed: ['Processing', 'Confirmed', 'Shipped', 'In Transit', 'Out for Delivery', 'Delivered'].includes(status), description: 'Items are being prepared for shipment.' },
+        { status: 'Shipped', date: ['Shipped', 'In Transit', 'Out for Delivery', 'Delivered'].includes(status) ? new Date(randomDate.getTime() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] : '', completed: ['Shipped', 'In Transit', 'Out for Delivery', 'Delivered'].includes(status), description: 'Your order has been dispatched from our warehouse.' },
+        { status: 'Delivered', date: status === 'Delivered' ? new Date(randomDate.getTime() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] : '', completed: status === 'Delivered', description: 'Order delivered successfully.' }
+      ],
+      notes: Math.random() > 0.7 ? 'Special delivery instructions provided by customer.' : undefined
+    };
+    
+    orders.push(order);
   }
-];
+  
+  return orders;
+}
+
+// Sample orders data for demonstration
+const sampleOrders: Order[] = generateDemoOrders();
 
 // Order reducer
 function orderReducer(state: OrderState, action: OrderAction): OrderState {
@@ -255,6 +201,16 @@ function orderReducer(state: OrderState, action: OrderAction): OrderState {
         ...state,
         orders: newOrders,
         recentOrders: newOrders.slice(0, 3),
+      };
+
+    case 'UPDATE_ORDER':
+      const updatedOrdersList = state.orders.map(order =>
+        order.id === action.payload.id ? action.payload : order
+      ).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      return {
+        ...state,
+        orders: updatedOrdersList,
+        recentOrders: updatedOrdersList.slice(0, 3),
       };
 
     case 'UPDATE_ORDER_STATUS':
@@ -295,6 +251,7 @@ const OrderContext = createContext<{
   state: OrderState;
   loadOrders: () => void;
   addOrder: (order: Order) => void;
+  updateOrder: (order: Order) => void;
   updateOrderStatus: (id: string, status: Order['status'], timeline?: OrderTimeline[]) => void;
   cancelOrder: (id: string) => void;
   reorder: (id: string) => void;
@@ -326,6 +283,10 @@ export function OrderProvider({ children }: { children: ReactNode }) {
 
   const addOrder = (order: Order) => {
     dispatch({ type: 'ADD_ORDER', payload: order });
+  };
+
+  const updateOrder = (order: Order) => {
+    dispatch({ type: 'UPDATE_ORDER', payload: order });
   };
 
   const updateOrderStatus = (
@@ -362,6 +323,7 @@ export function OrderProvider({ children }: { children: ReactNode }) {
         state,
         loadOrders,
         addOrder,
+        updateOrder,
         updateOrderStatus,
         cancelOrder,
         reorder,

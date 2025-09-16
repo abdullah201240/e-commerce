@@ -18,6 +18,7 @@ import {
   Home,
   Tags,
   FolderTree,
+  Plus,
 } from 'lucide-react';
 
 interface AdminSidebarProps {
@@ -50,6 +51,12 @@ const navigation = [
     name: 'Orders',
     href: '/admin/orders',
     icon: ShoppingCart,
+    permission: 'manage_orders',
+  },
+  {
+    name: 'Create Order',
+    href: '/admin/orders/create',
+    icon: Plus,
     permission: 'manage_orders',
   },
   {
