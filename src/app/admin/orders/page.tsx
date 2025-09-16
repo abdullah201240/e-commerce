@@ -308,13 +308,15 @@ export default function AdminOrdersPage() {
             setCurrentPage={setCurrentPage} 
           />
 
-          <OrderTable 
-            orders={paginatedOrders} 
-            onView={handleView} 
-            onEdit={handleEdit} 
-            onUpdateStatus={handleUpdateStatus} 
-            onPrintInvoice={handlePrintInvoice} 
-          />
+          <div className="flex-1 flex flex-col min-h-0">
+            <OrderTable 
+              orders={paginatedOrders} 
+              onView={handleView} 
+              onEdit={handleEdit} 
+              onUpdateStatus={handleUpdateStatus} 
+              onPrintInvoice={handlePrintInvoice} 
+            />
+          </div>
 
           <Pagination 
             currentPage={currentPage} 

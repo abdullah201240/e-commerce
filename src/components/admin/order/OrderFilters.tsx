@@ -27,7 +27,7 @@ interface OrderFiltersProps {
 
 export function OrderFilters({ searchQuery, setSearchQuery, statusFilter, setStatusFilter, dateFilter, setDateFilter, sortBy, setSortBy, itemsPerPage, setItemsPerPage, setCurrentPage }: OrderFiltersProps) {
   return (
-    <div className="flex-shrink-0 bg-muted/20 dark:bg-muted/10 border-b border-border p-0 sm:p-4">
+    <div className="flex-shrink-0 bg-muted/20 dark:bg-muted/10 p-0 sm:p-4">
       {/* Mobile Layout */}
       <div className="block sm:hidden space-y-3">
         {/* Search */}
@@ -47,7 +47,7 @@ export function OrderFilters({ searchQuery, setSearchQuery, statusFilter, setSta
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-2 py-2 border border-border rounded-md bg-background text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            className="px-2 py-2 rounded-none bg-background text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           >
             <option value="all">All Status</option>
             <option value="processing">Processing</option>
@@ -60,7 +60,7 @@ export function OrderFilters({ searchQuery, setSearchQuery, statusFilter, setSta
           <select
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
-            className="px-2 py-2 border border-border rounded-md bg-background text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            className="px-2 py-2 rounded-none bg-background text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           >
             <option value="all">All Time</option>
             <option value="today">Today</option>
@@ -74,7 +74,7 @@ export function OrderFilters({ searchQuery, setSearchQuery, statusFilter, setSta
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="px-2 py-2 border border-border rounded-md bg-background text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            className="px-2 py-2 rounded-none bg-background text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           >
             <option value="date">Sort by Date</option>
             <option value="total">Sort by Total</option>
@@ -87,7 +87,7 @@ export function OrderFilters({ searchQuery, setSearchQuery, statusFilter, setSta
               setItemsPerPage(Number(e.target.value));
               setCurrentPage(1);
             }}
-            className="px-2 py-2 border border-border rounded-md bg-background text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            className="px-2 py-2 rounded-none bg-background text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           >
             <option value={5}>5 per page</option>
             <option value={10}>10 per page</option>
@@ -133,7 +133,7 @@ export function OrderFilters({ searchQuery, setSearchQuery, statusFilter, setSta
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
+              className="px-3 py-2  rounded-none bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
             >
               <option value="all">All Status</option>
               <option value="processing">Processing</option>
@@ -148,7 +148,7 @@ export function OrderFilters({ searchQuery, setSearchQuery, statusFilter, setSta
             <select
               value={dateFilter}
               onChange={(e) => setDateFilter(e.target.value)}
-              className="px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
+              className="px-3 py-2 rounded-none bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
             >
               <option value="all">All Time</option>
               <option value="today">Today</option>
@@ -160,7 +160,7 @@ export function OrderFilters({ searchQuery, setSearchQuery, statusFilter, setSta
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
+              className="px-3 py-2 rounded-none bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
             >
               <option value="date">Sort by Date</option>
               <option value="total">Sort by Total</option>
@@ -174,7 +174,7 @@ export function OrderFilters({ searchQuery, setSearchQuery, statusFilter, setSta
                 setItemsPerPage(Number(e.target.value));
                 setCurrentPage(1);
               }}
-              className="px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
+              className="px-3 py-2 rounded-none bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
             >
               <option value={5}>5 per page</option>
               <option value={10}>10 per page</option>

@@ -15,7 +15,7 @@ export function Pagination({ currentPage, totalPages, setCurrentPage, filteredOr
   return (
     <>
       {totalPages > 1 && (
-        <div className="bg-background border-t border-border px-0 sm:px-6 py-3 sm:py-4 shadow-lg">
+        <div className="bg-background border-t border-border px-0 sm:px-6 py-3 sm:py-4 shadow-none">
           {/* Mobile Pagination */}
           <div className="block sm:hidden">
             <div className="text-xs text-muted-foreground text-center mb-2">

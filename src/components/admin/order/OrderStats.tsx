@@ -20,7 +20,7 @@ interface OrderStatsProps {
 export function OrderStats({ totalOrders, pendingOrders, shippedOrders, deliveredOrders, totalRevenue }: OrderStatsProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6">
-      <Card className="border-0 shadow-lg">
+      <Card className="border-0 shadow-sm">
         <CardContent className="p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -34,7 +34,7 @@ export function OrderStats({ totalOrders, pendingOrders, shippedOrders, delivere
         </CardContent>
       </Card>
 
-      <Card className="border-0 shadow-lg">
+      <Card className="border-0 shadow-sm">
         <CardContent className="p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -48,7 +48,7 @@ export function OrderStats({ totalOrders, pendingOrders, shippedOrders, delivere
         </CardContent>
       </Card>
 
-      <Card className="border-0 shadow-lg">
+      <Card className="border-0 shadow-sm">
         <CardContent className="p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -62,7 +62,7 @@ export function OrderStats({ totalOrders, pendingOrders, shippedOrders, delivere
         </CardContent>
       </Card>
 
-      <Card className="border-0 shadow-lg">
+      <Card className="border-0 shadow-sm">
         <CardContent className="p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -76,7 +76,7 @@ export function OrderStats({ totalOrders, pendingOrders, shippedOrders, delivere
         </CardContent>
       </Card>
 
-      <Card className="border-0 shadow-lg">
+      <Card className="border-0 shadow-sm">
         <CardContent className="p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>

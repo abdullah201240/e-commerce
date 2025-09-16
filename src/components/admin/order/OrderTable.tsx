@@ -27,45 +27,49 @@ export function OrderTable({ orders, onView, onEdit, onUpdateStatus, onPrintInvo
     <div className="flex-1 flex flex-col min-h-0">
       {/* Desktop Table View */}
       <div className="hidden lg:flex flex-col h-full">
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader className="bg-muted/50 dark:bg-muted/30">
-              <TableRow>
-                <TableHead className="w-[12%]">Order ID & Date</TableHead>
-                <TableHead className="w-[18%]">Delivery Address</TableHead>
-                <TableHead className="w-[20%]">Products & Quantities</TableHead>
-                <TableHead className="w-[15%]">Pricing Details</TableHead>
-                <TableHead className="w-[12%]">Status & Tracking</TableHead>
-                <TableHead className="w-[13%]">Payment & Notes</TableHead>
-                <TableHead className="w-[5%]">Invoice</TableHead>
-                <TableHead className="w-[5%]">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {orders.length > 0 ? (
-                orders.map((order: Order) => (
-                  <OrderRow
-                    key={order.id}
-                    order={order}
-                    onView={onView}
-                    onEdit={onEdit}
-                    onUpdateStatus={onUpdateStatus}
-                    onPrintInvoice={onPrintInvoice}
-                  />
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={8} className="py-12 text-center">
-                    <ShoppingCart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-foreground">No orders found</p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Try adjusting your search or filter criteria
-                    </p>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+        <div className="rounded-none overflow-hidden">
+          <div className="overflow-x-auto">
+            <div className="min-w-[1200px]">
+              <Table>
+                <TableHeader className="bg-muted/50 dark:bg-muted/30 sticky top-0 z-10">
+                  <TableRow>
+                    <TableHead>Order ID & Date</TableHead>
+                    <TableHead>Delivery Address</TableHead>
+                    <TableHead>Products & Quantities</TableHead>
+                    <TableHead>Pricing Details</TableHead>
+                    <TableHead>Status & Tracking</TableHead>
+                    <TableHead>Payment & Notes</TableHead>
+                    <TableHead>Invoice</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {orders.length > 0 ? (
+                    orders.map((order: Order) => (
+                      <OrderRow
+                        key={order.id}
+                        order={order}
+                        onView={onView}
+                        onEdit={onEdit}
+                        onUpdateStatus={onUpdateStatus}
+                        onPrintInvoice={onPrintInvoice}
+                      />
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={8} className="py-12 text-center">
+                        <ShoppingCart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                        <p className="text-foreground">No orders found</p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Try adjusting your search or filter criteria
+                        </p>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -74,7 +78,7 @@ export function OrderTable({ orders, onView, onEdit, onUpdateStatus, onPrintInvo
         <div className="space-y-0">
           {orders.length > 0 ? (
             orders.map((order: Order) => (
-              <div key={order.id} className="border-b border-border">
+              <div key={order.id} >
                 <MobileOrderCard
                   order={order}
                   onView={onView}
