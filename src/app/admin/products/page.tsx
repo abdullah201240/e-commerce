@@ -1267,25 +1267,25 @@ export default function AdminProductsPage() {
                 <table className="w-full table-fixed">
                   <thead className="bg-muted/50 dark:bg-muted/30 border-b border-border sticky top-0 z-10">
                     <tr>
-                      <th className="text-left py-3 px-2 md:px-3 lg:px-4 font-medium text-muted-foreground w-[25%] lg:w-[20%]">
+                      <th className="text-left py-3 px-2 md:px-3 lg:px-4 font-medium text-muted-foreground w-[25%]">
                         <div className="truncate">Product</div>
                       </th>
-                      <th className="text-left py-3 px-2 md:px-3 lg:px-4 font-medium text-muted-foreground w-[15%] lg:w-[12%]">
+                      <th className="text-left py-3 px-2 md:px-3 lg:px-4 font-medium text-muted-foreground w-[10%]">
                         <div className="truncate">SKU</div>
                       </th>
-                      <th className="text-left py-3 px-2 md:px-3 lg:px-4 font-medium text-muted-foreground w-[18%] lg:w-[15%]">
+                      <th className="text-left py-3 px-2 md:px-3 lg:px-4 font-medium text-muted-foreground w-[15%]">
                         <div className="truncate">Price & Stock</div>
                       </th>
-                      <th className="text-left py-3 px-2 md:px-3 lg:px-4 font-medium text-muted-foreground w-[12%] lg:w-[10%] hidden lg:table-cell">
+                      <th className="text-left py-3 px-2 md:px-3 lg:px-4 font-medium text-muted-foreground w-[10%]">
                         <div className="truncate">Weight/Unit</div>
                       </th>
-                      <th className="text-left py-3 px-2 md:px-3 lg:px-4 font-medium text-muted-foreground w-[15%] lg:w-[12%]">
+                      <th className="text-left py-3 px-2 md:px-3 lg:px-4 font-medium text-muted-foreground w-[15%]">
                         <div className="truncate">Status</div>
                       </th>
-                      <th className="text-left py-3 px-2 md:px-3 lg:px-4 font-medium text-muted-foreground w-[10%] lg:w-[8%] hidden lg:table-cell">
+                      <th className="text-left py-3 px-2 md:px-3 lg:px-4 font-medium text-muted-foreground w-[10%]">
                         <div className="truncate">Rating</div>
                       </th>
-                      <th className="text-left py-3 px-2 md:px-3 lg:px-4 font-medium text-muted-foreground w-[15%] lg:w-[13%]">
+                      <th className="text-left py-3 px-2 md:px-3 lg:px-4 font-medium text-muted-foreground w-[15%]">
                         <div className="truncate">Actions</div>
                       </th>
                     </tr>

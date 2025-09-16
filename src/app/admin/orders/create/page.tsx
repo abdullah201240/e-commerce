@@ -271,6 +271,7 @@ export default function AdminCreateOrderPage() {
         price: product.price,
         quantity: 1,
         image: product.image,
+        sku: product.sku || '', // Add the sku property with a default empty string if product.sku is undefined
         product: product
       };
       setOrderItems([...orderItems, newItem]);
@@ -309,7 +310,8 @@ export default function AdminCreateOrderPage() {
           name: item.name,
           price: item.price,
           quantity: item.quantity,
-          image: item.image
+          image: item.image,
+          sku: item.product.sku || ''
         })),
         shippingInfo: {
           name: selectedCustomer.name,
@@ -385,44 +387,44 @@ export default function AdminCreateOrderPage() {
       title="Create New Order" 
       subtitle="Place orders for VIP clients and in-house sales"
     >
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6 px-0 sm:px-4 md:px-6">
         {/* Progress Steps */}
-        <Card className="border-0 shadow-lg">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-8">
-                <div className={`flex items-center space-x-3 ${step >= 1 ? 'text-blue-600' : 'text-muted-foreground'}`}>
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 1 ? 'bg-blue-600 text-white' : 'bg-muted text-muted-foreground'}`}>
-                    {step > 1 ? <Check className="h-4 w-4" /> : '1'}
+        <Card className="border-none shadow-md rounded-none">
+          <CardContent className="p-0 sm:p-4 md:p-6">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4">
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1 sm:gap-4 md:gap-8 w-full sm:w-auto">
+                <div className={`flex items-center gap-1 sm:gap-3 ${step >= 1 ? 'text-blue-600' : 'text-muted-foreground'}`}>
+                  <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${step >= 1 ? 'bg-blue-600 text-white' : 'bg-muted text-muted-foreground'}`}>
+                    {step > 1 ? <Check className="h-3 w-3 sm:h-4 sm:w-4" /> : '1'}
                   </div>
-                  <span className="font-medium">Select Customer</span>
+                  <span className="text-sm sm:text-base font-medium">Select Customer</span>
                 </div>
                 
-                <div className={`w-16 h-px ${step >= 2 ? 'bg-blue-600' : 'bg-border'}`} />
+                <div className={`hidden sm:block w-8 sm:w-12 md:w-16 h-px ${step >= 2 ? 'bg-blue-600' : 'bg-border'}`} />
                 
-                <div className={`flex items-center space-x-3 ${step >= 2 ? 'text-blue-600' : 'text-muted-foreground'}`}>
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 2 ? 'bg-blue-600 text-white' : 'bg-muted text-muted-foreground'}`}>
-                    {step > 2 ? <Check className="h-4 w-4" /> : '2'}
+                <div className={`flex items-center gap-1 sm:gap-3 ${step >= 2 ? 'text-blue-600' : 'text-muted-foreground'}`}>
+                  <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${step >= 2 ? 'bg-blue-600 text-white' : 'bg-muted text-muted-foreground'}`}>
+                    {step > 2 ? <Check className="h-3 w-3 sm:h-4 sm:w-4" /> : '2'}
                   </div>
-                  <span className="font-medium">Add Products</span>
+                  <span className="text-sm sm:text-base font-medium">Add Products</span>
                 </div>
                 
-                <div className={`w-16 h-px ${step >= 3 ? 'bg-blue-600' : 'bg-border'}`} />
+                <div className={`hidden sm:block w-8 sm:w-12 md:w-16 h-px ${step >= 3 ? 'bg-blue-600' : 'bg-border'}`} />
                 
-                <div className={`flex items-center space-x-3 ${step >= 3 ? 'text-blue-600' : 'text-muted-foreground'}`}>
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 3 ? 'bg-blue-600 text-white' : 'bg-muted text-muted-foreground'}`}>
+                <div className={`flex items-center gap-1 sm:gap-3 ${step >= 3 ? 'text-blue-600' : 'text-muted-foreground'}`}>
+                  <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${step >= 3 ? 'bg-blue-600 text-white' : 'bg-muted text-muted-foreground'}`}>
                     3
                   </div>
-                  <span className="font-medium">Review & Submit</span>
+                  <span className="text-sm sm:text-base font-medium">Review & Submit</span>
                 </div>
               </div>
               
               <Button
                 variant="outline"
                 onClick={() => router.push('/admin/orders')}
-                className="flex items-center space-x-2"
+                className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm w-full sm:w-auto mt-2 sm:mt-0"
               >
-                <ArrowLeft className="h-4 w-4" />
+                <ArrowLeft className="h-3 w-3" />
                 <span>Back to Orders</span>
               </Button>
             </div>
@@ -431,28 +433,28 @@ export default function AdminCreateOrderPage() {
 
         {/* Step 1: Customer Selection */}
         {step === 1 && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-6">
             <div className="lg:col-span-2">
-              <Card className="border-0 shadow-lg">
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Users className="h-5 w-5" />
+              <Card className="border-none shadow-md dark:shadow-none rounded-none sm:rounded-lg">
+                <CardHeader className="p-0 sm:p-4 md:p-4">
+                  <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                    <Users className="h-4 w-4 sm:h-5 sm:w-5" />
                     <span>Select Customer</span>
                   </CardTitle>
-                  <div className="flex items-center space-x-4">
-                    <div className="relative flex-1">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                    <div className="relative flex-1 w-full">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
                         placeholder="Search customers..."
                         value={customerSearch}
                         onChange={(e) => setCustomerSearch(e.target.value)}
-                        className="pl-10"
+                        className="pl-10 w-full"
                       />
                     </div>
                     <Button
                       onClick={() => setShowCreateCustomer(!showCreateCustomer)}
                       variant="outline"
-                      className="flex items-center space-x-2"
+                      className="flex items-center gap-2 w-full sm:w-auto"
                     >
                       <UserPlus className="h-4 w-4" />
                       <span>New Customer</span>
@@ -460,13 +462,13 @@ export default function AdminCreateOrderPage() {
                   </div>
                 </CardHeader>
                 
-                <CardContent className="space-y-4">
+                <CardContent className="p-0 sm:p-4 md:p-6 space-y-3 sm:space-y-4">  {/* Responsive padding */}
                   {/* Create New Customer Form */}
                   {showCreateCustomer && (
-                    <div className="p-4 rounded-lg border-2 border-dashed border-blue-300 bg-blue-50 dark:bg-blue-900/20">
+                    <div className="p-0 sm:p-4 rounded-lg border-2 border-dashed border-blue-300 bg-blue-50 dark:bg-blue-900/20">
                       <div className="flex items-center justify-between mb-4">
-                        <h3 className="font-medium text-foreground flex items-center space-x-2">
-                          <UserPlus className="h-4 w-4" />
+                        <h3 className="font-medium text-sm sm:text-base text-foreground flex items-center gap-2">
+                          <UserPlus className="h-3 w-3 sm:h-4 sm:w-4" />
                           <span>Create New Customer & User Account</span>
                         </h3>
                         <Button
@@ -478,12 +480,12 @@ export default function AdminCreateOrderPage() {
                         </Button>
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4">
                         {/* Profile Image Upload */}
                         <div className="md:col-span-2">
-                          <label className="block text-sm font-medium mb-2">Profile Image</label>
-                          <div className="flex items-center space-x-4">
-                            <div className="w-20 h-20 border-2 border-dashed border-border rounded-lg flex items-center justify-center bg-muted/30">
+                          <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">Profile Image</label>
+                          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+                            <div className="w-16 h-16 sm:w-20 sm:h-20 border-2 border-dashed border-border rounded-lg flex items-center justify-center bg-muted/30">
                               {imagePreview ? (
                                 <img
                                   src={imagePreview}
@@ -491,7 +493,7 @@ export default function AdminCreateOrderPage() {
                                   className="w-full h-full object-cover rounded-lg"
                                 />
                               ) : (
-                                <Camera className="h-8 w-8 text-muted-foreground" />
+                                <Camera className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground" />
                               )}
                             </div>
                             <div className="flex-1">
@@ -504,9 +506,9 @@ export default function AdminCreateOrderPage() {
                               />
                               <label
                                 htmlFor="customer-image"
-                                className="inline-flex items-center space-x-2 px-3 py-2 border border-border rounded-md cursor-pointer hover:bg-muted/50 transition-colors"
+                                className="inline-flex items-center gap-2 px-3 py-2 border border-border rounded-md cursor-pointer hover:bg-muted/50 transition-colors text-sm"
                               >
-                                <Upload className="h-4 w-4" />
+                                <Upload className="h-3 w-3 sm:h-4 sm:w-4" />
                                 <span>Upload Image</span>
                               </label>
                               <p className="text-xs text-muted-foreground mt-1">PNG, JPG up to 5MB</p>
@@ -544,7 +546,7 @@ export default function AdminCreateOrderPage() {
                           <select
                             value={newCustomer.type}
                             onChange={(e) => setNewCustomer({...newCustomer, type: e.target.value})}
-                            className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                            className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground dark:bg-card/80"
                           >
                             <option value="Regular">Regular</option>
                             <option value="VIP">VIP</option>
@@ -609,7 +611,7 @@ export default function AdminCreateOrderPage() {
                           <select
                             value={newCustomer.tier}
                             onChange={(e) => setNewCustomer({...newCustomer, tier: e.target.value})}
-                            className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                            className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground dark:bg-card/80"
                           >
                             <option value="Bronze">Bronze</option>
                             <option value="Silver">Silver</option>
@@ -650,21 +652,21 @@ export default function AdminCreateOrderPage() {
                   {filteredCustomers.map((customer) => (
                     <div
                       key={customer.id}
-                      className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                      className={`p-2 sm:p-4 rounded-lg border border-2 shadow-sm cursor-pointer transition-all ${
                         selectedCustomer?.id === customer.id
-                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                          : 'border-border hover:border-blue-300 hover:bg-muted/50'
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-md'
+                          : 'border-border hover:border-blue-300 hover:bg-muted/50 dark:hover:bg-card/80'
                       }`}
                       onClick={() => setSelectedCustomer(customer)}
                     >
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-start space-x-3">
-                          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-medium">
+                      <div className="flex flex-col sm:flex-row items-start justify-between">
+                        <div className="flex items-start space-x-2 sm:space-x-3 mb-2 sm:mb-0">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-medium">
                             {getTypeIcon(customer.type)}
                           </div>
                           <div>
                             <div className="flex items-center space-x-2 mb-1">
-                              <h3 className="font-medium text-foreground">{customer.name}</h3>
+                              <h3 className="font-medium text-foreground text-sm sm:text-base">{customer.name}</h3>
                               <Badge className={getTierColor(customer.tier)}>
                                 {customer.tier}
                               </Badge>
@@ -680,7 +682,7 @@ export default function AdminCreateOrderPage() {
                             )}
                           </div>
                         </div>
-                        <div className="text-right text-sm">
+                        <div className="text-left sm:text-right text-sm">
                           <p className="text-muted-foreground">{customer.totalOrders} orders</p>
                           <p className="font-medium text-foreground">${customer.totalSpent.toLocaleString()}</p>
                         </div>
@@ -692,11 +694,11 @@ export default function AdminCreateOrderPage() {
             </div>
             
             <div>
-              <Card className="border-0 shadow-lg">
-                <CardHeader>
+              <Card className="border-none shadow-md dark:shadow-none rounded-none sm:rounded-lg">
+                <CardHeader className="p-0 sm:p-4 md:p-6">
                   <CardTitle>Customer Summary</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-0 sm:p-4 md:p-6">
                   {selectedCustomer ? (
                     <div className="space-y-4">
                       <div className="flex items-center space-x-3">
@@ -705,7 +707,7 @@ export default function AdminCreateOrderPage() {
                         </div>
                         <div>
                           <h3 className="font-medium">{selectedCustomer.name}</h3>
-                          <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-1 sm:space-x-2">
                             <Badge className={getTierColor(selectedCustomer.tier)}>
                               {selectedCustomer.tier}
                             </Badge>
@@ -747,13 +749,13 @@ export default function AdminCreateOrderPage() {
         {step === 2 && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
-              <Card className="border-0 shadow-lg">
-                <CardHeader>
+              <Card className="border-0 shadow-lg rounded-none sm:rounded-lg">
+                <CardHeader className="p-0 sm:p-4 md:p-6">
                   <CardTitle className="flex items-center space-x-2">
                     <Package className="h-5 w-5" />
                     <span>Select Products</span>
                   </CardTitle>
-                  <div className="flex items-center space-x-4">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 mt-2 sm:mt-0">
                     <div className="relative flex-1">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
@@ -766,7 +768,7 @@ export default function AdminCreateOrderPage() {
                     <select
                       value={categoryFilter}
                       onChange={(e) => setCategoryFilter(e.target.value)}
-                      className="px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                      className="px-3 py-2 border border-border rounded-md bg-background text-foreground dark:bg-card/80"
                     >
                       <option value="all">All Categories</option>
                       <option value="sofa">Sofas</option>
@@ -779,18 +781,18 @@ export default function AdminCreateOrderPage() {
                   </div>
                 </CardHeader>
                 
-                <CardContent>
+                <CardContent className="p-0 sm:p-4 md:p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-96 overflow-y-auto">
                     {filteredProducts.map((product) => (
-                      <div key={product.id} className="border border-border rounded-lg p-4 hover:shadow-md transition-shadow bg-card">
-                        <div className="flex items-start space-x-3">
+                      <div key={product.id} className="border border-border rounded-lg p-2 sm:p-4 shadow-sm hover:shadow-md transition-shadow bg-background dark:bg-card">
+                        <div className="flex items-start space-x-2 sm:space-x-3">
                           <img
                             src={product.image}
                             alt={product.name}
-                            className="w-16 h-16 object-cover rounded"
+                            className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded"
                           />
                           <div className="flex-1">
-                            <h3 className="font-medium text-sm">{product.name}</h3>
+                            <h3 className="font-medium text-xs sm:text-sm">{product.name}</h3>
                             <p className="text-xs text-muted-foreground">{product.category}</p>
                             <div className="flex items-center space-x-2 mt-1">
                               <span className="font-bold text-sm">${product.price}</span>
@@ -807,7 +809,7 @@ export default function AdminCreateOrderPage() {
                             <Button
                               size="sm"
                               onClick={() => addProductToOrder(product)}
-                              className="mt-2 h-6 text-xs"
+                              className="mt-1 sm:mt-2 h-6 text-xs w-full sm:w-auto"
                             >
                               Add to Order
                             </Button>
@@ -821,8 +823,8 @@ export default function AdminCreateOrderPage() {
             </div>
             
             <div>
-              <Card className="border-0 shadow-lg">
-                <CardHeader>
+              <Card className="border-0 shadow-lg rounded-none sm:rounded-lg">
+                <CardHeader className="p-0 sm:p-4 md:p-6">
                   <CardTitle className="flex items-center justify-between">
                     <span>Order Items</span>
                     <Badge variant="outline">{orderItems.length} items</Badge>
@@ -833,17 +835,17 @@ export default function AdminCreateOrderPage() {
                     <div className="space-y-4">
                       <div className="max-h-64 overflow-y-auto space-y-3">
                         {orderItems.map((item) => (
-                          <div key={item.id} className="flex items-center space-x-3 p-2 border border-border rounded bg-card">
+                          <div key={item.id} className="flex items-center space-x-2 sm:space-x-3 p-2 border border-border rounded shadow-sm bg-background dark:bg-card">
                             <img
                               src={item.image}
                               alt={item.name}
-                              className="w-10 h-10 object-cover rounded"
+                              className="w-8 h-8 sm:w-10 sm:h-10 object-cover rounded"
                             />
                             <div className="flex-1">
-                              <h4 className="text-sm font-medium">{item.name}</h4>
+                              <h4 className="text-xs sm:text-sm font-medium">{item.name}</h4>
                               <p className="text-xs text-muted-foreground">${item.price}</p>
                             </div>
-                            <div className="flex items-center space-x-2">
+                            <div className="flex items-center space-x-1 sm:space-x-2">
                               <Button
                                 size="sm"
                                 variant="outline"
@@ -887,10 +889,10 @@ export default function AdminCreateOrderPage() {
                       
                       <div className="space-y-2">
                         <Button
-                          onClick={() => setStep(1)}
-                          variant="outline"
-                          className="w-full"
-                        >
+                        onClick={() => setStep(1)}
+                        variant="outline"
+                        className="w-full text-xs sm:text-sm py-1 sm:py-2"
+                      >
                           Back to Customer
                         </Button>
                         <Button
@@ -916,27 +918,27 @@ export default function AdminCreateOrderPage() {
 
         {/* Step 3: Review & Submit */}
         {step === 3 && selectedCustomer && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="lg:col-span-2 space-y-4 sm:space-y-6">
               {/* Customer Info */}
-              <Card className="border-0 shadow-lg">
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <User className="h-5 w-5" />
+              <Card className="border-0 shadow-lg rounded-none sm:rounded-lg">
+                <CardHeader className="p-0 sm:p-4 md:p-6">
+                  <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                    <User className="h-4 w-4 sm:h-5 sm:w-5" />
                     <span>Customer Information</span>
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white">
+                <CardContent className="p-0 sm:p-4 md:p-6">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white">
                       {getTypeIcon(selectedCustomer.type)}
                     </div>
                     <div className="flex-1">
                       <h3 className="font-medium">{selectedCustomer.name}</h3>
-                      <p className="text-sm text-muted-foreground">{selectedCustomer.email}</p>
-                      <p className="text-sm text-muted-foreground">{selectedCustomer.address}</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">{selectedCustomer.email}</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">{selectedCustomer.address}</p>
                     </div>
-                    <div className="flex space-x-2">
+                    <div className="flex flex-wrap gap-2 mt-2 sm:mt-0">
                       <Badge className={getTierColor(selectedCustomer.tier)}>
                         {selectedCustomer.tier}
                       </Badge>
@@ -947,25 +949,25 @@ export default function AdminCreateOrderPage() {
               </Card>
 
               {/* Order Items */}
-              <Card className="border-0 shadow-lg">
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Package className="h-5 w-5" />
+              <Card className="border-0 shadow-lg rounded-none sm:rounded-lg">
+                <CardHeader className="p-0 sm:p-4 md:p-6">
+                  <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                    <Package className="h-4 w-4 sm:h-5 sm:w-5" />
                     <span>Order Items ({orderItems.length})</span>
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
+                <CardContent className="p-0 sm:p-4 md:p-6">
+                  <div className="space-y-2 sm:space-y-3">
                     {orderItems.map((item) => (
-                      <div key={item.id} className="flex items-center space-x-4 p-3 border border-border rounded-lg bg-card">
+                      <div key={item.id} className="flex items-center gap-2 sm:gap-4 p-2 sm:p-3 border border-border rounded-lg bg-background dark:bg-card">
                         <img
                           src={item.image}
                           alt={item.name}
-                          className="w-16 h-16 object-cover rounded"
+                          className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded"
                         />
                         <div className="flex-1">
-                          <h4 className="font-medium">{item.name}</h4>
-                          <p className="text-sm text-muted-foreground">
+                          <h4 className="font-medium text-xs sm:text-sm">{item.name}</h4>
+                          <p className="text-xs text-muted-foreground">
                             ${item.price} x {item.quantity} = ${(item.price * item.quantity).toFixed(2)}
                           </p>
                         </div>
@@ -976,20 +978,20 @@ export default function AdminCreateOrderPage() {
               </Card>
 
               {/* Shipping & Payment */}
-              <Card className="border-0 shadow-lg">
-                <CardHeader>
+              <Card className="border-0 shadow-lg rounded-none sm:rounded-lg">
+                <CardHeader className="p-0 sm:p-4 md:p-6">
                   <CardTitle className="flex items-center space-x-2">
                     <Truck className="h-5 w-5" />
                     <span>Shipping & Payment</span>
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="p-0 sm:p-4 md:p-6 space-y-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Shipping Method</label>
                     <select
                       value={shippingMethod}
                       onChange={(e) => setShippingMethod(e.target.value)}
-                      className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground dark:bg-card/80"
                     >
                       <option value="standard">Standard Shipping - $15.00 (3-5 days)</option>
                       <option value="express">Express Shipping - $25.00 (1-2 days)</option>
@@ -1002,7 +1004,7 @@ export default function AdminCreateOrderPage() {
                     <select
                       value={paymentMethod}
                       onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground dark:bg-card/80"
                     >
                       <option value="credit-card">Credit Card</option>
                       <option value="bank-transfer">Bank Transfer</option>
@@ -1016,7 +1018,7 @@ export default function AdminCreateOrderPage() {
                       value={orderNotes}
                       onChange={(e) => setOrderNotes(e.target.value)}
                       placeholder="Add any special instructions or notes..."
-                      className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground placeholder:text-muted-foreground"
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground dark:bg-card/80 placeholder:text-muted-foreground"
                       rows={3}
                     />
                   </div>
@@ -1025,14 +1027,14 @@ export default function AdminCreateOrderPage() {
             </div>
             
             <div>
-              <Card className="border-0 shadow-lg">
-                <CardHeader>
+              <Card className="border-0 shadow-lg rounded-none sm:rounded-lg">
+                <CardHeader className="p-0 sm:p-4 md:p-6">
                   <CardTitle className="flex items-center space-x-2">
                     <Calculator className="h-5 w-5" />
                     <span>Order Summary</span>
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="p-0 sm:p-4 md:p-6 space-y-4">
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span>Subtotal ({orderItems.length} items):</span>
@@ -1047,7 +1049,7 @@ export default function AdminCreateOrderPage() {
                       <span>${shippingCost.toFixed(2)}</span>
                     </div>
                     <div className="border-t border-border pt-2">
-                      <div className="flex justify-between font-bold text-lg">
+                      <div className="flex justify-between font-bold text-base sm:text-lg">
                         <span>Total:</span>
                         <span>${total.toFixed(2)}</span>
                       </div>
@@ -1056,16 +1058,16 @@ export default function AdminCreateOrderPage() {
                   
                   <div className="space-y-2">
                     <Button
-                      onClick={() => setStep(2)}
-                      variant="outline"
-                      className="w-full"
-                    >
+                        onClick={() => setStep(2)}
+                        variant="outline"
+                        className="w-full text-xs sm:text-sm py-1 sm:py-2"
+                      >
                       Back to Products
                     </Button>
                     <Button
                       onClick={createOrder}
                       disabled={isProcessing || orderItems.length === 0}
-                      className="w-full"
+                      className="w-full text-xs sm:text-sm"
                     >
                       {isProcessing ? (
                         <div className="flex items-center space-x-2">

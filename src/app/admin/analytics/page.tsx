@@ -107,11 +107,11 @@ function MetricCard({ title, value, change, changeLabel, icon: Icon, trend, colo
 // Chart Placeholder Component
 function ChartPlaceholder({ title, description, icon: Icon }: { title: string; description: string; icon: React.ElementType }) {
   return (
-    <div className="h-64 bg-gradient-to-br from-muted/30 to-muted/50 rounded-lg flex flex-col items-center justify-center p-6">
-      <Icon className="h-12 w-12 text-muted-foreground mb-4" />
-      <h4 className="text-lg font-semibold text-foreground mb-2">{title}</h4>
-      <p className="text-sm text-muted-foreground text-center">{description}</p>
-      <p className="text-xs text-muted-foreground mt-2">Chart library integration needed</p>
+    <div className="h-48 sm:h-64 bg-gradient-to-br from-muted/30 to-muted/50 rounded-lg flex flex-col items-center justify-center p-4 sm:p-6">
+      <Icon className="h-8 w-8 sm:h-12 sm:w-12 text-muted-foreground mb-2 sm:mb-4" />
+      <h4 className="text-base sm:text-lg font-semibold text-foreground mb-1 sm:mb-2 text-center">{title}</h4>
+      <p className="text-xs sm:text-sm text-muted-foreground text-center">{description}</p>
+      <p className="text-xs text-muted-foreground mt-1 sm:mt-2">Chart library integration needed</p>
     </div>
   );
 }
@@ -139,37 +139,39 @@ export default function AdminAnalyticsPage() {
         {/* Time Range Filter */}
         <Card className="border-0 shadow-lg">
           <CardContent className="p-6">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
                 <h3 className="text-lg font-semibold text-foreground mb-2">Performance Overview</h3>
                 <p className="text-muted-foreground">Track your store's key metrics and trends</p>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 <select
                   value={timeRange}
                   onChange={(e) => setTimeRange(e.target.value)}
-                  className="px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
+                  className="w-full sm:w-auto px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
                 >
                   <option value="7d">Last 7 days</option>
                   <option value="30d">Last 30 days</option>
                   <option value="90d">Last 90 days</option>
                   <option value="1y">Last year</option>
                 </select>
-                <Button variant="outline" size="sm">
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  Refresh
-                </Button>
-                <Button variant="outline" size="sm">
-                  <Download className="h-4 w-4 mr-2" />
-                  Export
-                </Button>
+                <div className="flex gap-2 w-full sm:w-auto">
+                  <Button variant="outline" size="sm" className="flex-1 sm:flex-none">
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Refresh
+                  </Button>
+                  <Button variant="outline" size="sm" className="flex-1 sm:flex-none">
+                    <Download className="h-4 w-4 mr-2" />
+                    Export
+                  </Button>
+                </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <MetricCard
             title="Total Revenue"
             value={`$${totalRevenue.toLocaleString()}`}
@@ -209,16 +211,16 @@ export default function AdminAnalyticsPage() {
         </div>
 
         {/* Charts Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           {/* Revenue Trend Chart */}
           <Card className="border-0 shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <BarChart3 className="h-5 w-5 mr-2" />
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="flex items-center text-base sm:text-lg">
+                <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                 Revenue Trend
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 sm:p-6">
               <ChartPlaceholder 
                 title="Monthly Revenue Chart"
                 description="Track revenue trends over time"
@@ -229,13 +231,13 @@ export default function AdminAnalyticsPage() {
 
           {/* Orders Chart */}
           <Card className="border-0 shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <ShoppingCart className="h-5 w-5 mr-2" />
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="flex items-center text-base sm:text-lg">
+                <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                 Order Volume
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 sm:p-6">
               <ChartPlaceholder 
                 title="Order Volume Chart"
                 description="Monitor order trends and patterns"
@@ -246,35 +248,35 @@ export default function AdminAnalyticsPage() {
         </div>
 
         {/* Data Tables Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           {/* Top Products */}
           <Card className="border-0 shadow-lg">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center">
-                  <Package className="h-5 w-5 mr-2" />
+            <CardHeader className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <CardTitle className="flex items-center text-base sm:text-lg">
+                  <Package className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                   Top Products
                 </CardTitle>
-                <Button variant="ghost" size="sm" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
+                <Button variant="ghost" size="sm" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 w-full sm:w-auto">
                   View All <ArrowUpRight className="h-4 w-4 ml-1" />
                 </Button>
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+            <CardContent className="p-4 sm:p-6">
+              <div className="space-y-3 sm:space-y-4">
                 {analyticsData.topProducts.map((product, index) => (
-                  <div key={product.id} className="flex items-center justify-between p-3 bg-muted/50 dark:bg-muted/30 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                        <span className="text-white font-bold text-sm">{index + 1}</span>
+                  <div key={product.id} className="flex items-center justify-between p-2 sm:p-3 bg-muted/50 dark:bg-muted/30 rounded-lg">
+                    <div className="flex items-center space-x-2 sm:space-x-3">
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                        <span className="text-white font-bold text-xs sm:text-sm">{index + 1}</span>
                       </div>
                       <div>
-                        <p className="font-medium text-foreground text-sm">{product.name}</p>
+                        <p className="font-medium text-foreground text-xs sm:text-sm truncate max-w-[150px] sm:max-w-none">{product.name}</p>
                         <p className="text-xs text-muted-foreground">{product.sales} units sold</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-foreground">${product.revenue.toLocaleString()}</p>
+                      <p className="font-semibold text-foreground text-xs sm:text-sm">${product.revenue.toLocaleString()}</p>
                       <p className="text-xs text-muted-foreground">Revenue</p>
                     </div>
                   </div>
@@ -285,28 +287,33 @@ export default function AdminAnalyticsPage() {
 
           {/* Customer Segments */}
           <Card className="border-0 shadow-lg">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center">
-                  <Users className="h-5 w-5 mr-2" />
+            <CardHeader className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <CardTitle className="flex items-center text-base sm:text-lg">
+                  <Users className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                   Customer Segments
                 </CardTitle>
-                <Button variant="ghost" size="sm" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
+                <Button variant="ghost" size="sm" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 w-full sm:w-auto">
                   View Details <ArrowUpRight className="h-4 w-4 ml-1" />
                 </Button>
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {analyticsData.customerSegments.map((segment, index) => (
-                  <div key={segment.segment} className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-3 h-3 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></div>
-                      <span className="font-medium text-foreground">{segment.segment}</span>
+            <CardContent className="p-4 sm:p-6">
+              <div className="space-y-3 sm:space-y-4">
+                {analyticsData.customerSegments.map((segment) => (
+                  <div key={segment.segment} className="flex flex-col sm:flex-row sm:items-center justify-between p-2 sm:p-3 bg-muted/50 dark:bg-muted/30 rounded-lg gap-2">
+                    <div>
+                      <p className="font-medium text-foreground text-xs sm:text-sm">{segment.segment}</p>
+                      <p className="text-xs text-muted-foreground">{segment.count} customers</p>
                     </div>
-                    <div className="flex items-center space-x-4">
-                      <span className="text-sm text-muted-foreground">{segment.count} customers</span>
-                      <span className="font-semibold text-foreground">{segment.percentage}%</span>
+                    <div className="flex items-center space-x-2 sm:space-x-3 w-full sm:w-auto">
+                      <div className="w-full sm:w-32 h-2 bg-muted rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-gradient-to-r from-blue-500 to-purple-500" 
+                          style={{ width: `${segment.percentage}%` }}
+                        />
+                      </div>
+                      <span className="font-semibold text-foreground text-xs sm:text-sm whitespace-nowrap">{segment.percentage}%</span>
                     </div>
                   </div>
                 ))}
@@ -319,31 +326,34 @@ export default function AdminAnalyticsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Traffic Sources */}
           <Card className="border-0 shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Activity className="h-5 w-5 mr-2" />
-                Traffic Sources
-              </CardTitle>
+            <CardHeader className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <CardTitle className="flex items-center text-base sm:text-lg">
+                  <Activity className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                  Traffic Sources
+                </CardTitle>
+                <Button variant="ghost" size="sm" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 w-full sm:w-auto">
+                  View Report <ArrowUpRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
+            <CardContent className="p-4 sm:p-6">
+              <div className="space-y-3 sm:space-y-4">
                 {analyticsData.trafficSources.map((source) => (
-                  <div key={source.source} className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm font-medium text-foreground">{source.source}</span>
-                        <span className="text-sm text-muted-foreground">{source.percentage}%</span>
-                      </div>
-                      <div className="w-full bg-muted/50 dark:bg-muted/30 rounded-full h-2">
-                        <div
-                          className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full"
-                          style={{ width: `${source.percentage}%` }}
-                        ></div>
-                      </div>
+                  <div key={source.source} className="flex flex-col sm:flex-row sm:items-center justify-between p-2 sm:p-3 bg-muted/50 dark:bg-muted/30 rounded-lg gap-2">
+                    <div>
+                      <p className="font-medium text-foreground text-xs sm:text-sm">{source.source}</p>
+                      <p className="text-xs text-muted-foreground">{source.visits.toLocaleString()} visits</p>
                     </div>
-                    <span className="ml-4 text-sm font-semibold text-foreground">
-                      {source.visits.toLocaleString()}
-                    </span>
+                    <div className="flex items-center space-x-2 sm:space-x-3 w-full sm:w-auto">
+                      <div className="w-full sm:w-32 h-2 bg-muted rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-gradient-to-r from-blue-500 to-purple-500" 
+                          style={{ width: `${source.percentage}%` }}
+                        />
+                      </div>
+                      <span className="font-semibold text-foreground text-xs sm:text-sm whitespace-nowrap">{source.percentage}%</span>
+                    </div>
                   </div>
                 ))}
               </div>

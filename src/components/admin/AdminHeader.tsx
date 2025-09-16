@@ -83,15 +83,49 @@ export default function AdminHeader({ title, subtitle, onMenuClick, isMobile }: 
 
         {/* Right Side Actions */}
         <div className="flex items-center space-x-2 sm:space-x-4">
-          {/* Mobile Search Icon */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="lg:hidden text-muted-foreground hover:text-foreground hover:bg-accent backdrop-blur-sm transition-all duration-200 p-2"
-            title="Search"
-          >
-            <Search className="h-4 w-4" />
-          </Button>
+          {/* Mobile Search Icon with Dropdown */}
+          <div className="lg:hidden relative">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                const searchInput = document.getElementById('mobile-search-input');
+                if (searchInput) {
+                  searchInput.classList.toggle('hidden');
+                  searchInput.classList.toggle('flex');
+                  if (!searchInput.classList.contains('hidden')) {
+                    (searchInput.querySelector('input') as HTMLInputElement)?.focus();
+                  }
+                }
+              }}
+              className="text-muted-foreground hover:text-foreground hover:bg-accent backdrop-blur-sm transition-all duration-200 p-2"
+              title="Search"
+            >
+              <Search className="h-4 w-4" />
+            </Button>
+            <div id="mobile-search-input" className="hidden absolute right-0 top-full mt-2 w-60 bg-background border border-border rounded-lg shadow-lg p-2 z-50">
+              <div className="relative w-full">
+                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Search products, orders..."
+                  className="pl-8 pr-4 py-1 w-full text-sm bg-background border-border"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      const value = (e.target as HTMLInputElement).value;
+                      if (value.trim()) {
+                        // Implement search functionality
+                        console.log('Searching for:', value);
+                        // You can add actual search implementation here
+                        // For example, redirect to search results page or filter current view
+                        window.location.href = `/admin/products?search=${encodeURIComponent(value)}`;
+                      }
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          </div>
 
           {/* Action Buttons - Condensed on mobile */}
           <div className="flex items-center space-x-1 sm:space-x-2">
@@ -107,12 +141,12 @@ export default function AdminHeader({ title, subtitle, onMenuClick, isMobile }: 
               <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 sm:h-3 sm:w-3 bg-destructive rounded-full"></span>
             </Button>
 
-            {/* Dark Mode Toggle - Hidden on small mobile */}
+            {/* Dark Mode Toggle - Visible on all devices */}
             <Button
               variant="ghost"
               size="sm"
               onClick={toggleTheme}
-              className="hidden sm:flex text-muted-foreground hover:text-foreground hover:bg-accent backdrop-blur-sm transition-all duration-200 p-2"
+              className="text-muted-foreground hover:text-foreground hover:bg-accent backdrop-blur-sm transition-all duration-200 p-2"
               title={getThemeTitle()}
             >
               {getThemeIcon()}
