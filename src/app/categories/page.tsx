@@ -42,7 +42,7 @@ export default function CategoriesPage() {
                 </div>
 
                 {/* Main Category Card */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 mb-4">
                   <Link 
                     href={`/categories/${category.id}`}
                     className="lg:col-span-2"

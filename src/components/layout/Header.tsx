@@ -24,7 +24,8 @@ import {
   Star,
   Filter,
   CheckCircle,
-  Truck
+  Truck,
+  Settings
 } from 'lucide-react';
 
 export default function Header() {
@@ -287,17 +288,7 @@ export default function Header() {
                   </div>
                 )}
                 
-                {/* View All Categories Link */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
-                  <Link
-                    href="/categories"
-                    className="flex items-center justify-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors duration-300 group"
-                    onClick={() => setCategoryDropdownOpen(false)}
-                  >
-                    <span>View All Categories</span>
-                    <ChevronDown className="h-4 w-4 rotate-270 group-hover:translate-x-1 transition-transform duration-300" />
-                  </Link>
-                </div>
+                
               </div>
             )}
           </div>
@@ -463,6 +454,14 @@ export default function Header() {
                             {wishlistState.itemCount}
                           </Badge>
                         )}
+                      </Link>
+                      <Link
+                        href="/admin"
+                        className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl transition-all duration-200 group"
+                        onClick={() => setProfileDropdownOpen(false)}
+                      >
+                        <Settings className="h-4 w-4 group-hover:text-blue-600" />
+                        <span className="group-hover:text-blue-600">Admin Panel</span>
                       </Link>
                       <hr className="my-3" />
                       <button className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200">

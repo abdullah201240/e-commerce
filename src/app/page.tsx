@@ -23,7 +23,7 @@ export default function Home() {
             </h2>
             
           </div>
-          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
             {categories.slice(1).map((category, index) => (
               <Link
                 key={category.id}

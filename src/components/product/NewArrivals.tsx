@@ -32,7 +32,7 @@ export default function NewArrivals({
       {/* Section Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center animate-fadeInUp">
         <div >
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-2 mb-4">
             
             <h2 className="text-2xl md:text-2xl font-bold text-gray-900">
               {title}
@@ -45,7 +45,7 @@ export default function NewArrivals({
       </div>
 
       {/* Products Grid with Staggered Animation */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
         {displayProducts.map((product, index) => (
           <div
             key={product.id}

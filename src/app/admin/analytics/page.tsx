@@ -1,0 +1,442 @@
+'use client';
+
+import React, { useState } from 'react';
+import AdminLayout from '@/components/admin/AdminLayout';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { useOrders } from '@/contexts/OrderContext';
+import { products } from '@/data/products';
+import {
+  BarChart3,
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  ShoppingCart,
+  Users,
+  Package,
+  Calendar,
+  Download,
+  Filter,
+  RefreshCw,
+  ArrowUpRight,
+  ArrowDownRight,
+  Eye,
+  Target,
+  Activity,
+  Clock,
+} from 'lucide-react';
+
+// Mock analytics data - in a real app this would come from an API
+const analyticsData = {
+  salesByMonth: [
+    { month: 'Jan', sales: 12500, orders: 125 },
+    { month: 'Feb', sales: 14200, orders: 142 },
+    { month: 'Mar', sales: 13800, orders: 138 },
+    { month: 'Apr', sales: 16500, orders: 165 },
+    { month: 'May', sales: 18900, orders: 189 },
+    { month: 'Jun', sales: 21300, orders: 213 },
+  ],
+  topProducts: [
+    { id: '1', name: 'Modern 3-Seater Sofa', sales: 45, revenue: 40455 },
+    { id: '4', name: 'Ergonomic Office Chair', sales: 38, revenue: 11362 },
+    { id: '8', name: 'Wooden Dining Table', sales: 32, revenue: 25568 },
+    { id: '10', name: 'King Size Platform Bed', sales: 28, revenue: 25172 },
+    { id: '7', name: 'Glass Coffee Table', sales: 24, revenue: 8376 },
+  ],
+  customerSegments: [
+    { segment: 'New Customers', count: 234, percentage: 35 },
+    { segment: 'Returning Customers', count: 312, percentage: 47 },
+    { segment: 'VIP Customers', count: 119, percentage: 18 },
+  ],
+  trafficSources: [
+    { source: 'Organic Search', visits: 4580, percentage: 42 },
+    { source: 'Direct', visits: 2890, percentage: 26 },
+    { source: 'Social Media', visits: 1920, percentage: 18 },
+    { source: 'Email', visits: 980, percentage: 9 },
+    { source: 'Paid Ads', visits: 550, percentage: 5 },
+  ]
+};
+
+// Metric Card Component
+interface MetricCardProps {
+  title: string;
+  value: string | number;
+  change: number;
+  changeLabel: string;
+  icon: React.ElementType;
+  trend: 'up' | 'down';
+  color: 'blue' | 'green' | 'purple' | 'orange' | 'red';
+}
+
+function MetricCard({ title, value, change, changeLabel, icon: Icon, trend, color }: MetricCardProps) {
+  const colorClasses = {
+    blue: 'from-blue-500 to-blue-600',
+    green: 'from-green-500 to-green-600',
+    purple: 'from-purple-500 to-purple-600',
+    orange: 'from-orange-500 to-orange-600',
+    red: 'from-red-500 to-red-600',
+  };
+
+  return (
+    <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <p className="text-sm font-medium text-gray-600 mb-1">{title}</p>
+            <p className="text-3xl font-bold text-gray-900">{value}</p>
+            <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mt-2 ${
+              trend === 'up' ? 'text-green-600 bg-green-100' : 'text-red-600 bg-red-100'
+            }`}>
+              {trend === 'up' ? (
+                <ArrowUpRight className="h-3 w-3 mr-1" />
+              ) : (
+                <ArrowDownRight className="h-3 w-3 mr-1" />
+              )}
+              {change > 0 ? '+' : ''}{change}% {changeLabel}
+            </div>
+          </div>
+          <div className={`w-12 h-12 bg-gradient-to-r ${colorClasses[color]} rounded-lg flex items-center justify-center`}>
+            <Icon className="h-6 w-6 text-white" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Chart Placeholder Component
+function ChartPlaceholder({ title, description, icon: Icon }: { title: string; description: string; icon: React.ElementType }) {
+  return (
+    <div className="h-64 bg-gradient-to-br from-gray-50 to-blue-50/30 rounded-lg flex flex-col items-center justify-center p-6">
+      <Icon className="h-12 w-12 text-gray-400 mb-4" />
+      <h4 className="text-lg font-semibold text-gray-700 mb-2">{title}</h4>
+      <p className="text-sm text-gray-500 text-center">{description}</p>
+      <p className="text-xs text-gray-400 mt-2">Chart library integration needed</p>
+    </div>
+  );
+}
+
+export default function AdminAnalyticsPage() {
+  const { state } = useOrders();
+  const [timeRange, setTimeRange] = useState('30d');
+  const [selectedMetric, setSelectedMetric] = useState('revenue');
+
+  // Calculate metrics from orders
+  const totalRevenue = state.orders.reduce((sum, order) => sum + order.total, 0);
+  const totalOrders = state.orders.length;
+  const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+  const totalProducts = products.length;
+
+  // Mock conversion rate and growth data
+  const conversionRate = 3.8;
+  const revenueGrowth = 12.5;
+  const orderGrowth = 8.3;
+  const customerGrowth = 15.2;
+
+  return (
+    <AdminLayout title="Analytics" subtitle="Comprehensive insights and performance metrics">
+      <div className="space-y-6">
+        {/* Time Range Filter */}
+        <Card className="border-0 shadow-lg">
+          <CardContent className="p-6">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Performance Overview</h3>
+                <p className="text-gray-600">Track your store's key metrics and trends</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <select
+                  value={timeRange}
+                  onChange={(e) => setTimeRange(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="7d">Last 7 days</option>
+                  <option value="30d">Last 30 days</option>
+                  <option value="90d">Last 90 days</option>
+                  <option value="1y">Last year</option>
+                </select>
+                <Button variant="outline" size="sm">
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Refresh
+                </Button>
+                <Button variant="outline" size="sm">
+                  <Download className="h-4 w-4 mr-2" />
+                  Export
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Key Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <MetricCard
+            title="Total Revenue"
+            value={`$${totalRevenue.toLocaleString()}`}
+            change={revenueGrowth}
+            changeLabel="vs last month"
+            icon={DollarSign}
+            trend="up"
+            color="green"
+          />
+          <MetricCard
+            title="Total Orders"
+            value={totalOrders.toLocaleString()}
+            change={orderGrowth}
+            changeLabel="vs last month"
+            icon={ShoppingCart}
+            trend="up"
+            color="blue"
+          />
+          <MetricCard
+            title="Avg Order Value"
+            value={`$${avgOrderValue.toFixed(0)}`}
+            change={-2.4}
+            changeLabel="vs last month"
+            icon={TrendingUp}
+            trend="down"
+            color="orange"
+          />
+          <MetricCard
+            title="Conversion Rate"
+            value={`${conversionRate}%`}
+            change={0.8}
+            changeLabel="vs last month"
+            icon={Target}
+            trend="up"
+            color="purple"
+          />
+        </div>
+
+        {/* Charts Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Revenue Trend Chart */}
+          <Card className="border-0 shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <BarChart3 className="h-5 w-5 mr-2" />
+                Revenue Trend
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartPlaceholder 
+                title="Monthly Revenue Chart"
+                description="Track revenue trends over time"
+                icon={BarChart3}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Orders Chart */}
+          <Card className="border-0 shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <ShoppingCart className="h-5 w-5 mr-2" />
+                Order Volume
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartPlaceholder 
+                title="Order Volume Chart"
+                description="Monitor order trends and patterns"
+                icon={ShoppingCart}
+              />
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Data Tables Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Top Products */}
+          <Card className="border-0 shadow-lg">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center">
+                  <Package className="h-5 w-5 mr-2" />
+                  Top Products
+                </CardTitle>
+                <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
+                  View All <ArrowUpRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {analyticsData.topProducts.map((product, index) => (
+                  <div key={product.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                        <span className="text-white font-bold text-sm">{index + 1}</span>
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-900 text-sm">{product.name}</p>
+                        <p className="text-xs text-gray-600">{product.sales} units sold</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold text-gray-900">${product.revenue.toLocaleString()}</p>
+                      <p className="text-xs text-gray-500">Revenue</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Customer Segments */}
+          <Card className="border-0 shadow-lg">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center">
+                  <Users className="h-5 w-5 mr-2" />
+                  Customer Segments
+                </CardTitle>
+                <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
+                  View Details <ArrowUpRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {analyticsData.customerSegments.map((segment, index) => (
+                  <div key={segment.segment} className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-3 h-3 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></div>
+                      <span className="font-medium text-gray-900">{segment.segment}</span>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                      <span className="text-sm text-gray-600">{segment.count} customers</span>
+                      <span className="font-semibold text-gray-900">{segment.percentage}%</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Traffic Sources and Recent Activity */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Traffic Sources */}
+          <Card className="border-0 shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Activity className="h-5 w-5 mr-2" />
+                Traffic Sources
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {analyticsData.trafficSources.map((source) => (
+                  <div key={source.source} className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-sm font-medium text-gray-900">{source.source}</span>
+                        <span className="text-sm text-gray-600">{source.percentage}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                          className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full"
+                          style={{ width: `${source.percentage}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    <span className="ml-4 text-sm font-semibold text-gray-900">
+                      {source.visits.toLocaleString()}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Recent Activity */}
+          <Card className="border-0 shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Clock className="h-5 w-5 mr-2" />
+                Recent Activity
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900">New order #ORD-2024-005</p>
+                    <p className="text-xs text-gray-500">2 minutes ago</p>
+                  </div>
+                  <span className="text-sm font-semibold text-green-600">$899.99</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900">Product viewed: Modern Sofa</p>
+                    <p className="text-xs text-gray-500">5 minutes ago</p>
+                  </div>
+                  <Eye className="h-4 w-4 text-gray-400" />
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900">New customer registered</p>
+                    <p className="text-xs text-gray-500">12 minutes ago</p>
+                  </div>
+                  <Users className="h-4 w-4 text-gray-400" />
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900">Inventory alert: Low stock</p>
+                    <p className="text-xs text-gray-500">18 minutes ago</p>
+                  </div>
+                  <Package className="h-4 w-4 text-gray-400" />
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900">Order shipped #ORD-2024-003</p>
+                    <p className="text-xs text-gray-500">25 minutes ago</p>
+                  </div>
+                  <TrendingUp className="h-4 w-4 text-gray-400" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Performance Insights */}
+        <Card className="border-0 shadow-lg">
+          <CardHeader>
+            <CardTitle>Performance Insights</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="text-center p-6 bg-green-50 rounded-lg">
+                <TrendingUp className="h-8 w-8 text-green-600 mx-auto mb-3" />
+                <h4 className="font-semibold text-gray-900 mb-2">Sales Growth</h4>
+                <p className="text-sm text-gray-600">
+                  Your sales have increased by <span className="font-semibold text-green-600">12.5%</span> compared to last month.
+                </p>
+              </div>
+              <div className="text-center p-6 bg-blue-50 rounded-lg">
+                <Target className="h-8 w-8 text-blue-600 mx-auto mb-3" />
+                <h4 className="font-semibold text-gray-900 mb-2">Conversion Rate</h4>
+                <p className="text-sm text-gray-600">
+                  Your conversion rate of <span className="font-semibold text-blue-600">3.8%</span> is above industry average.
+                </p>
+              </div>
+              <div className="text-center p-6 bg-purple-50 rounded-lg">
+                <Users className="h-8 w-8 text-purple-600 mx-auto mb-3" />
+                <h4 className="font-semibold text-gray-900 mb-2">Customer Retention</h4>
+                <p className="text-sm text-gray-600">
+                  <span className="font-semibold text-purple-600">47%</span> of your sales come from returning customers.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </AdminLayout>
+  );
+}
