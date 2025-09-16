@@ -117,22 +117,22 @@ function CustomerStatusBadge({ status }: { status: string }) {
     switch (status) {
       case 'vip':
         return {
-          className: 'bg-purple-100 text-purple-700 border-purple-200',
+          className: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-800',
           icon: Star
         };
       case 'active':
         return {
-          className: 'bg-green-100 text-green-700 border-green-200',
+          className: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800',
           icon: TrendingUp
         };
       case 'inactive':
         return {
-          className: 'bg-gray-100 text-gray-700 border-gray-200',
+          className: 'bg-muted text-muted-foreground border-border',
           icon: Users
         };
       default:
         return {
-          className: 'bg-gray-100 text-gray-700 border-gray-200',
+          className: 'bg-muted text-muted-foreground border-border',
           icon: Users
         };
     }
@@ -161,7 +161,7 @@ function CustomerRow({ customer, onView, onEdit, onEmail }: CustomerRowProps) {
   const [showActions, setShowActions] = useState(false);
 
   return (
-    <tr className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
+    <tr className="border-b border-border hover:bg-muted/50 transition-colors">
       {/* Customer Info */}
       <td className="py-4 px-4">
         <div className="flex items-center space-x-3">
@@ -179,8 +179,8 @@ function CustomerRow({ customer, onView, onEdit, onEmail }: CustomerRowProps) {
             </div>
           )}
           <div>
-            <p className="font-medium text-gray-900">{customer.name}</p>
-            <p className="text-sm text-gray-500">{customer.email}</p>
+            <p className="font-medium text-foreground">{customer.name}</p>
+            <p className="text-sm text-muted-foreground">{customer.email}</p>
           </div>
         </div>
       </td>
@@ -189,12 +189,12 @@ function CustomerRow({ customer, onView, onEdit, onEmail }: CustomerRowProps) {
       <td className="py-4 px-4">
         <div className="flex flex-col space-y-1">
           {customer.phone && (
-            <div className="flex items-center text-sm text-gray-600">
+            <div className="flex items-center text-sm text-muted-foreground">
               <Phone className="h-3 w-3 mr-1" />
               {customer.phone}
             </div>
           )}
-          <div className="flex items-center text-sm text-gray-600">
+          <div className="flex items-center text-sm text-muted-foreground">
             <MapPin className="h-3 w-3 mr-1" />
             {customer.location}
           </div>
@@ -204,9 +204,9 @@ function CustomerRow({ customer, onView, onEdit, onEmail }: CustomerRowProps) {
       {/* Orders */}
       <td className="py-4 px-4 text-center">
         <div className="flex flex-col">
-          <span className="font-semibold text-gray-900">{customer.totalOrders}</span>
+          <span className="font-semibold text-foreground">{customer.totalOrders}</span>
           {customer.lastOrderDate && (
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-muted-foreground">
               Last: {new Date(customer.lastOrderDate).toLocaleDateString()}
             </span>
           )}
@@ -215,7 +215,7 @@ function CustomerRow({ customer, onView, onEdit, onEmail }: CustomerRowProps) {
 
       {/* Total Spent */}
       <td className="py-4 px-4">
-        <span className="font-semibold text-gray-900">${customer.totalSpent.toFixed(2)}</span>
+        <span className="font-semibold text-foreground">${customer.totalSpent.toFixed(2)}</span>
       </td>
 
       {/* Status */}
@@ -225,7 +225,7 @@ function CustomerRow({ customer, onView, onEdit, onEmail }: CustomerRowProps) {
 
       {/* Join Date */}
       <td className="py-4 px-4">
-        <div className="flex items-center text-sm text-gray-600">
+        <div className="flex items-center text-sm text-muted-foreground">
           <Calendar className="h-3 w-3 mr-1" />
           {new Date(customer.joinDate).toLocaleDateString()}
         </div>
@@ -233,7 +233,7 @@ function CustomerRow({ customer, onView, onEdit, onEmail }: CustomerRowProps) {
 
       {/* Loyalty Points */}
       <td className="py-4 px-4 text-center">
-        <span className="font-medium text-purple-600">{customer.loyaltyPoints || 0}</span>
+        <span className="font-medium text-purple-600 dark:text-purple-400">{customer.loyaltyPoints || 0}</span>
       </td>
 
       {/* Actions */}
@@ -243,7 +243,7 @@ function CustomerRow({ customer, onView, onEdit, onEmail }: CustomerRowProps) {
             variant="ghost"
             size="sm"
             onClick={() => onView(customer)}
-            className="text-gray-600 hover:text-blue-600"
+            className="text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400"
             title="View Customer"
           >
             <Eye className="h-4 w-4" />
@@ -252,7 +252,7 @@ function CustomerRow({ customer, onView, onEdit, onEmail }: CustomerRowProps) {
             variant="ghost"
             size="sm"
             onClick={() => onEmail(customer)}
-            className="text-gray-600 hover:text-green-600"
+            className="text-muted-foreground hover:text-green-600 dark:hover:text-green-400"
             title="Send Email"
           >
             <Mail className="h-4 w-4" />
@@ -261,7 +261,7 @@ function CustomerRow({ customer, onView, onEdit, onEmail }: CustomerRowProps) {
             variant="ghost"
             size="sm"
             onClick={() => onEdit(customer)}
-            className="text-gray-600 hover:text-blue-600"
+            className="text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400"
             title="Edit Customer"
           >
             <Edit3 className="h-4 w-4" />
@@ -271,20 +271,20 @@ function CustomerRow({ customer, onView, onEdit, onEmail }: CustomerRowProps) {
               variant="ghost"
               size="sm"
               onClick={() => setShowActions(!showActions)}
-              className="text-gray-600 hover:text-gray-800"
+              className="text-muted-foreground hover:text-foreground"
               title="More Actions"
             >
               <MoreHorizontal className="h-4 w-4" />
             </Button>
             {showActions && (
-              <div className="absolute right-0 top-8 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-32">
-                <button className="block w-full px-3 py-2 text-left text-sm hover:bg-gray-50">
+              <div className="absolute right-0 top-8 bg-card border border-border rounded-lg shadow-lg z-10 min-w-32">
+                <button className="block w-full px-3 py-2 text-left text-sm hover:bg-muted text-foreground">
                   View Orders
                 </button>
-                <button className="block w-full px-3 py-2 text-left text-sm hover:bg-gray-50">
+                <button className="block w-full px-3 py-2 text-left text-sm hover:bg-muted text-foreground">
                   Reset Password
                 </button>
-                <button className="block w-full px-3 py-2 text-left text-sm hover:bg-gray-50 text-red-600">
+                <button className="block w-full px-3 py-2 text-left text-sm hover:bg-muted text-red-600 dark:text-red-400">
                   Deactivate
                 </button>
               </div>
@@ -383,8 +383,8 @@ export default function AdminCustomersPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Customers</p>
-                  <p className="text-3xl font-bold text-gray-900">{totalCustomers}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Total Customers</p>
+                  <p className="text-3xl font-bold text-foreground">{totalCustomers}</p>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
                   <Users className="h-6 w-6 text-white" />
@@ -397,7 +397,7 @@ export default function AdminCustomersPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Active</p>
+                  <p className="text-sm font-medium text-muted-foreground">Active</p>
                   <p className="text-3xl font-bold text-green-600">{activeCustomers}</p>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
@@ -411,8 +411,8 @@ export default function AdminCustomersPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">VIP</p>
-                  <p className="text-3xl font-bold text-purple-600">{vipCustomers}</p>
+                  <p className="text-sm font-medium text-muted-foreground">VIP</p>
+                  <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">{vipCustomers}</p>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
                   <Star className="h-6 w-6 text-white" />
@@ -425,8 +425,8 @@ export default function AdminCustomersPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Inactive</p>
-                  <p className="text-3xl font-bold text-gray-600">{inactiveCustomers}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Inactive</p>
+                  <p className="text-3xl font-bold text-muted-foreground">{inactiveCustomers}</p>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-r from-gray-500 to-gray-600 rounded-lg flex items-center justify-center">
                   <Users className="h-6 w-6 text-white" />
@@ -439,8 +439,8 @@ export default function AdminCustomersPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Avg Order Value</p>
-                  <p className="text-3xl font-bold text-orange-600">${avgOrderValue.toFixed(0)}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Avg Order Value</p>
+                  <p className="text-3xl font-bold text-orange-600 dark:text-orange-400">${avgOrderValue.toFixed(0)}</p>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
                   <DollarSign className="h-6 w-6 text-white" />
@@ -458,7 +458,7 @@ export default function AdminCustomersPage() {
               <div className="flex flex-col sm:flex-row gap-4 flex-1">
                 {/* Search */}
                 <div className="relative flex-1 max-w-md">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     type="text"
                     placeholder="Search customers by name, email, or location..."
@@ -472,7 +472,7 @@ export default function AdminCustomersPage() {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
                 >
                   <option value="all">All Status</option>
                   <option value="active">Active</option>
@@ -484,7 +484,7 @@ export default function AdminCustomersPage() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
                 >
                   <option value="name">Sort by Name</option>
                   <option value="spent">Total Spent</option>
@@ -514,7 +514,7 @@ export default function AdminCustomersPage() {
             <div className="flex items-center justify-between">
               <CardTitle>Customers ({filteredCustomers.length})</CardTitle>
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-muted-foreground">
                   Showing {startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredCustomers.length)} of {filteredCustomers.length}
                 </span>
               </div>
@@ -523,16 +523,16 @@ export default function AdminCustomersPage() {
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-muted/50 dark:bg-muted/30 border-b border-border">
                   <tr>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Customer</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Contact</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Orders</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Total Spent</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Status</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Joined</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Points</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Actions</th>
+                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Customer</th>
+                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Contact</th>
+                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Orders</th>
+                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Total Spent</th>
+                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Status</th>
+                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Joined</th>
+                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Points</th>
+                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -549,9 +549,9 @@ export default function AdminCustomersPage() {
                   ) : (
                     <tr>
                       <td colSpan={8} className="py-12 text-center">
-                        <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <p className="text-gray-600">No customers found</p>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                        <p className="text-foreground">No customers found</p>
+                        <p className="text-sm text-muted-foreground mt-1">
                           Try adjusting your search or filter criteria
                         </p>
                       </td>
@@ -563,9 +563,9 @@ export default function AdminCustomersPage() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="border-t border-gray-200 px-6 py-4">
+              <div className="border-t border-border px-6 py-4">
                 <div className="flex items-center justify-between">
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-muted-foreground">
                     Page {currentPage} of {totalPages}
                   </div>
                   <div className="flex items-center gap-2">

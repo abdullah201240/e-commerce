@@ -6,8 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAdmin } from '@/contexts/AdminContext';
 import { useOrders } from '@/contexts/OrderContext';
-import { useCart } from '@/contexts/CartContext';
-import { useWishlist } from '@/contexts/WishlistContext';
 import { products } from '@/data/products';
 import {
   DollarSign,
@@ -55,9 +53,9 @@ function StatsCard({
   };
 
   const trendClasses = {
-    up: 'text-green-600 bg-green-100',
-    down: 'text-red-600 bg-red-100',
-    neutral: 'text-gray-600 bg-gray-100',
+    up: 'text-green-600 bg-green-100 dark:text-green-400 dark:bg-green-900/30',
+    down: 'text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-900/30',
+    neutral: 'text-muted-foreground bg-muted',
   };
 
   return (
@@ -65,8 +63,8 @@ function StatsCard({
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div className="flex-1">
-            <p className="text-sm font-medium text-gray-600 mb-1">{title}</p>
-            <p className="text-3xl font-bold text-gray-900">{value}</p>
+            <p className="text-sm font-medium text-muted-foreground mb-1">{title}</p>
+            <p className="text-3xl font-bold text-foreground">{value}</p>
             {change !== undefined && (
               <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mt-2 ${trendClasses[trend]}`}>
                 {trend === 'up' ? (
@@ -94,15 +92,15 @@ function RecentOrdersCard() {
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'delivered':
-        return 'text-green-600 bg-green-100';
+        return 'text-green-600 bg-green-100 dark:text-green-400 dark:bg-green-900/30';
       case 'in transit':
       case 'shipped':
-        return 'text-blue-600 bg-blue-100';
+        return 'text-blue-600 bg-blue-100 dark:text-blue-400 dark:bg-blue-900/30';
       case 'processing':
       case 'confirmed':
-        return 'text-orange-600 bg-orange-100';
+        return 'text-orange-600 bg-orange-100 dark:text-orange-400 dark:bg-orange-900/30';
       default:
-        return 'text-gray-600 bg-gray-100';
+        return 'text-muted-foreground bg-muted';
     }
   };
 
@@ -136,18 +134,18 @@ function RecentOrdersCard() {
       <CardContent className="pt-0">
         <div className="space-y-4">
           {recentOrders.map((order) => (
-            <div key={order.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+            <div key={order.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
               <div className="flex items-center space-x-3">
                 <div className={`p-2 rounded-full ${getStatusColor(order.status)}`}>
                   {getStatusIcon(order.status)}
                 </div>
                 <div>
-                  <p className="font-medium text-gray-900">{order.id}</p>
-                  <p className="text-sm text-gray-600">{new Date(order.date).toLocaleDateString()}</p>
+                  <p className="font-medium text-foreground">{order.id}</p>
+                  <p className="text-sm text-muted-foreground">{new Date(order.date).toLocaleDateString()}</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="font-semibold text-gray-900">${order.total.toFixed(2)}</p>
+                <p className="font-semibold text-foreground">${order.total.toFixed(2)}</p>
                 <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
                   {order.status}
                 </span>
@@ -182,7 +180,7 @@ function LowStockAlert() {
       <CardContent className="pt-0">
         <div className="space-y-3">
           {lowStockProducts.length > 0 ? lowStockProducts.map((product) => (
-            <div key={product.id} className="flex items-center justify-between p-3 bg-orange-50 rounded-lg border border-orange-200">
+            <div key={product.id} className="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/10 rounded-lg border border-orange-200 dark:border-orange-800">
               <div className="flex items-center space-x-3">
                 <img
                   src={product.image}
@@ -190,23 +188,23 @@ function LowStockAlert() {
                   className="w-10 h-10 rounded-lg object-cover"
                 />
                 <div>
-                  <p className="font-medium text-gray-900 text-sm">{product.name}</p>
-                  <p className="text-xs text-gray-600">{product.category}</p>
+                  <p className="font-medium text-foreground text-sm">{product.name}</p>
+                  <p className="text-xs text-muted-foreground">{product.category}</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-sm font-semibold text-orange-700">
+                <p className="text-sm font-semibold text-orange-700 dark:text-orange-400">
                   {Math.floor(Math.random() * 5) + 1} left
                 </p>
-                <Button variant="ghost" size="sm" className="text-xs text-orange-600 hover:text-orange-700 p-0 h-auto">
+                <Button variant="ghost" size="sm" className="text-xs text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 p-0 h-auto">
                   Restock
                 </Button>
               </div>
             </div>
           )) : (
-            <div className="text-center py-4 text-gray-500">
-              <Package className="h-8 w-8 mx-auto mb-2 text-gray-400" />
-              <p className="text-sm">All products are well-stocked!</p>
+            <div className="text-center py-4">
+              <Package className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground">All products are well-stocked!</p>
             </div>
           )}
         </div>
@@ -279,11 +277,11 @@ export default function AdminDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-64 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg flex items-center justify-center">
+              <div className="h-64 bg-gradient-to-br from-muted/30 to-muted/50 rounded-lg flex items-center justify-center">
                 <div className="text-center">
-                  <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">Sales chart would go here</p>
-                  <p className="text-sm text-gray-500 mt-1">Integration with charting library needed</p>
+                  <BarChart3 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">Sales chart would go here</p>
+                  <p className="text-sm text-muted-foreground mt-1">Integration with charting library needed</p>
                 </div>
               </div>
             </CardContent>
@@ -297,24 +295,24 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent className="pt-0 space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Products in Stock</span>
-                  <span className="font-semibold">{inStockProducts}/{totalProducts}</span>
+                  <span className="text-muted-foreground">Products in Stock</span>
+                  <span className="font-semibold text-foreground">{inStockProducts}/{totalProducts}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Pending Orders</span>
-                  <span className="font-semibold text-orange-600">
+                  <span className="text-muted-foreground">Pending Orders</span>
+                  <span className="font-semibold text-orange-600 dark:text-orange-400">
                     {orderState.orders.filter(o => o.status === 'Processing').length}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Delivered Today</span>
-                  <span className="font-semibold text-green-600">
+                  <span className="text-muted-foreground">Delivered Today</span>
+                  <span className="font-semibold text-green-600 dark:text-green-400">
                     {orderState.orders.filter(o => o.status === 'Delivered').length}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Active Customers</span>
-                  <span className="font-semibold">1,234</span>
+                  <span className="text-muted-foreground">Active Customers</span>
+                  <span className="font-semibold text-foreground">1,234</span>
                 </div>
               </CardContent>
             </Card>
@@ -329,19 +327,19 @@ export default function AdminDashboard() {
               <CardContent className="pt-0 space-y-3">
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">5 new orders received</span>
+                  <span className="text-sm text-muted-foreground">5 new orders received</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">12 products viewed</span>
+                  <span className="text-sm text-muted-foreground">12 products viewed</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">3 customers registered</span>
+                  <span className="text-sm text-muted-foreground">3 customers registered</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">2 support tickets</span>
+                  <span className="text-sm text-muted-foreground">2 support tickets</span>
                 </div>
               </CardContent>
             </Card>

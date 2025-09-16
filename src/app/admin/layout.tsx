@@ -1,6 +1,7 @@
 'use client';
 
 import { AdminProvider, useAdmin } from '@/contexts/AdminContext';
+import { AdminThemeProvider } from '@/components/admin/AdminThemeProvider';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -35,10 +36,12 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <AdminProvider>
-      <AdminRouteGuard>
-        {children}
-      </AdminRouteGuard>
-    </AdminProvider>
+    <AdminThemeProvider>
+      <AdminProvider>
+        <AdminRouteGuard>
+          {children}
+        </AdminRouteGuard>
+      </AdminProvider>
+    </AdminThemeProvider>
   );
 }

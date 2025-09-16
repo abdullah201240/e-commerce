@@ -82,10 +82,10 @@ function MetricCard({ title, value, change, changeLabel, icon: Icon, trend, colo
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div className="flex-1">
-            <p className="text-sm font-medium text-gray-600 mb-1">{title}</p>
-            <p className="text-3xl font-bold text-gray-900">{value}</p>
+            <p className="text-sm font-medium text-muted-foreground mb-1">{title}</p>
+            <p className="text-3xl font-bold text-foreground">{value}</p>
             <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mt-2 ${
-              trend === 'up' ? 'text-green-600 bg-green-100' : 'text-red-600 bg-red-100'
+              trend === 'up' ? 'text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30' : 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30'
             }`}>
               {trend === 'up' ? (
                 <ArrowUpRight className="h-3 w-3 mr-1" />
@@ -107,11 +107,11 @@ function MetricCard({ title, value, change, changeLabel, icon: Icon, trend, colo
 // Chart Placeholder Component
 function ChartPlaceholder({ title, description, icon: Icon }: { title: string; description: string; icon: React.ElementType }) {
   return (
-    <div className="h-64 bg-gradient-to-br from-gray-50 to-blue-50/30 rounded-lg flex flex-col items-center justify-center p-6">
-      <Icon className="h-12 w-12 text-gray-400 mb-4" />
-      <h4 className="text-lg font-semibold text-gray-700 mb-2">{title}</h4>
-      <p className="text-sm text-gray-500 text-center">{description}</p>
-      <p className="text-xs text-gray-400 mt-2">Chart library integration needed</p>
+    <div className="h-64 bg-gradient-to-br from-muted/30 to-muted/50 rounded-lg flex flex-col items-center justify-center p-6">
+      <Icon className="h-12 w-12 text-muted-foreground mb-4" />
+      <h4 className="text-lg font-semibold text-foreground mb-2">{title}</h4>
+      <p className="text-sm text-muted-foreground text-center">{description}</p>
+      <p className="text-xs text-muted-foreground mt-2">Chart library integration needed</p>
     </div>
   );
 }
@@ -141,14 +141,14 @@ export default function AdminAnalyticsPage() {
           <CardContent className="p-6">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Performance Overview</h3>
-                <p className="text-gray-600">Track your store's key metrics and trends</p>
+                <h3 className="text-lg font-semibold text-foreground mb-2">Performance Overview</h3>
+                <p className="text-muted-foreground">Track your store's key metrics and trends</p>
               </div>
               <div className="flex items-center gap-3">
                 <select
                   value={timeRange}
                   onChange={(e) => setTimeRange(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
                 >
                   <option value="7d">Last 7 days</option>
                   <option value="30d">Last 30 days</option>
@@ -255,7 +255,7 @@ export default function AdminAnalyticsPage() {
                   <Package className="h-5 w-5 mr-2" />
                   Top Products
                 </CardTitle>
-                <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
+                <Button variant="ghost" size="sm" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
                   View All <ArrowUpRight className="h-4 w-4 ml-1" />
                 </Button>
               </div>
@@ -263,19 +263,19 @@ export default function AdminAnalyticsPage() {
             <CardContent>
               <div className="space-y-4">
                 {analyticsData.topProducts.map((product, index) => (
-                  <div key={product.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div key={product.id} className="flex items-center justify-between p-3 bg-muted/50 dark:bg-muted/30 rounded-lg">
                     <div className="flex items-center space-x-3">
                       <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
                         <span className="text-white font-bold text-sm">{index + 1}</span>
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900 text-sm">{product.name}</p>
-                        <p className="text-xs text-gray-600">{product.sales} units sold</p>
+                        <p className="font-medium text-foreground text-sm">{product.name}</p>
+                        <p className="text-xs text-muted-foreground">{product.sales} units sold</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-gray-900">${product.revenue.toLocaleString()}</p>
-                      <p className="text-xs text-gray-500">Revenue</p>
+                      <p className="font-semibold text-foreground">${product.revenue.toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground">Revenue</p>
                     </div>
                   </div>
                 ))}
@@ -291,7 +291,7 @@ export default function AdminAnalyticsPage() {
                   <Users className="h-5 w-5 mr-2" />
                   Customer Segments
                 </CardTitle>
-                <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
+                <Button variant="ghost" size="sm" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
                   View Details <ArrowUpRight className="h-4 w-4 ml-1" />
                 </Button>
               </div>
@@ -302,11 +302,11 @@ export default function AdminAnalyticsPage() {
                   <div key={segment.segment} className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <div className="w-3 h-3 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></div>
-                      <span className="font-medium text-gray-900">{segment.segment}</span>
+                      <span className="font-medium text-foreground">{segment.segment}</span>
                     </div>
                     <div className="flex items-center space-x-4">
-                      <span className="text-sm text-gray-600">{segment.count} customers</span>
-                      <span className="font-semibold text-gray-900">{segment.percentage}%</span>
+                      <span className="text-sm text-muted-foreground">{segment.count} customers</span>
+                      <span className="font-semibold text-foreground">{segment.percentage}%</span>
                     </div>
                   </div>
                 ))}
@@ -331,17 +331,17 @@ export default function AdminAnalyticsPage() {
                   <div key={source.source} className="flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm font-medium text-gray-900">{source.source}</span>
-                        <span className="text-sm text-gray-600">{source.percentage}%</span>
+                        <span className="text-sm font-medium text-foreground">{source.source}</span>
+                        <span className="text-sm text-muted-foreground">{source.percentage}%</span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="w-full bg-muted/50 dark:bg-muted/30 rounded-full h-2">
                         <div
                           className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full"
                           style={{ width: `${source.percentage}%` }}
                         ></div>
                       </div>
                     </div>
-                    <span className="ml-4 text-sm font-semibold text-gray-900">
+                    <span className="ml-4 text-sm font-semibold text-foreground">
                       {source.visits.toLocaleString()}
                     </span>
                   </div>
@@ -363,42 +363,42 @@ export default function AdminAnalyticsPage() {
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">New order #ORD-2024-005</p>
-                    <p className="text-xs text-gray-500">2 minutes ago</p>
+                    <p className="text-sm font-medium text-foreground">New order #ORD-2024-005</p>
+                    <p className="text-xs text-muted-foreground">2 minutes ago</p>
                   </div>
-                  <span className="text-sm font-semibold text-green-600">$899.99</span>
+                  <span className="text-sm font-semibold text-green-600 dark:text-green-400">$899.99</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">Product viewed: Modern Sofa</p>
-                    <p className="text-xs text-gray-500">5 minutes ago</p>
+                    <p className="text-sm font-medium text-foreground">Product viewed: Modern Sofa</p>
+                    <p className="text-xs text-muted-foreground">5 minutes ago</p>
                   </div>
-                  <Eye className="h-4 w-4 text-gray-400" />
+                  <Eye className="h-4 w-4 text-muted-foreground" />
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">New customer registered</p>
-                    <p className="text-xs text-gray-500">12 minutes ago</p>
+                    <p className="text-sm font-medium text-foreground">New customer registered</p>
+                    <p className="text-xs text-muted-foreground">12 minutes ago</p>
                   </div>
-                  <Users className="h-4 w-4 text-gray-400" />
+                  <Users className="h-4 w-4 text-muted-foreground" />
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">Inventory alert: Low stock</p>
-                    <p className="text-xs text-gray-500">18 minutes ago</p>
+                    <p className="text-sm font-medium text-foreground">Inventory alert: Low stock</p>
+                    <p className="text-xs text-muted-foreground">18 minutes ago</p>
                   </div>
-                  <Package className="h-4 w-4 text-gray-400" />
+                  <Package className="h-4 w-4 text-muted-foreground" />
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">Order shipped #ORD-2024-003</p>
-                    <p className="text-xs text-gray-500">25 minutes ago</p>
+                    <p className="text-sm font-medium text-foreground">Order shipped #ORD-2024-003</p>
+                    <p className="text-xs text-muted-foreground">25 minutes ago</p>
                   </div>
-                  <TrendingUp className="h-4 w-4 text-gray-400" />
+                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
                 </div>
               </div>
             </CardContent>
@@ -412,25 +412,25 @@ export default function AdminAnalyticsPage() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center p-6 bg-green-50 rounded-lg">
-                <TrendingUp className="h-8 w-8 text-green-600 mx-auto mb-3" />
-                <h4 className="font-semibold text-gray-900 mb-2">Sales Growth</h4>
-                <p className="text-sm text-gray-600">
-                  Your sales have increased by <span className="font-semibold text-green-600">12.5%</span> compared to last month.
+              <div className="text-center p-6 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <TrendingUp className="h-8 w-8 text-green-600 dark:text-green-400 mx-auto mb-3" />
+                <h4 className="font-semibold text-foreground mb-2">Sales Growth</h4>
+                <p className="text-sm text-muted-foreground">
+                  Your sales have increased by <span className="font-semibold text-green-600 dark:text-green-400">12.5%</span> compared to last month.
                 </p>
               </div>
-              <div className="text-center p-6 bg-blue-50 rounded-lg">
-                <Target className="h-8 w-8 text-blue-600 mx-auto mb-3" />
-                <h4 className="font-semibold text-gray-900 mb-2">Conversion Rate</h4>
-                <p className="text-sm text-gray-600">
-                  Your conversion rate of <span className="font-semibold text-blue-600">3.8%</span> is above industry average.
+              <div className="text-center p-6 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <Target className="h-8 w-8 text-blue-600 dark:text-blue-400 mx-auto mb-3" />
+                <h4 className="font-semibold text-foreground mb-2">Conversion Rate</h4>
+                <p className="text-sm text-muted-foreground">
+                  Your conversion rate of <span className="font-semibold text-blue-600 dark:text-blue-400">3.8%</span> is above industry average.
                 </p>
               </div>
-              <div className="text-center p-6 bg-purple-50 rounded-lg">
-                <Users className="h-8 w-8 text-purple-600 mx-auto mb-3" />
-                <h4 className="font-semibold text-gray-900 mb-2">Customer Retention</h4>
-                <p className="text-sm text-gray-600">
-                  <span className="font-semibold text-purple-600">47%</span> of your sales come from returning customers.
+              <div className="text-center p-6 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                <Users className="h-8 w-8 text-purple-600 dark:text-purple-400 mx-auto mb-3" />
+                <h4 className="font-semibold text-foreground mb-2">Customer Retention</h4>
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-semibold text-purple-600 dark:text-purple-400">47%</span> of your sales come from returning customers.
                 </p>
               </div>
             </div>

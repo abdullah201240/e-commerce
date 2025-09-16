@@ -16,11 +16,15 @@ import {
   ChevronLeft,
   ChevronRight,
   Home,
+  Tags,
+  FolderTree,
 } from 'lucide-react';
 
 interface AdminSidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
+  isMobile?: boolean;
+  onMobileClose?: () => void;
 }
 
 const navigation = [
@@ -34,6 +38,12 @@ const navigation = [
     name: 'Products',
     href: '/admin/products',
     icon: Package,
+    permission: 'manage_products',
+  },
+  {
+    name: 'Categories',
+    href: '/admin/categories',
+    icon: Tags,
     permission: 'manage_products',
   },
   {
@@ -62,7 +72,7 @@ const navigation = [
   },
 ];
 
-export default function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
+export default function AdminSidebar({ isCollapsed, onToggle, isMobile, onMobileClose }: AdminSidebarProps) {
   const pathname = usePathname();
   const { state, logout, hasPermission } = useAdmin();
 
@@ -71,17 +81,25 @@ export default function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProp
     hasPermission(item.permission)
   );
 
+  // Handle navigation click on mobile
+  const handleNavClick = () => {
+    if (isMobile && onMobileClose) {
+      onMobileClose();
+    }
+  };
+
   return (
-    <div className={`bg-gray-900 text-white transition-all duration-300 flex flex-col h-screen ${
-      isCollapsed ? 'w-16' : 'w-64'
+    <div className={`bg-card border-r border-border text-card-foreground transition-all duration-300 flex flex-col h-full ${
+      isMobile ? 'w-64' : (isCollapsed ? 'w-16' : 'w-64')
     }`}>
       {/* Header */}
-      <div className="p-4 border-b border-gray-700">
+      <div className="p-3 sm:p-4 border-b border-border flex-shrink-0">
         <div className="flex items-center justify-between">
-          {!isCollapsed && (
+          {(!isCollapsed || isMobile) && (
             <Link 
               href="/admin/dashboard"
-              className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+              className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+              onClick={handleNavClick}
             >
               FurniStore
             </Link>
@@ -90,24 +108,28 @@ export default function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProp
             variant="ghost"
             size="sm"
             onClick={onToggle}
-            className="text-gray-400 hover:text-white hover:bg-gray-800 p-2"
+            className="text-muted-foreground hover:text-foreground hover:bg-accent p-2"
           >
-            {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+            {isMobile ? (
+              <ChevronLeft className="h-4 w-4" />
+            ) : (
+              isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />
+            )}
           </Button>
         </div>
         
-        {!isCollapsed && state.user && (
-          <div className="mt-4 flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-              <span className="text-sm font-medium">
+        {(!isCollapsed || isMobile) && state.user && (
+          <div className="mt-3 sm:mt-4 flex items-center space-x-2 sm:space-x-3">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+              <span className="text-xs sm:text-sm font-medium text-white">
                 {state.user.name.charAt(0)}
               </span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white truncate">
+              <p className="text-xs sm:text-sm font-medium text-foreground truncate">
                 {state.user.name}
               </p>
-              <p className="text-xs text-gray-400 truncate">
+              <p className="text-xs text-muted-foreground truncate">
                 {state.user.role.replace('_', ' ').toUpperCase()}
               </p>
             </div>
@@ -116,24 +138,24 @@ export default function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProp
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+      <nav className="flex-1 px-3 sm:px-4 py-4 sm:py-6 space-y-2 overflow-y-auto">
         {allowedNavigation.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
 
           return (
-            <Link key={item.name} href={item.href}>
+            <Link key={item.name} href={item.href} onClick={handleNavClick}>
               <Button
                 variant="ghost"
-                className={`w-full justify-start text-left px-3 py-2 rounded-lg transition-all duration-200 ${
+                className={`w-full justify-start text-left px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 ${
                   isActive
                     ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                    : 'text-gray-300 hover:text-white hover:bg-gray-800'
-                } ${isCollapsed ? 'justify-center px-2' : ''}`}
+                    : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                } ${(!isMobile && isCollapsed) ? 'justify-center px-2' : ''}`}
               >
-                <Icon className={`h-5 w-5 ${isCollapsed ? '' : 'mr-3'}`} />
-                {!isCollapsed && (
-                  <span className="font-medium">{item.name}</span>
+                <Icon className={`h-4 w-4 sm:h-5 sm:w-5 ${(!isMobile && isCollapsed) ? '' : 'mr-2 sm:mr-3'}`} />
+                {(!isCollapsed || isMobile) && (
+                  <span className="font-medium text-sm sm:text-base">{item.name}</span>
                 )}
               </Button>
             </Link>
@@ -142,30 +164,33 @@ export default function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProp
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-gray-700 space-y-2">
+      <div className="p-3 sm:p-4 border-t border-border space-y-2 flex-shrink-0">
         {/* Go to Store */}
-        <Link href="/">
+        <Link href="/" onClick={handleNavClick}>
           <Button
             variant="ghost"
-            className={`w-full text-gray-300 hover:text-white hover:bg-gray-800 ${
-              isCollapsed ? 'justify-center px-2' : 'justify-start px-3'
+            className={`w-full text-muted-foreground hover:text-foreground hover:bg-accent ${
+              (!isMobile && isCollapsed) ? 'justify-center px-2' : 'justify-start px-2 sm:px-3'
             }`}
           >
-            <Home className={`h-5 w-5 ${isCollapsed ? '' : 'mr-3'}`} />
-            {!isCollapsed && <span>Go to Store</span>}
+            <Home className={`h-4 w-4 sm:h-5 sm:w-5 ${(!isMobile && isCollapsed) ? '' : 'mr-2 sm:mr-3'}`} />
+            {(!isCollapsed || isMobile) && <span className="text-sm sm:text-base">Go to Store</span>}
           </Button>
         </Link>
 
         {/* Logout */}
         <Button
           variant="ghost"
-          onClick={logout}
-          className={`w-full text-red-400 hover:text-red-300 hover:bg-red-900/20 ${
-            isCollapsed ? 'justify-center px-2' : 'justify-start px-3'
+          onClick={() => {
+            logout();
+            if (isMobile && onMobileClose) onMobileClose();
+          }}
+          className={`w-full text-destructive hover:text-destructive hover:bg-destructive/10 ${
+            (!isMobile && isCollapsed) ? 'justify-center px-2' : 'justify-start px-2 sm:px-3'
           }`}
         >
-          <LogOut className={`h-5 w-5 ${isCollapsed ? '' : 'mr-3'}`} />
-          {!isCollapsed && <span>Logout</span>}
+          <LogOut className={`h-4 w-4 sm:h-5 sm:w-5 ${(!isMobile && isCollapsed) ? '' : 'mr-2 sm:mr-3'}`} />
+          {(!isCollapsed || isMobile) && <span className="text-sm sm:text-base">Logout</span>}
         </Button>
       </div>
     </div>

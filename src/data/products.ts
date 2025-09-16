@@ -16,19 +16,25 @@ export interface Review {
 export interface Product {
   id: string;
   name: string;
+  productCode?: string;
   price: number;
   originalPrice?: number;
+  discountPrice?: number;
   category: string;
+  subCategory?: string;
   image: string;
   images: string[];
   videos?: string[];
   description: string;
+  applications?: string;
+  warranty?: string;
   features?: string[];
   specifications?: { [key: string]: string };
   rating: number;
   reviews: number;
   reviewsList?: Review[];
   inStock: boolean;
+  quantity?: number;
   featured: boolean;
   discount?: number;
   isNewArrival?: boolean;
@@ -36,7 +42,9 @@ export interface Product {
   tags?: string[];
   colors?: string[];
   sizes?: string[];
-  weight?: string;
+  weight?: number; // in kg
+  unitName?: string;
+  pricePerUnit?: number;
   dimensions?: {
     length: number;
     width: number;
@@ -203,7 +211,7 @@ export const products: Product[] = [
       height: 33,
       unit: 'inches'
     },
-    weight: '120 lbs',
+    weight: 54.4, // kg (120 lbs converted)
     colors: ['Gray', 'Navy Blue', 'Beige', 'Charcoal'],
     tags: ['modern', 'comfortable', 'living room', 'premium'],
     rating: 4.5,
@@ -313,7 +321,7 @@ export const products: Product[] = [
       height: 40,
       unit: 'inches'
     },
-    weight: '35 lbs',
+    weight: 15.9, // kg (35 lbs converted)
     colors: ['Black', 'Gray', 'White'],
     tags: ['ergonomic', 'office', 'adjustable', 'comfortable'],
     rating: 4.6,

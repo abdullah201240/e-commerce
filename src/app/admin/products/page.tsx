@@ -1,21 +1,36 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { products, categories } from '@/data/products';
+import { 
+  Sheet, 
+  SheetContent, 
+  SheetHeader, 
+  SheetTitle, 
+  SheetDescription,
+  SheetFooter,
+  SheetTrigger 
+} from '@/components/ui/sheet';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
   Search,
-  Filter,
   Plus,
   Edit3,
   Trash2,
   Eye,
   Package,
-  DollarSign,
   TrendingUp,
   AlertTriangle,
   CheckCircle,
@@ -23,6 +38,18 @@ import {
   Download,
   Upload,
   Settings,
+  Copy,
+  Star,
+  StarOff,
+  ExternalLink,
+  X,
+  Save,
+  Image as ImageIcon,
+  DollarSign,
+  Weight,
+  FileText,
+  Wrench,
+  ListChecks,
 } from 'lucide-react';
 
 // Product Status Badge Component
@@ -46,7 +73,7 @@ function ProductStatusBadge({ inStock, featured }: { inStock: boolean; featured:
   }
   
   return (
-    <Badge variant="secondary" className="bg-green-100 text-green-700 text-xs">
+    <Badge variant="secondary" className="bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 text-xs">
       <CheckCircle className="h-3 w-3 mr-1" />
       In Stock
     </Badge>
@@ -59,15 +86,17 @@ interface ProductRowProps {
   onEdit: (product: typeof products[0]) => void;
   onDelete: (productId: string) => void;
   onView: (product: typeof products[0]) => void;
+  onToggleFeatured: (product: typeof products[0]) => void;
+  onDuplicate: (product: typeof products[0]) => void;
 }
 
-function ProductRow({ product, onEdit, onDelete, onView }: ProductRowProps) {
+function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDuplicate }: ProductRowProps) {
   const discountPercentage = product.originalPrice 
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
 
   return (
-    <tr className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
+    <tr className="border-b border-border hover:bg-muted/50 transition-colors">
       {/* Product Info */}
       <td className="py-4 px-4">
         <div className="flex items-center space-x-3">
@@ -77,30 +106,67 @@ function ProductRow({ product, onEdit, onDelete, onView }: ProductRowProps) {
             className="w-12 h-12 rounded-lg object-cover"
           />
           <div className="min-w-0 flex-1">
-            <p className="font-medium text-gray-900 truncate">{product.name}</p>
-            <p className="text-sm text-gray-500 capitalize">{product.category}</p>
+            <p className="font-medium text-foreground truncate">{product.name}</p>
+            <div className="flex items-center gap-2 mt-1">
+              <p className="text-sm text-muted-foreground capitalize">{product.category}</p>
+              {product.subCategory && (
+                <>
+                  <span className="text-xs text-muted-foreground">→</span>
+                  <p className="text-xs text-muted-foreground capitalize">{product.subCategory}</p>
+                </>
+              )}
+            </div>
+            {product.productCode && (
+              <p className="text-xs text-muted-foreground font-mono">Code: {product.productCode}</p>
+            )}
           </div>
         </div>
       </td>
 
       {/* SKU/ID */}
-      <td className="py-4 px-4 text-sm text-gray-600 font-mono">
+      <td className="py-4 px-4 text-sm text-muted-foreground font-mono">
         #{product.id}
       </td>
 
-      {/* Price */}
+      {/* Price & Inventory */}
       <td className="py-4 px-4">
         <div className="flex flex-col">
-          <span className="font-semibold text-gray-900">${product.price}</span>
+          <span className="font-semibold text-foreground">${product.price}</span>
           {product.originalPrice && (
-            <span className="text-xs text-gray-500 line-through">
+            <span className="text-xs text-muted-foreground line-through">
               ${product.originalPrice}
             </span>
           )}
+          {product.discountPrice && product.discountPrice !== product.price && (
+            <span className="text-xs text-green-600 dark:text-green-400 font-medium">
+              Sale: ${product.discountPrice}
+            </span>
+          )}
           {discountPercentage > 0 && (
-            <span className="text-xs text-red-600 font-medium">
+            <span className="text-xs text-red-600 dark:text-red-400 font-medium">
               -{discountPercentage}% off
             </span>
+          )}
+          {product.quantity !== undefined && (
+            <span className="text-xs text-muted-foreground">
+              Stock: {product.quantity} {product.unitName || 'units'}
+            </span>
+          )}
+        </div>
+      </td>
+
+      {/* Weight & Unit */}
+      <td className="py-4 px-4">
+        <div className="text-sm">
+          {product.weight ? (
+            <span className="text-foreground">{product.weight} kg</span>
+          ) : (
+            <span className="text-muted-foreground">-</span>
+          )}
+          {product.unitName && (
+            <div className="text-xs text-muted-foreground">
+              per {product.unitName}
+            </div>
           )}
         </div>
       </td>
@@ -116,53 +182,580 @@ function ProductRow({ product, onEdit, onDelete, onView }: ProductRowProps) {
           <span className="text-sm font-medium">{product.rating}</span>
           <div className="flex text-yellow-400">
             {[...Array(5)].map((_, i) => (
-              <svg key={i} className={`h-4 w-4 ${i < Math.floor(product.rating) ? 'fill-current' : 'fill-gray-200'}`} viewBox="0 0 20 20">
+              <svg key={i} className={`h-4 w-4 ${i < Math.floor(product.rating) ? 'fill-current' : 'fill-muted-foreground/30'}`} viewBox="0 0 20 20">
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
               </svg>
             ))}
           </div>
-          <span className="text-xs text-gray-500">({product.reviews})</span>
+          <span className="text-xs text-muted-foreground">({product.reviews})</span>
         </div>
       </td>
 
       {/* Actions */}
       <td className="py-4 px-4">
         <div className="flex items-center space-x-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onView(product)}
-            className="text-gray-600 hover:text-blue-600"
-            title="View Product"
-          >
-            <Eye className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onEdit(product)}
-            className="text-gray-600 hover:text-blue-600"
-            title="Edit Product"
-          >
-            <Edit3 className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onDelete(product.id)}
-            className="text-gray-600 hover:text-red-600"
-            title="Delete Product"
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-gray-600 hover:text-gray-800"
-            title="More Actions"
-          >
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
+          {/* View Product Sheet */}
+          <Sheet>
+            <SheetTrigger>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400"
+                title="View Product"
+              >
+                <Eye className="h-4 w-4" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent className="w-[90vw] sm:w-[600px] overflow-y-auto">
+              <SheetHeader>
+                <SheetTitle className="flex items-center space-x-2">
+                  <Package className="h-5 w-5" />
+                  <span>Product Details</span>
+                </SheetTitle>
+                <SheetDescription>
+                  Complete information for {product.name}
+                </SheetDescription>
+              </SheetHeader>
+              
+              <div className="py-6 space-y-6">
+                {/* Product Images */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-foreground flex items-center">
+                    <ImageIcon className="h-4 w-4 mr-2" />
+                    Product Images
+                  </h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    {product.images && product.images.length > 0 ? (
+                      product.images.slice(0, 4).map((img, idx) => (
+                        <div key={idx} className="aspect-square rounded-lg overflow-hidden bg-muted border">
+                          <img
+                            src={img}
+                            alt={`${product.name} ${idx + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <div className="aspect-square rounded-lg bg-muted border flex items-center justify-center col-span-2">
+                        <ImageIcon className="h-8 w-8 text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Basic Information */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Product Name</label>
+                    <p className="text-foreground font-medium">{product.name}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Product Code</label>
+                    <p className="text-foreground font-mono text-sm">{product.productCode || 'N/A'}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Category</label>
+                    <p className="text-foreground capitalize">{product.category}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Sub-Category</label>
+                    <p className="text-foreground capitalize">{product.subCategory || 'N/A'}</p>
+                  </div>
+                </div>
+
+                {/* Pricing Information */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-foreground flex items-center">
+                    <DollarSign className="h-4 w-4 mr-2" />
+                    Pricing Information
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Current Price</label>
+                      <p className="text-foreground font-semibold text-lg">${product.price}</p>
+                    </div>
+                    {product.originalPrice && (
+                      <div className="space-y-1">
+                        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Original Price</label>
+                        <p className="text-muted-foreground line-through">${product.originalPrice}</p>
+                      </div>
+                    )}
+                    {product.discountPrice && product.discountPrice !== product.price && (
+                      <div className="space-y-1">
+                        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Discount Price</label>
+                        <p className="text-green-600 dark:text-green-400 font-medium">${product.discountPrice}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Physical Properties */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-foreground flex items-center">
+                    <Weight className="h-4 w-4 mr-2" />
+                    Physical Properties
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Weight</label>
+                      <p className="text-foreground">{product.weight ? `${product.weight} kg` : 'N/A'}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Unit</label>
+                      <p className="text-foreground capitalize">{product.unitName || 'N/A'}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Quantity</label>
+                      <p className="text-foreground">{product.quantity || 0} units</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Stock Status & Rating */}
+                <div className="space-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Stock Status</label>
+                      <div className="mt-1">
+                        <ProductStatusBadge inStock={product.inStock} featured={product.featured} />
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Rating</label>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <span className="text-foreground font-medium">{product.rating}</span>
+                        <div className="flex text-yellow-400">
+                          {[...Array(5)].map((_, i) => (
+                            <svg key={i} className={`h-4 w-4 ${i < Math.floor(product.rating) ? 'fill-current' : 'fill-muted-foreground/30'}`} viewBox="0 0 20 20">
+                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                          ))}
+                        </div>
+                        <span className="text-muted-foreground text-sm">({product.reviews} reviews)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center">
+                    <FileText className="h-4 w-4 mr-2" />
+                    Description
+                  </label>
+                  <p className="text-foreground text-sm leading-relaxed bg-muted/30 p-3 rounded-lg">
+                    {product.description}
+                  </p>
+                </div>
+
+                {/* Applications */}
+                {product.applications && (
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center">
+                      <Wrench className="h-4 w-4 mr-2" />
+                      Applications
+                    </label>
+                    <p className="text-foreground text-sm leading-relaxed bg-muted/30 p-3 rounded-lg">
+                      {product.applications}
+                    </p>
+                  </div>
+                )}
+
+                {/* Warranty */}
+                {product.warranty && (
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Warranty
+                    </label>
+                    <p className="text-foreground">{product.warranty}</p>
+                  </div>
+                )}
+
+                {/* Features */}
+                {product.features && product.features.length > 0 && (
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center">
+                      <ListChecks className="h-4 w-4 mr-2" />
+                      Features
+                    </label>
+                    <div className="space-y-1">
+                      {product.features.map((feature, idx) => (
+                        <div key={idx} className="flex items-center space-x-2 text-sm">
+                          <CheckCircle className="h-3 w-3 text-green-500 flex-shrink-0" />
+                          <span className="text-foreground">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Specifications */}
+                {product.specifications && Object.keys(product.specifications).length > 0 && (
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Specifications
+                    </label>
+                    <div className="bg-muted/30 rounded-lg p-3 space-y-2">
+                      {Object.entries(product.specifications).map(([key, value]) => (
+                        <div key={key} className="flex justify-between items-center text-sm border-b border-border/50 last:border-0 pb-1 last:pb-0">
+                          <span className="text-muted-foreground font-medium">{key}:</span>
+                          <span className="text-foreground">{value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              <SheetFooter>
+                <Button
+                  variant="outline"
+                  onClick={() => window.open(`/products/${product.id}`, '_blank')}
+                  className="w-full"
+                >
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  View in Store
+                </Button>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
+
+          {/* Edit Product Sheet */}
+          <Sheet>
+            <SheetTrigger>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400"
+                title="Edit Product"
+              >
+                <Edit3 className="h-4 w-4" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent className="w-[90vw] sm:w-[600px] overflow-y-auto">
+              <SheetHeader>
+                <SheetTitle className="flex items-center space-x-2">
+                  <Edit3 className="h-5 w-5" />
+                  <span>Edit Product</span>
+                </SheetTitle>
+                <SheetDescription>
+                  Make changes to {product.name}
+                </SheetDescription>
+              </SheetHeader>
+              
+              <div className="py-6 space-y-6">
+                {/* Basic Information */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-foreground flex items-center">
+                    <Package className="h-4 w-4 mr-2" />
+                    Basic Information
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground">Product Name</label>
+                      <Input defaultValue={product.name} className="h-10" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground">Product Code</label>
+                      <Input defaultValue={product.productCode || ''} className="h-10" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground">Category</label>
+                      <select
+                        defaultValue={product.category}
+                        className="w-full h-10 px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                      >
+                        {categories.filter(cat => cat.id !== 'all').map(category => (
+                          <option key={category.id} value={category.id}>
+                            {category.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground">Sub-Category</label>
+                      <Input defaultValue={product.subCategory || ''} className="h-10" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Pricing & Inventory */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-foreground flex items-center">
+                    <DollarSign className="h-4 w-4 mr-2" />
+                    Pricing & Inventory
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground">Price</label>
+                      <Input type="number" step="0.01" defaultValue={product.price} className="h-10" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground">Original Price</label>
+                      <Input type="number" step="0.01" defaultValue={product.originalPrice || ''} className="h-10" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground">Discount Price</label>
+                      <Input type="number" step="0.01" defaultValue={product.discountPrice || ''} className="h-10" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground">Quantity</label>
+                      <Input type="number" defaultValue={product.quantity || 0} className="h-10" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground">Weight (kg)</label>
+                      <Input type="number" step="0.1" defaultValue={product.weight || ''} className="h-10" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground">Unit</label>
+                      <select
+                        defaultValue={product.unitName || 'piece'}
+                        className="w-full h-10 px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                      >
+                        <option value="piece">Piece</option>
+                        <option value="set">Set</option>
+                        <option value="pair">Pair</option>
+                        <option value="box">Box</option>
+                        <option value="pack">Pack</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Product Details */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-foreground flex items-center">
+                    <FileText className="h-4 w-4 mr-2" />
+                    Product Details
+                  </h4>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground">Description</label>
+                      <textarea
+                        defaultValue={product.description}
+                        className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent resize-none"
+                        rows={3}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground">Applications</label>
+                      <textarea
+                        defaultValue={product.applications || ''}
+                        className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent resize-none"
+                        rows={2}
+                        placeholder="Describe where and how this product can be used"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground">Warranty</label>
+                      <Input 
+                        defaultValue={product.warranty || ''} 
+                        className="h-10" 
+                        placeholder="e.g., 2 years manufacturer warranty"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Features */}
+                {product.features && product.features.length > 0 && (
+                  <div className="space-y-4">
+                    <h4 className="font-medium text-foreground flex items-center">
+                      <ListChecks className="h-4 w-4 mr-2" />
+                      Features
+                    </h4>
+                    <div className="space-y-2">
+                      {product.features.map((feature, idx) => (
+                        <div key={idx} className="flex items-center space-x-2">
+                          <Input 
+                            defaultValue={feature} 
+                            className="h-10 flex-1" 
+                            placeholder="Enter product feature"
+                          />
+                          <Button variant="outline" size="sm" className="h-10 w-10 p-0">
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
+                      <Button variant="outline" className="w-full h-10 border-dashed">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Feature
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Specifications */}
+                {product.specifications && Object.keys(product.specifications).length > 0 && (
+                  <div className="space-y-4">
+                    <h4 className="font-medium text-foreground flex items-center">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Specifications
+                    </h4>
+                    <div className="space-y-2">
+                      {Object.entries(product.specifications).map(([key, value]) => (
+                        <div key={key} className="grid grid-cols-2 gap-2">
+                          <Input 
+                            defaultValue={key} 
+                            className="h-10" 
+                            placeholder="Specification name"
+                          />
+                          <div className="flex space-x-2">
+                            <Input 
+                              defaultValue={value} 
+                              className="h-10 flex-1" 
+                              placeholder="Specification value"
+                            />
+                            <Button variant="outline" size="sm" className="h-10 w-10 p-0">
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                      <Button variant="outline" className="w-full h-10 border-dashed">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Specification
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Product Status */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-foreground">Product Status</h4>
+                  <div className="flex flex-col space-y-3">
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id={`featured-${product.id}`}
+                        defaultChecked={product.featured}
+                        className="rounded border-border"
+                      />
+                      <label htmlFor={`featured-${product.id}`} className="text-sm text-foreground">
+                        Featured Product
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id={`instock-${product.id}`}
+                        defaultChecked={product.inStock}
+                        className="rounded border-border"
+                      />
+                      <label htmlFor={`instock-${product.id}`} className="text-sm text-foreground">
+                        In Stock
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <SheetFooter>
+                <div className="flex space-x-2 w-full">
+                  <Button variant="outline" className="flex-1">
+                    Cancel
+                  </Button>
+                  <Button className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                    <Save className="h-4 w-4 mr-2" />
+                    Save Changes
+                  </Button>
+                </div>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
+
+          {/* Delete Product Sheet */}
+          <Sheet>
+            <SheetTrigger>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground hover:text-red-600 dark:hover:text-red-400"
+                title="Delete Product"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent className="w-[90vw] sm:w-[400px]">
+              <SheetHeader>
+                <SheetTitle>Delete Product</SheetTitle>
+                <SheetDescription>
+                  Are you sure you want to delete {product.name}? This action cannot be undone.
+                </SheetDescription>
+              </SheetHeader>
+              <div className="py-6">
+                <div className="bg-muted/50 dark:bg-muted/30 p-4 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-16 h-16 rounded-lg object-cover"
+                    />
+                    <div>
+                      <p className="font-medium text-foreground">{product.name}</p>
+                      <p className="text-sm text-muted-foreground">ID: #{product.id}</p>
+                      <p className="text-sm text-muted-foreground">${product.price}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <SheetFooter>
+                <div className="flex space-x-2 w-full">
+                  <Button variant="outline" className="flex-1">
+                    Cancel
+                  </Button>
+                  <Button variant="destructive" className="flex-1" onClick={() => onDelete(product.id)}>
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Delete
+                  </Button>
+                </div>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
+
+          {/* More Actions Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground hover:text-foreground"
+                title="More Actions"
+              >
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => onDuplicate(product)}>
+                <Copy className="h-4 w-4 mr-2" />
+                Duplicate
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onToggleFeatured(product)}>
+                {product.featured ? (
+                  <>
+                    <StarOff className="h-4 w-4 mr-2" />
+                    Remove from Featured
+                  </>
+                ) : (
+                  <>
+                    <Star className="h-4 w-4 mr-2" />
+                    Add to Featured
+                  </>
+                )}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => window.open(`/products/${product.id}`, '_blank')}>
+                <ExternalLink className="h-4 w-4 mr-2" />
+                View in Store
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </td>
     </tr>
@@ -170,6 +763,7 @@ function ProductRow({ product, onEdit, onDelete, onView }: ProductRowProps) {
 }
 
 export default function AdminProductsPage() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -237,7 +831,7 @@ export default function AdminProductsPage() {
   // Event handlers
   const handleEdit = (product: typeof products[0]) => {
     console.log('Edit product:', product);
-    // TODO: Open edit modal or navigate to edit page
+    // TODO: Open edit sheet or navigate to edit page
   };
 
   const handleDelete = (productId: string) => {
@@ -247,12 +841,21 @@ export default function AdminProductsPage() {
 
   const handleView = (product: typeof products[0]) => {
     console.log('View product:', product);
-    // TODO: Open product details modal or navigate to view page
+    // TODO: Open product details sheet or navigate to view page
+  };
+
+  const handleToggleFeatured = (product: typeof products[0]) => {
+    console.log('Toggle featured:', product);
+    // TODO: Update product featured status
+  };
+
+  const handleDuplicate = (product: typeof products[0]) => {
+    console.log('Duplicate product:', product);
+    // TODO: Create a copy of the product
   };
 
   const handleAddProduct = () => {
-    console.log('Add new product');
-    // TODO: Open add product modal or navigate to add page
+    router.push('/admin/products/add');
   };
 
   // Stats
@@ -270,8 +873,8 @@ export default function AdminProductsPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Products</p>
-                  <p className="text-3xl font-bold text-gray-900">{totalProducts}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Total Products</p>
+                  <p className="text-3xl font-bold text-foreground">{totalProducts}</p>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
                   <Package className="h-6 w-6 text-white" />
@@ -284,8 +887,8 @@ export default function AdminProductsPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">In Stock</p>
-                  <p className="text-3xl font-bold text-green-600">{inStockProducts}</p>
+                  <p className="text-sm font-medium text-muted-foreground">In Stock</p>
+                  <p className="text-3xl font-bold text-green-600 dark:text-green-400">{inStockProducts}</p>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
                   <CheckCircle className="h-6 w-6 text-white" />
@@ -298,8 +901,8 @@ export default function AdminProductsPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Out of Stock</p>
-                  <p className="text-3xl font-bold text-red-600">{outOfStockProducts}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Out of Stock</p>
+                  <p className="text-3xl font-bold text-red-600 dark:text-red-400">{outOfStockProducts}</p>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-red-600 rounded-lg flex items-center justify-center">
                   <AlertTriangle className="h-6 w-6 text-white" />
@@ -312,8 +915,8 @@ export default function AdminProductsPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Featured</p>
-                  <p className="text-3xl font-bold text-yellow-600">{featuredProducts}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Featured</p>
+                  <p className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">{featuredProducts}</p>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center">
                   <TrendingUp className="h-6 w-6 text-white" />
@@ -331,7 +934,7 @@ export default function AdminProductsPage() {
               <div className="flex flex-col sm:flex-row gap-4 flex-1">
                 {/* Search */}
                 <div className="relative flex-1 max-w-md">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     type="text"
                     placeholder="Search products by name, category, or ID..."
@@ -345,7 +948,7 @@ export default function AdminProductsPage() {
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
                 >
                   <option value="all">All Categories</option>
                   {categories.filter(cat => cat.id !== 'all').map(category => (
@@ -359,7 +962,7 @@ export default function AdminProductsPage() {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
                 >
                   <option value="all">All Status</option>
                   <option value="instock">In Stock</option>
@@ -371,7 +974,7 @@ export default function AdminProductsPage() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
                 >
                   <option value="name">Sort by Name</option>
                   <option value="price-low">Price: Low to High</option>
@@ -383,6 +986,14 @@ export default function AdminProductsPage() {
 
               {/* Actions */}
               <div className="flex items-center gap-3">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => router.push('/admin/categories')}
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  Manage Categories
+                </Button>
                 <Button variant="outline" size="sm">
                   <Download className="h-4 w-4 mr-2" />
                   Export
@@ -406,7 +1017,7 @@ export default function AdminProductsPage() {
             <div className="flex items-center justify-between">
               <CardTitle>Products ({filteredProducts.length})</CardTitle>
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-muted-foreground">
                   Showing {startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredProducts.length)} of {filteredProducts.length}
                 </span>
               </div>
@@ -415,14 +1026,15 @@ export default function AdminProductsPage() {
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-muted/50 dark:bg-muted/30 border-b border-border">
                   <tr>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Product</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">SKU</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Price</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Status</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Rating</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Actions</th>
+                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Product</th>
+                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">SKU</th>
+                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Price & Stock</th>
+                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Weight/Unit</th>
+                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Status</th>
+                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Rating</th>
+                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -434,14 +1046,16 @@ export default function AdminProductsPage() {
                         onEdit={handleEdit}
                         onDelete={handleDelete}
                         onView={handleView}
+                        onToggleFeatured={handleToggleFeatured}
+                        onDuplicate={handleDuplicate}
                       />
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={6} className="py-12 text-center">
-                        <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <p className="text-gray-600">No products found</p>
-                        <p className="text-sm text-gray-500 mt-1">
+                      <td colSpan={7} className="py-12 text-center">
+                        <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                        <p className="text-foreground">No products found</p>
+                        <p className="text-sm text-muted-foreground mt-1">
                           Try adjusting your search or filter criteria
                         </p>
                       </td>
@@ -453,9 +1067,9 @@ export default function AdminProductsPage() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="border-t border-gray-200 px-6 py-4">
+              <div className="border-t border-border px-6 py-4">
                 <div className="flex items-center justify-between">
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-muted-foreground">
                     Page {currentPage} of {totalPages}
                   </div>
                   <div className="flex items-center gap-2">

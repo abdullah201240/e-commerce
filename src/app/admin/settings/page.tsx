@@ -75,7 +75,7 @@ export default function AdminSettingsPage() {
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Store Name
                 </label>
                 <Input
@@ -86,13 +86,13 @@ export default function AdminSettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Currency
                 </label>
                 <select
                   value={settings.currency}
                   onChange={(e) => setSettings(prev => ({ ...prev, currency: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 >
                   <option value="USD">USD - US Dollar</option>
                   <option value="EUR">EUR - Euro</option>
@@ -101,13 +101,13 @@ export default function AdminSettingsPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Timezone
                 </label>
                 <select
                   value={settings.timezone}
                   onChange={(e) => setSettings(prev => ({ ...prev, timezone: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 >
                   <option value="America/New_York">Eastern Time</option>
                   <option value="America/Chicago">Central Time</option>
@@ -116,13 +116,13 @@ export default function AdminSettingsPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Language
                 </label>
                 <select
                   value={settings.language}
                   onChange={(e) => setSettings(prev => ({ ...prev, language: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 >
                   <option value="en">English</option>
                   <option value="es">Spanish</option>
@@ -138,7 +138,7 @@ export default function AdminSettingsPage() {
         return (
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Store Email
               </label>
               <Input
@@ -149,7 +149,7 @@ export default function AdminSettingsPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Store Phone
               </label>
               <Input
@@ -160,7 +160,7 @@ export default function AdminSettingsPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Store Address
               </label>
               <Input
@@ -179,8 +179,8 @@ export default function AdminSettingsPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium text-gray-900">Email Notifications</h4>
-                  <p className="text-sm text-gray-600">Receive notifications via email</p>
+                  <h4 className="font-medium text-foreground">Email Notifications</h4>
+                  <p className="text-sm text-muted-foreground">Receive notifications via email</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -189,13 +189,13 @@ export default function AdminSettingsPage() {
                     onChange={(e) => setSettings(prev => ({ ...prev, emailNotifications: e.target.checked }))}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                 </label>
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium text-gray-900">Order Notifications</h4>
-                  <p className="text-sm text-gray-600">Get notified about new orders</p>
+                  <h4 className="font-medium text-foreground">Order Notifications</h4>
+                  <p className="text-sm text-muted-foreground">Get notified about new orders</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -204,13 +204,13 @@ export default function AdminSettingsPage() {
                     onChange={(e) => setSettings(prev => ({ ...prev, orderNotifications: e.target.checked }))}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                 </label>
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium text-gray-900">Low Stock Alerts</h4>
-                  <p className="text-sm text-gray-600">Alert when products are running low</p>
+                  <h4 className="font-medium text-foreground">Low Stock Alerts</h4>
+                  <p className="text-sm text-muted-foreground">Alert when products are running low</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -219,7 +219,7 @@ export default function AdminSettingsPage() {
                     onChange={(e) => setSettings(prev => ({ ...prev, lowStockAlerts: e.target.checked }))}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                 </label>
               </div>
             </div>
@@ -232,8 +232,8 @@ export default function AdminSettingsPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium text-gray-900">Allow User Registration</h4>
-                  <p className="text-sm text-gray-600">Allow new users to register accounts</p>
+                  <h4 className="font-medium text-foreground">Allow User Registration</h4>
+                  <p className="text-sm text-muted-foreground">Allow new users to register accounts</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -242,13 +242,13 @@ export default function AdminSettingsPage() {
                     onChange={(e) => setSettings(prev => ({ ...prev, allowRegistration: e.target.checked }))}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                 </label>
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium text-gray-900">Require Email Verification</h4>
-                  <p className="text-sm text-gray-600">Users must verify their email before accessing the account</p>
+                  <h4 className="font-medium text-foreground">Require Email Verification</h4>
+                  <p className="text-sm text-muted-foreground">Users must verify their email before accessing the account</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -257,16 +257,16 @@ export default function AdminSettingsPage() {
                     onChange={(e) => setSettings(prev => ({ ...prev, requireEmailVerification: e.target.checked }))}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                 </label>
               </div>
             </div>
             
             <div>
-              <h4 className="font-medium text-gray-900 mb-4">Change Password</h4>
+              <h4 className="font-medium text-foreground mb-4">Change Password</h4>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     Current Password
                   </label>
                   <div className="relative">
@@ -286,7 +286,7 @@ export default function AdminSettingsPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     New Password
                   </label>
                   <Input
@@ -295,7 +295,7 @@ export default function AdminSettingsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     Confirm New Password
                   </label>
                   <Input
@@ -303,7 +303,7 @@ export default function AdminSettingsPage() {
                     placeholder="Confirm new password"
                   />
                 </div>
-                <Button className="bg-blue-600 hover:bg-blue-700">
+                <Button className="bg-primary hover:bg-primary/90">
                   Update Password
                 </Button>
               </div>
@@ -316,7 +316,7 @@ export default function AdminSettingsPage() {
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Default Shipping Cost ($)
                 </label>
                 <Input
@@ -328,7 +328,7 @@ export default function AdminSettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Free Shipping Threshold ($)
                 </label>
                 <Input
@@ -340,7 +340,7 @@ export default function AdminSettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Tax Rate (%)
                 </label>
                 <Input
@@ -361,8 +361,8 @@ export default function AdminSettingsPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium text-gray-900">Maintenance Mode</h4>
-                  <p className="text-sm text-gray-600">Put the store in maintenance mode</p>
+                  <h4 className="font-medium text-foreground">Maintenance Mode</h4>
+                  <p className="text-sm text-muted-foreground">Put the store in maintenance mode</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -371,13 +371,13 @@ export default function AdminSettingsPage() {
                     onChange={(e) => setSettings(prev => ({ ...prev, maintenanceMode: e.target.checked }))}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                 </label>
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium text-gray-900">Auto-Approve Reviews</h4>
-                  <p className="text-sm text-gray-600">Automatically approve customer reviews</p>
+                  <h4 className="font-medium text-foreground">Auto-Approve Reviews</h4>
+                  <p className="text-sm text-muted-foreground">Automatically approve customer reviews</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -386,24 +386,24 @@ export default function AdminSettingsPage() {
                     onChange={(e) => setSettings(prev => ({ ...prev, autoApproveReviews: e.target.checked }))}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                 </label>
               </div>
             </div>
             
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-lg p-4">
               <div className="flex items-center mb-2">
-                <AlertTriangle className="h-5 w-5 text-red-600 mr-2" />
-                <h4 className="font-medium text-red-900">Danger Zone</h4>
+                <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400 mr-2" />
+                <h4 className="font-medium text-red-900 dark:text-red-400">Danger Zone</h4>
               </div>
-              <p className="text-sm text-red-700 mb-4">
+              <p className="text-sm text-red-700 dark:text-red-300 mb-4">
                 These actions are irreversible. Please be certain before proceeding.
               </p>
               <div className="space-y-2">
-                <Button variant="outline" className="border-red-300 text-red-700 hover:bg-red-50">
+                <Button variant="outline" className="border-red-300 dark:border-red-700 text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
                   Clear All Cache
                 </Button>
-                <Button variant="outline" className="border-red-300 text-red-700 hover:bg-red-50">
+                <Button variant="outline" className="border-red-300 dark:border-red-700 text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
                   Reset to Default Settings
                 </Button>
               </div>
@@ -433,8 +433,8 @@ export default function AdminSettingsPage() {
                         onClick={() => setActiveTab(tab.id)}
                         className={`w-full flex items-center space-x-3 px-3 py-2 text-left rounded-lg transition-colors ${
                           activeTab === tab.id
-                            ? 'bg-blue-100 text-blue-700'
-                            : 'text-gray-700 hover:bg-gray-100'
+                            ? 'bg-primary/10 text-primary'
+                            : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                         }`}
                       >
                         <Icon className="h-4 w-4" />
@@ -462,7 +462,7 @@ export default function AdminSettingsPage() {
                 {renderTabContent()}
                 
                 {/* Save/Reset Buttons */}
-                <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+                <div className="flex items-center justify-between pt-6 border-t border-border">
                   <Button
                     variant="outline"
                     onClick={handleReset}
@@ -473,7 +473,7 @@ export default function AdminSettingsPage() {
                   </Button>
                   <Button
                     onClick={handleSave}
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 flex items-center"
+                    className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-700 flex items-center"
                   >
                     <Save className="h-4 w-4 mr-2" />
                     Save Settings

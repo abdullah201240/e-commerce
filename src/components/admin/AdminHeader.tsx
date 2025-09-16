@@ -4,116 +4,151 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAdmin } from '@/contexts/AdminContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import {
   Search,
   Bell,
   Settings,
   User,
-  RefreshCw,
   Moon,
   Sun,
+  Menu,
+  Monitor,
 } from 'lucide-react';
 
 interface AdminHeaderProps {
   title: string;
   subtitle?: string;
+  onMenuClick?: () => void;
+  isMobile?: boolean;
 }
 
-export default function AdminHeader({ title, subtitle }: AdminHeaderProps) {
+export default function AdminHeader({ title, subtitle, onMenuClick, isMobile }: AdminHeaderProps) {
   const { state, refreshStats } = useAdmin();
-  const [isDarkMode, setIsDarkMode] = React.useState(false);
+  const { theme, actualTheme, toggleTheme } = useTheme();
 
-  const handleRefreshStats = () => {
-    refreshStats();
+  const getThemeIcon = () => {
+    if (theme === 'system') {
+      return <Monitor className="h-4 w-4" />;
+    }
+    return actualTheme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />;
   };
 
+  const getThemeTitle = () => {
+    if (theme === 'system') {
+      return `System theme (${actualTheme})`;
+    }
+    return actualTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+  };
+
+
   return (
-    <header className="bg-white border-b border-gray-200 px-6 py-4">
+    <header className="bg-card/80 backdrop-blur-md border-b border-border px-4 sm:px-6 py-3 sm:py-4 shadow-none">
       <div className="flex items-center justify-between">
-        {/* Title Section */}
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
-          {subtitle && (
-            <p className="text-gray-600 mt-1">{subtitle}</p>
+        {/* Left Side - Mobile Menu + Title */}
+        <div className="flex items-center space-x-3 flex-1 min-w-0">
+          {/* Mobile Menu Button */}
+          {isMobile && onMenuClick && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onMenuClick}
+              className="text-muted-foreground hover:text-foreground hover:bg-accent backdrop-blur-sm transition-all duration-200 p-2 md:hidden"
+              title="Open Menu"
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
           )}
+          
+          {/* Title Section */}
+          <div className="flex-1 min-w-0">
+            <h1 className="text-lg sm:text-2xl font-bold text-foreground truncate">{title}</h1>
+            {subtitle && (
+              <p className="text-muted-foreground mt-1 text-sm hidden sm:block">{subtitle}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Center - Large Search */}
+        <div className="hidden lg:flex flex-1 justify-center">
+          <div className="relative w-full max-w-xl">
+            <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 h-6 w-6 text-muted-foreground z-10" />
+            <Input
+              type="text"
+              placeholder="Search products, orders, customers..."
+              className="pl-14 pr-6 py-3 w-full text-lg bg-background/90 backdrop-blur-sm border-border focus:border-primary focus:ring-primary focus:bg-background transition-all duration-200 rounded-xl shadow-none"
+            />
+          </div>
         </div>
 
         {/* Right Side Actions */}
-        <div className="flex items-center space-x-4">
-          {/* Search */}
-          <div className="relative hidden md:block">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              type="text"
-              placeholder="Search..."
-              className="pl-10 pr-4 w-64 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-            />
+        <div className="flex items-center space-x-2 sm:space-x-4">
+          {/* Mobile Search Icon */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="lg:hidden text-muted-foreground hover:text-foreground hover:bg-accent backdrop-blur-sm transition-all duration-200 p-2"
+            title="Search"
+          >
+            <Search className="h-4 w-4" />
+          </Button>
+
+          {/* Action Buttons - Condensed on mobile */}
+          <div className="flex items-center space-x-1 sm:space-x-2">
+            {/* Notifications */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground hover:text-foreground hover:bg-accent backdrop-blur-sm relative transition-all duration-200 p-2"
+              title="Notifications"
+            >
+              <Bell className="h-3 w-3 sm:h-4 sm:w-4" />
+              {/* Notification badge */}
+              <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 sm:h-3 sm:w-3 bg-destructive rounded-full"></span>
+            </Button>
+
+            {/* Dark Mode Toggle - Hidden on small mobile */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleTheme}
+              className="hidden sm:flex text-muted-foreground hover:text-foreground hover:bg-accent backdrop-blur-sm transition-all duration-200 p-2"
+              title={getThemeTitle()}
+            >
+              {getThemeIcon()}
+            </Button>
+
+            {/* Settings - Hidden on small mobile */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="hidden sm:flex text-muted-foreground hover:text-foreground hover:bg-accent backdrop-blur-sm transition-all duration-200 p-2"
+              title="Settings"
+            >
+              <Settings className="h-4 w-4" />
+            </Button>
           </div>
-
-          {/* Refresh Stats */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleRefreshStats}
-            className="text-gray-600 hover:text-gray-800 hover:bg-gray-100"
-            title="Refresh Stats"
-          >
-            <RefreshCw className="h-4 w-4" />
-          </Button>
-
-          {/* Dark Mode Toggle */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsDarkMode(!isDarkMode)}
-            className="text-gray-600 hover:text-gray-800 hover:bg-gray-100"
-            title="Toggle Dark Mode"
-          >
-            {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </Button>
-
-          {/* Notifications */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-gray-600 hover:text-gray-800 hover:bg-gray-100 relative"
-            title="Notifications"
-          >
-            <Bell className="h-4 w-4" />
-            {/* Notification badge */}
-            <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
-          </Button>
-
-          {/* Settings */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-gray-600 hover:text-gray-800 hover:bg-gray-100"
-            title="Settings"
-          >
-            <Settings className="h-4 w-4" />
-          </Button>
 
           {/* User Profile */}
           {state.user && (
-            <div className="flex items-center space-x-3 pl-4 border-l border-gray-200">
+            <div className="flex items-center space-x-2 sm:space-x-3 pl-2 sm:pl-4 border-l border-border">
               <div className="hidden md:block text-right">
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm font-medium text-foreground">
                   {state.user.name}
                 </p>
-                <p className="text-xs text-gray-600">
+                <p className="text-xs text-muted-foreground">
                   {state.user.role.replace('_', ' ').toUpperCase()}
                 </p>
               </div>
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-none">
                 {state.user.avatar ? (
                   <img
                     src={state.user.avatar}
                     alt={state.user.name}
-                    className="w-8 h-8 rounded-full object-cover"
+                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover"
                   />
                 ) : (
-                  <User className="h-4 w-4 text-white" />
+                  <User className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                 )}
               </div>
             </div>
