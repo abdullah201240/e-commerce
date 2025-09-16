@@ -22,6 +22,9 @@ export interface OrderTimeline {
 }
 
 export interface OrderShipping {
+  name: string;
+  email: string;
+  phone: string;
   address: string;
   city: string;
   state: string;
@@ -148,6 +151,9 @@ function generateDemoOrders(): Order[] {
       paymentMethod: paymentMethods[Math.floor(Math.random() * paymentMethods.length)],
       items: orderItems,
       shippingInfo: {
+        name: `Customer ${i}`,
+        email: `customer${i}@example.com`,
+        phone: `555-123-${String(i).padStart(4, '0')}`,
         address: `${Math.floor(Math.random() * 9999) + 1} ${['Main', 'Oak', 'Pine', 'Elm', 'Maple'][Math.floor(Math.random() * 5)]} Street`,
         city: cities[cityIndex],
         state: states[cityIndex],

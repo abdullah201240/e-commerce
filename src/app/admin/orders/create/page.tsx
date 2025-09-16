@@ -312,6 +312,9 @@ export default function AdminCreateOrderPage() {
           image: item.image
         })),
         shippingInfo: {
+          name: selectedCustomer.name,
+          email: selectedCustomer.email,
+          phone: selectedCustomer.phone,
           address: selectedCustomer.address,
           city: '',
           state: '',

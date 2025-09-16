@@ -1,29 +1,29 @@
-'use client';
+"use client";
 
-import React, { useState, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
-import AdminLayout from '@/components/admin/AdminLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { products, categories } from '@/data/products';
-import { 
-  Sheet, 
-  SheetContent, 
-  SheetHeader, 
-  SheetTitle, 
+import React, { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import AdminLayout from "@/components/admin/AdminLayout";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { products, categories } from "@/data/products";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
   SheetDescription,
   SheetFooter,
-  SheetTrigger 
-} from '@/components/ui/sheet';
-import { 
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 import {
   Search,
   Plus,
@@ -50,10 +50,16 @@ import {
   FileText,
   Wrench,
   ListChecks,
-} from 'lucide-react';
+} from "lucide-react";
 
 // Product Status Badge Component
-function ProductStatusBadge({ inStock, featured }: { inStock: boolean; featured: boolean }) {
+function ProductStatusBadge({
+  inStock,
+  featured,
+}: {
+  inStock: boolean;
+  featured: boolean;
+}) {
   if (!inStock) {
     return (
       <Badge variant="destructive" className="text-xs">
@@ -62,7 +68,7 @@ function ProductStatusBadge({ inStock, featured }: { inStock: boolean; featured:
       </Badge>
     );
   }
-  
+
   if (featured) {
     return (
       <Badge className="bg-yellow-500 hover:bg-yellow-600 text-white text-xs">
@@ -71,9 +77,12 @@ function ProductStatusBadge({ inStock, featured }: { inStock: boolean; featured:
       </Badge>
     );
   }
-  
+
   return (
-    <Badge variant="secondary" className="bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 text-xs">
+    <Badge
+      variant="secondary"
+      className="bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 text-xs"
+    >
       <CheckCircle className="h-3 w-3 mr-1" />
       In Stock
     </Badge>
@@ -82,17 +91,26 @@ function ProductStatusBadge({ inStock, featured }: { inStock: boolean; featured:
 
 // Product Row Component
 interface ProductRowProps {
-  product: typeof products[0];
-  onEdit: (product: typeof products[0]) => void;
+  product: (typeof products)[0];
+  onEdit: (product: (typeof products)[0]) => void;
   onDelete: (productId: string) => void;
-  onView: (product: typeof products[0]) => void;
-  onToggleFeatured: (product: typeof products[0]) => void;
-  onDuplicate: (product: typeof products[0]) => void;
+  onView: (product: (typeof products)[0]) => void;
+  onToggleFeatured: (product: (typeof products)[0]) => void;
+  onDuplicate: (product: (typeof products)[0]) => void;
 }
 
-function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDuplicate }: ProductRowProps) {
-  const discountPercentage = product.originalPrice 
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+function ProductRow({
+  product,
+  onEdit,
+  onDelete,
+  onView,
+  onToggleFeatured,
+  onDuplicate,
+}: ProductRowProps) {
+  const discountPercentage = product.originalPrice
+    ? Math.round(
+        ((product.originalPrice - product.price) / product.originalPrice) * 100,
+      )
     : 0;
 
   return (
@@ -106,18 +124,26 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
             className="w-12 h-12 rounded-lg object-cover"
           />
           <div className="min-w-0 flex-1">
-            <p className="font-medium text-foreground truncate">{product.name}</p>
+            <p className="font-medium text-foreground truncate">
+              {product.name}
+            </p>
             <div className="flex items-center gap-2 mt-1">
-              <p className="text-sm text-muted-foreground capitalize">{product.category}</p>
+              <p className="text-sm text-muted-foreground capitalize">
+                {product.category}
+              </p>
               {product.subCategory && (
                 <>
                   <span className="text-xs text-muted-foreground">→</span>
-                  <p className="text-xs text-muted-foreground capitalize">{product.subCategory}</p>
+                  <p className="text-xs text-muted-foreground capitalize">
+                    {product.subCategory}
+                  </p>
                 </>
               )}
             </div>
             {product.productCode && (
-              <p className="text-xs text-muted-foreground font-mono">Code: {product.productCode}</p>
+              <p className="text-xs text-muted-foreground font-mono">
+                Code: {product.productCode}
+              </p>
             )}
           </div>
         </div>
@@ -131,7 +157,9 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
       {/* Price & Inventory */}
       <td className="py-4 px-4">
         <div className="flex flex-col">
-          <span className="font-semibold text-foreground">${product.price}</span>
+          <span className="font-semibold text-foreground">
+            ${product.price}
+          </span>
           {product.originalPrice && (
             <span className="text-xs text-muted-foreground line-through">
               ${product.originalPrice}
@@ -149,7 +177,7 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
           )}
           {product.quantity !== undefined && (
             <span className="text-xs text-muted-foreground">
-              Stock: {product.quantity} {product.unitName || 'units'}
+              Stock: {product.quantity} {product.unitName || "units"}
             </span>
           )}
         </div>
@@ -173,7 +201,10 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
 
       {/* Stock Status */}
       <td className="py-4 px-4">
-        <ProductStatusBadge inStock={product.inStock} featured={product.featured} />
+        <ProductStatusBadge
+          inStock={product.inStock}
+          featured={product.featured}
+        />
       </td>
 
       {/* Rating */}
@@ -182,12 +213,18 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
           <span className="text-sm font-medium">{product.rating}</span>
           <div className="flex text-yellow-400">
             {[...Array(5)].map((_, i) => (
-              <svg key={i} className={`h-4 w-4 ${i < Math.floor(product.rating) ? 'fill-current' : 'fill-muted-foreground/30'}`} viewBox="0 0 20 20">
+              <svg
+                key={i}
+                className={`h-4 w-4 ${i < Math.floor(product.rating) ? "fill-current" : "fill-muted-foreground/30"}`}
+                viewBox="0 0 20 20"
+              >
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
               </svg>
             ))}
           </div>
-          <span className="text-xs text-muted-foreground">({product.reviews})</span>
+          <span className="text-xs text-muted-foreground">
+            ({product.reviews})
+          </span>
         </div>
       </td>
 
@@ -216,7 +253,7 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
                   Complete information for {product.name}
                 </SheetDescription>
               </SheetHeader>
-              
+
               <div className="py-6 space-y-6">
                 {/* Product Images */}
                 <div className="space-y-3">
@@ -227,7 +264,10 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
                   <div className="grid grid-cols-2 gap-3">
                     {product.images && product.images.length > 0 ? (
                       product.images.slice(0, 4).map((img, idx) => (
-                        <div key={idx} className="aspect-square rounded-lg overflow-hidden bg-muted border">
+                        <div
+                          key={idx}
+                          className="aspect-square rounded-lg overflow-hidden bg-muted border"
+                        >
                           <img
                             src={img}
                             alt={`${product.name} ${idx + 1}`}
@@ -246,20 +286,36 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
                 {/* Basic Information */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Product Name</label>
-                    <p className="text-foreground font-medium">{product.name}</p>
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                      Product Name
+                    </label>
+                    <p className="text-foreground font-medium">
+                      {product.name}
+                    </p>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Product Code</label>
-                    <p className="text-foreground font-mono text-sm">{product.productCode || 'N/A'}</p>
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                      Product Code
+                    </label>
+                    <p className="text-foreground font-mono text-sm">
+                      {product.productCode || "N/A"}
+                    </p>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Category</label>
-                    <p className="text-foreground capitalize">{product.category}</p>
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                      Category
+                    </label>
+                    <p className="text-foreground capitalize">
+                      {product.category}
+                    </p>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Sub-Category</label>
-                    <p className="text-foreground capitalize">{product.subCategory || 'N/A'}</p>
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                      Sub-Category
+                    </label>
+                    <p className="text-foreground capitalize">
+                      {product.subCategory || "N/A"}
+                    </p>
                   </div>
                 </div>
 
@@ -271,21 +327,34 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="space-y-1">
-                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Current Price</label>
-                      <p className="text-foreground font-semibold text-lg">${product.price}</p>
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        Current Price
+                      </label>
+                      <p className="text-foreground font-semibold text-lg">
+                        ${product.price}
+                      </p>
                     </div>
                     {product.originalPrice && (
                       <div className="space-y-1">
-                        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Original Price</label>
-                        <p className="text-muted-foreground line-through">${product.originalPrice}</p>
+                        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                          Original Price
+                        </label>
+                        <p className="text-muted-foreground line-through">
+                          ${product.originalPrice}
+                        </p>
                       </div>
                     )}
-                    {product.discountPrice && product.discountPrice !== product.price && (
-                      <div className="space-y-1">
-                        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Discount Price</label>
-                        <p className="text-green-600 dark:text-green-400 font-medium">${product.discountPrice}</p>
-                      </div>
-                    )}
+                    {product.discountPrice &&
+                      product.discountPrice !== product.price && (
+                        <div className="space-y-1">
+                          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                            Discount Price
+                          </label>
+                          <p className="text-green-600 dark:text-green-400 font-medium">
+                            ${product.discountPrice}
+                          </p>
+                        </div>
+                      )}
                   </div>
                 </div>
 
@@ -297,16 +366,28 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="space-y-1">
-                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Weight</label>
-                      <p className="text-foreground">{product.weight ? `${product.weight} kg` : 'N/A'}</p>
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        Weight
+                      </label>
+                      <p className="text-foreground">
+                        {product.weight ? `${product.weight} kg` : "N/A"}
+                      </p>
                     </div>
                     <div className="space-y-1">
-                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Unit</label>
-                      <p className="text-foreground capitalize">{product.unitName || 'N/A'}</p>
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        Unit
+                      </label>
+                      <p className="text-foreground capitalize">
+                        {product.unitName || "N/A"}
+                      </p>
                     </div>
                     <div className="space-y-1">
-                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Quantity</label>
-                      <p className="text-foreground">{product.quantity || 0} units</p>
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        Quantity
+                      </label>
+                      <p className="text-foreground">
+                        {product.quantity || 0} units
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -315,23 +396,38 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
                 <div className="space-y-3">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Stock Status</label>
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        Stock Status
+                      </label>
                       <div className="mt-1">
-                        <ProductStatusBadge inStock={product.inStock} featured={product.featured} />
+                        <ProductStatusBadge
+                          inStock={product.inStock}
+                          featured={product.featured}
+                        />
                       </div>
                     </div>
                     <div className="space-y-1">
-                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Rating</label>
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        Rating
+                      </label>
                       <div className="flex items-center space-x-2 mt-1">
-                        <span className="text-foreground font-medium">{product.rating}</span>
+                        <span className="text-foreground font-medium">
+                          {product.rating}
+                        </span>
                         <div className="flex text-yellow-400">
                           {[...Array(5)].map((_, i) => (
-                            <svg key={i} className={`h-4 w-4 ${i < Math.floor(product.rating) ? 'fill-current' : 'fill-muted-foreground/30'}`} viewBox="0 0 20 20">
+                            <svg
+                              key={i}
+                              className={`h-4 w-4 ${i < Math.floor(product.rating) ? "fill-current" : "fill-muted-foreground/30"}`}
+                              viewBox="0 0 20 20"
+                            >
                               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                             </svg>
                           ))}
                         </div>
-                        <span className="text-muted-foreground text-sm">({product.reviews} reviews)</span>
+                        <span className="text-muted-foreground text-sm">
+                          ({product.reviews} reviews)
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -381,7 +477,10 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
                     </label>
                     <div className="space-y-1">
                       {product.features.map((feature, idx) => (
-                        <div key={idx} className="flex items-center space-x-2 text-sm">
+                        <div
+                          key={idx}
+                          className="flex items-center space-x-2 text-sm"
+                        >
                           <CheckCircle className="h-3 w-3 text-green-500 flex-shrink-0" />
                           <span className="text-foreground">{feature}</span>
                         </div>
@@ -391,28 +490,38 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
                 )}
 
                 {/* Specifications */}
-                {product.specifications && Object.keys(product.specifications).length > 0 && (
-                  <div className="space-y-2">
-                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center">
-                      <Settings className="h-4 w-4 mr-2" />
-                      Specifications
-                    </label>
-                    <div className="bg-muted/30 rounded-lg p-3 space-y-2">
-                      {Object.entries(product.specifications).map(([key, value]) => (
-                        <div key={key} className="flex justify-between items-center text-sm border-b border-border/50 last:border-0 pb-1 last:pb-0">
-                          <span className="text-muted-foreground font-medium">{key}:</span>
-                          <span className="text-foreground">{value}</span>
-                        </div>
-                      ))}
+                {product.specifications &&
+                  Object.keys(product.specifications).length > 0 && (
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center">
+                        <Settings className="h-4 w-4 mr-2" />
+                        Specifications
+                      </label>
+                      <div className="bg-muted/30 rounded-lg p-3 space-y-2">
+                        {Object.entries(product.specifications).map(
+                          ([key, value]) => (
+                            <div
+                              key={key}
+                              className="flex justify-between items-center text-sm border-b border-border/50 last:border-0 pb-1 last:pb-0"
+                            >
+                              <span className="text-muted-foreground font-medium">
+                                {key}:
+                              </span>
+                              <span className="text-foreground">{value}</span>
+                            </div>
+                          ),
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
               </div>
-              
+
               <SheetFooter>
                 <Button
                   variant="outline"
-                  onClick={() => window.open(`/products/${product.id}`, '_blank')}
+                  onClick={() =>
+                    window.open(`/products/${product.id}`, "_blank")
+                  }
                   className="w-full"
                 >
                   <ExternalLink className="h-4 w-4 mr-2" />
@@ -444,7 +553,7 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
                   Make changes to {product.name}
                 </SheetDescription>
               </SheetHeader>
-              
+
               <div className="py-6 space-y-6">
                 {/* Basic Information */}
                 <div className="space-y-4">
@@ -454,31 +563,47 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">Product Name</label>
+                      <label className="text-sm font-medium text-foreground">
+                        Product Name
+                      </label>
                       <Input defaultValue={product.name} className="h-10" />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">Product Code</label>
-                      <Input defaultValue={product.productCode || ''} className="h-10" />
+                      <label className="text-sm font-medium text-foreground">
+                        Product Code
+                      </label>
+                      <Input
+                        defaultValue={product.productCode || ""}
+                        className="h-10"
+                      />
                     </div>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">Category</label>
+                      <label className="text-sm font-medium text-foreground">
+                        Category
+                      </label>
                       <select
                         defaultValue={product.category}
                         className="w-full h-10 px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                       >
-                        {categories.filter(cat => cat.id !== 'all').map(category => (
-                          <option key={category.id} value={category.id}>
-                            {category.name}
-                          </option>
-                        ))}
+                        {categories
+                          .filter((cat) => cat.id !== "all")
+                          .map((category) => (
+                            <option key={category.id} value={category.id}>
+                              {category.name}
+                            </option>
+                          ))}
                       </select>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">Sub-Category</label>
-                      <Input defaultValue={product.subCategory || ''} className="h-10" />
+                      <label className="text-sm font-medium text-foreground">
+                        Sub-Category
+                      </label>
+                      <Input
+                        defaultValue={product.subCategory || ""}
+                        className="h-10"
+                      />
                     </div>
                   </div>
                 </div>
@@ -491,31 +616,67 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">Price</label>
-                      <Input type="number" step="0.01" defaultValue={product.price} className="h-10" />
+                      <label className="text-sm font-medium text-foreground">
+                        Price
+                      </label>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        defaultValue={product.price}
+                        className="h-10"
+                      />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">Original Price</label>
-                      <Input type="number" step="0.01" defaultValue={product.originalPrice || ''} className="h-10" />
+                      <label className="text-sm font-medium text-foreground">
+                        Original Price
+                      </label>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        defaultValue={product.originalPrice || ""}
+                        className="h-10"
+                      />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">Discount Price</label>
-                      <Input type="number" step="0.01" defaultValue={product.discountPrice || ''} className="h-10" />
+                      <label className="text-sm font-medium text-foreground">
+                        Discount Price
+                      </label>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        defaultValue={product.discountPrice || ""}
+                        className="h-10"
+                      />
                     </div>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">Quantity</label>
-                      <Input type="number" defaultValue={product.quantity || 0} className="h-10" />
+                      <label className="text-sm font-medium text-foreground">
+                        Quantity
+                      </label>
+                      <Input
+                        type="number"
+                        defaultValue={product.quantity || 0}
+                        className="h-10"
+                      />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">Weight (kg)</label>
-                      <Input type="number" step="0.1" defaultValue={product.weight || ''} className="h-10" />
+                      <label className="text-sm font-medium text-foreground">
+                        Weight (kg)
+                      </label>
+                      <Input
+                        type="number"
+                        step="0.1"
+                        defaultValue={product.weight || ""}
+                        className="h-10"
+                      />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">Unit</label>
+                      <label className="text-sm font-medium text-foreground">
+                        Unit
+                      </label>
                       <select
-                        defaultValue={product.unitName || 'piece'}
+                        defaultValue={product.unitName || "piece"}
                         className="w-full h-10 px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                       >
                         <option value="piece">Piece</option>
@@ -536,7 +697,9 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
                   </h4>
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">Description</label>
+                      <label className="text-sm font-medium text-foreground">
+                        Description
+                      </label>
                       <textarea
                         defaultValue={product.description}
                         className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent resize-none"
@@ -544,19 +707,23 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">Applications</label>
+                      <label className="text-sm font-medium text-foreground">
+                        Applications
+                      </label>
                       <textarea
-                        defaultValue={product.applications || ''}
+                        defaultValue={product.applications || ""}
                         className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent resize-none"
                         rows={2}
                         placeholder="Describe where and how this product can be used"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">Warranty</label>
-                      <Input 
-                        defaultValue={product.warranty || ''} 
-                        className="h-10" 
+                      <label className="text-sm font-medium text-foreground">
+                        Warranty
+                      </label>
+                      <Input
+                        defaultValue={product.warranty || ""}
+                        className="h-10"
                         placeholder="e.g., 2 years manufacturer warranty"
                       />
                     </div>
@@ -573,17 +740,24 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
                     <div className="space-y-2">
                       {product.features.map((feature, idx) => (
                         <div key={idx} className="flex items-center space-x-2">
-                          <Input 
-                            defaultValue={feature} 
-                            className="h-10 flex-1" 
+                          <Input
+                            defaultValue={feature}
+                            className="h-10 flex-1"
                             placeholder="Enter product feature"
                           />
-                          <Button variant="outline" size="sm" className="h-10 w-10 p-0">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-10 w-10 p-0"
+                          >
                             <X className="h-3 w-3" />
                           </Button>
                         </div>
                       ))}
-                      <Button variant="outline" className="w-full h-10 border-dashed">
+                      <Button
+                        variant="outline"
+                        className="w-full h-10 border-dashed"
+                      >
                         <Plus className="h-4 w-4 mr-2" />
                         Add Feature
                       </Button>
@@ -592,43 +766,55 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
                 )}
 
                 {/* Specifications */}
-                {product.specifications && Object.keys(product.specifications).length > 0 && (
-                  <div className="space-y-4">
-                    <h4 className="font-medium text-foreground flex items-center">
-                      <Settings className="h-4 w-4 mr-2" />
-                      Specifications
-                    </h4>
-                    <div className="space-y-2">
-                      {Object.entries(product.specifications).map(([key, value]) => (
-                        <div key={key} className="grid grid-cols-2 gap-2">
-                          <Input 
-                            defaultValue={key} 
-                            className="h-10" 
-                            placeholder="Specification name"
-                          />
-                          <div className="flex space-x-2">
-                            <Input 
-                              defaultValue={value} 
-                              className="h-10 flex-1" 
-                              placeholder="Specification value"
-                            />
-                            <Button variant="outline" size="sm" className="h-10 w-10 p-0">
-                              <X className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                      <Button variant="outline" className="w-full h-10 border-dashed">
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Specification
-                      </Button>
+                {product.specifications &&
+                  Object.keys(product.specifications).length > 0 && (
+                    <div className="space-y-4">
+                      <h4 className="font-medium text-foreground flex items-center">
+                        <Settings className="h-4 w-4 mr-2" />
+                        Specifications
+                      </h4>
+                      <div className="space-y-2">
+                        {Object.entries(product.specifications).map(
+                          ([key, value]) => (
+                            <div key={key} className="grid grid-cols-2 gap-2">
+                              <Input
+                                defaultValue={key}
+                                className="h-10"
+                                placeholder="Specification name"
+                              />
+                              <div className="flex space-x-2">
+                                <Input
+                                  defaultValue={value}
+                                  className="h-10 flex-1"
+                                  placeholder="Specification value"
+                                />
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="h-10 w-10 p-0"
+                                >
+                                  <X className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            </div>
+                          ),
+                        )}
+                        <Button
+                          variant="outline"
+                          className="w-full h-10 border-dashed"
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add Specification
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {/* Product Status */}
                 <div className="space-y-4">
-                  <h4 className="font-medium text-foreground">Product Status</h4>
+                  <h4 className="font-medium text-foreground">
+                    Product Status
+                  </h4>
                   <div className="flex flex-col space-y-3">
                     <div className="flex items-center space-x-2">
                       <input
@@ -637,7 +823,10 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
                         defaultChecked={product.featured}
                         className="rounded border-border"
                       />
-                      <label htmlFor={`featured-${product.id}`} className="text-sm text-foreground">
+                      <label
+                        htmlFor={`featured-${product.id}`}
+                        className="text-sm text-foreground"
+                      >
                         Featured Product
                       </label>
                     </div>
@@ -648,14 +837,17 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
                         defaultChecked={product.inStock}
                         className="rounded border-border"
                       />
-                      <label htmlFor={`instock-${product.id}`} className="text-sm text-foreground">
+                      <label
+                        htmlFor={`instock-${product.id}`}
+                        className="text-sm text-foreground"
+                      >
                         In Stock
                       </label>
                     </div>
                   </div>
                 </div>
               </div>
-              
+
               <SheetFooter>
                 <div className="flex space-x-2 w-full">
                   <Button variant="outline" className="flex-1">
@@ -686,7 +878,8 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
               <SheetHeader>
                 <SheetTitle>Delete Product</SheetTitle>
                 <SheetDescription>
-                  Are you sure you want to delete {product.name}? This action cannot be undone.
+                  Are you sure you want to delete {product.name}? This action
+                  cannot be undone.
                 </SheetDescription>
               </SheetHeader>
               <div className="py-6">
@@ -698,9 +891,15 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
                       className="w-16 h-16 rounded-lg object-cover"
                     />
                     <div>
-                      <p className="font-medium text-foreground">{product.name}</p>
-                      <p className="text-sm text-muted-foreground">ID: #{product.id}</p>
-                      <p className="text-sm text-muted-foreground">${product.price}</p>
+                      <p className="font-medium text-foreground">
+                        {product.name}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        ID: #{product.id}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        ${product.price}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -710,7 +909,11 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
                   <Button variant="outline" className="flex-1">
                     Cancel
                   </Button>
-                  <Button variant="destructive" className="flex-1" onClick={() => onDelete(product.id)}>
+                  <Button
+                    variant="destructive"
+                    className="flex-1"
+                    onClick={() => onDelete(product.id)}
+                  >
                     <Trash2 className="h-4 w-4 mr-2" />
                     Delete
                   </Button>
@@ -750,7 +953,9 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
                 )}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => window.open(`/products/${product.id}`, '_blank')}>
+              <DropdownMenuItem
+                onClick={() => window.open(`/products/${product.id}`, "_blank")}
+              >
                 <ExternalLink className="h-4 w-4 mr-2" />
                 View in Store
               </DropdownMenuItem>
@@ -764,10 +969,10 @@ function ProductRow({ product, onEdit, onDelete, onView, onToggleFeatured, onDup
 
 export default function AdminProductsPage() {
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('name');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("name");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -778,42 +983,45 @@ export default function AdminProductsPage() {
     // Search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(query) ||
-        product.category.toLowerCase().includes(query) ||
-        product.id.toLowerCase().includes(query)
+      filtered = filtered.filter(
+        (product) =>
+          product.name.toLowerCase().includes(query) ||
+          product.category.toLowerCase().includes(query) ||
+          product.id.toLowerCase().includes(query),
       );
     }
 
     // Category filter
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter(product => product.category === selectedCategory);
+    if (selectedCategory !== "all") {
+      filtered = filtered.filter(
+        (product) => product.category === selectedCategory,
+      );
     }
 
     // Status filter
-    if (statusFilter === 'instock') {
-      filtered = filtered.filter(product => product.inStock);
-    } else if (statusFilter === 'outofstock') {
-      filtered = filtered.filter(product => !product.inStock);
-    } else if (statusFilter === 'featured') {
-      filtered = filtered.filter(product => product.featured);
+    if (statusFilter === "instock") {
+      filtered = filtered.filter((product) => product.inStock);
+    } else if (statusFilter === "outofstock") {
+      filtered = filtered.filter((product) => !product.inStock);
+    } else if (statusFilter === "featured") {
+      filtered = filtered.filter((product) => product.featured);
     }
 
     // Sort
     switch (sortBy) {
-      case 'name':
+      case "name":
         filtered.sort((a, b) => a.name.localeCompare(b.name));
         break;
-      case 'price-low':
+      case "price-low":
         filtered.sort((a, b) => a.price - b.price);
         break;
-      case 'price-high':
+      case "price-high":
         filtered.sort((a, b) => b.price - a.price);
         break;
-      case 'rating':
+      case "rating":
         filtered.sort((a, b) => b.rating - a.rating);
         break;
-      case 'reviews':
+      case "reviews":
         filtered.sort((a, b) => b.reviews - a.reviews);
         break;
       default:
@@ -826,46 +1034,52 @@ export default function AdminProductsPage() {
   // Pagination
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedProducts = filteredProducts.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
 
   // Event handlers
-  const handleEdit = (product: typeof products[0]) => {
-    console.log('Edit product:', product);
+  const handleEdit = (product: (typeof products)[0]) => {
+    console.log("Edit product:", product);
     // TODO: Open edit sheet or navigate to edit page
   };
 
   const handleDelete = (productId: string) => {
-    console.log('Delete product:', productId);
+    console.log("Delete product:", productId);
     // TODO: Show confirmation dialog and delete
   };
 
-  const handleView = (product: typeof products[0]) => {
-    console.log('View product:', product);
+  const handleView = (product: (typeof products)[0]) => {
+    console.log("View product:", product);
     // TODO: Open product details sheet or navigate to view page
   };
 
-  const handleToggleFeatured = (product: typeof products[0]) => {
-    console.log('Toggle featured:', product);
+  const handleToggleFeatured = (product: (typeof products)[0]) => {
+    console.log("Toggle featured:", product);
     // TODO: Update product featured status
   };
 
-  const handleDuplicate = (product: typeof products[0]) => {
-    console.log('Duplicate product:', product);
+  const handleDuplicate = (product: (typeof products)[0]) => {
+    console.log("Duplicate product:", product);
     // TODO: Create a copy of the product
   };
 
   const handleAddProduct = () => {
-    router.push('/admin/products/add');
+    router.push("/admin/products/add");
   };
 
   // Stats
   const totalProducts = products.length;
-  const inStockProducts = products.filter(p => p.inStock).length;
+  const inStockProducts = products.filter((p) => p.inStock).length;
   const outOfStockProducts = totalProducts - inStockProducts;
-  const featuredProducts = products.filter(p => p.featured).length;
+  const featuredProducts = products.filter((p) => p.featured).length;
 
   return (
-    <AdminLayout title="Products" subtitle="Manage your product catalog and inventory">
+    <AdminLayout
+      title="Products"
+      subtitle="Manage your product catalog and inventory"
+    >
       <div className="space-y-6">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -873,8 +1087,12 @@ export default function AdminProductsPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Total Products</p>
-                  <p className="text-3xl font-bold text-foreground">{totalProducts}</p>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Total Products
+                  </p>
+                  <p className="text-3xl font-bold text-foreground">
+                    {totalProducts}
+                  </p>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
                   <Package className="h-6 w-6 text-white" />
@@ -887,8 +1105,12 @@ export default function AdminProductsPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">In Stock</p>
-                  <p className="text-3xl font-bold text-green-600 dark:text-green-400">{inStockProducts}</p>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    In Stock
+                  </p>
+                  <p className="text-3xl font-bold text-green-600 dark:text-green-400">
+                    {inStockProducts}
+                  </p>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
                   <CheckCircle className="h-6 w-6 text-white" />
@@ -901,8 +1123,12 @@ export default function AdminProductsPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Out of Stock</p>
-                  <p className="text-3xl font-bold text-red-600 dark:text-red-400">{outOfStockProducts}</p>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Out of Stock
+                  </p>
+                  <p className="text-3xl font-bold text-red-600 dark:text-red-400">
+                    {outOfStockProducts}
+                  </p>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-red-600 rounded-lg flex items-center justify-center">
                   <AlertTriangle className="h-6 w-6 text-white" />
@@ -915,8 +1141,12 @@ export default function AdminProductsPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Featured</p>
-                  <p className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">{featuredProducts}</p>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Featured
+                  </p>
+                  <p className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">
+                    {featuredProducts}
+                  </p>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center">
                   <TrendingUp className="h-6 w-6 text-white" />
@@ -951,11 +1181,13 @@ export default function AdminProductsPage() {
                   className="px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
                 >
                   <option value="all">All Categories</option>
-                  {categories.filter(cat => cat.id !== 'all').map(category => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
+                  {categories
+                    .filter((cat) => cat.id !== "all")
+                    .map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
                 </select>
 
                 {/* Status Filter */}
@@ -986,10 +1218,10 @@ export default function AdminProductsPage() {
 
               {/* Actions */}
               <div className="flex items-center gap-3">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
-                  onClick={() => router.push('/admin/categories')}
+                  onClick={() => router.push("/admin/categories")}
                 >
                   <Settings className="h-4 w-4 mr-2" />
                   Manage Categories
@@ -1002,7 +1234,10 @@ export default function AdminProductsPage() {
                   <Upload className="h-4 w-4 mr-2" />
                   Import
                 </Button>
-                <Button onClick={handleAddProduct} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                <Button
+                  onClick={handleAddProduct}
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                >
                   <Plus className="h-4 w-4 mr-2" />
                   Add Product
                 </Button>
@@ -1018,51 +1253,226 @@ export default function AdminProductsPage() {
               <CardTitle>Products ({filteredProducts.length})</CardTitle>
               <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground">
-                  Showing {startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredProducts.length)} of {filteredProducts.length}
+                  Showing {startIndex + 1}-
+                  {Math.min(startIndex + itemsPerPage, filteredProducts.length)}{" "}
+                  of {filteredProducts.length}
                 </span>
               </div>
             </div>
           </CardHeader>
           <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-muted/50 dark:bg-muted/30 border-b border-border">
-                  <tr>
-                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Product</th>
-                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">SKU</th>
-                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Price & Stock</th>
-                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Weight/Unit</th>
-                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Status</th>
-                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Rating</th>
-                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {paginatedProducts.length > 0 ? (
-                    paginatedProducts.map((product) => (
-                      <ProductRow
-                        key={product.id}
-                        product={product}
-                        onEdit={handleEdit}
-                        onDelete={handleDelete}
-                        onView={handleView}
-                        onToggleFeatured={handleToggleFeatured}
-                        onDuplicate={handleDuplicate}
-                      />
-                    ))
-                  ) : (
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <div className="min-w-full">
+                <table className="w-full table-fixed">
+                  <thead className="bg-muted/50 dark:bg-muted/30 border-b border-border sticky top-0 z-10">
                     <tr>
-                      <td colSpan={7} className="py-12 text-center">
-                        <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                        <p className="text-foreground">No products found</p>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          Try adjusting your search or filter criteria
-                        </p>
-                      </td>
+                      <th className="text-left py-3 px-2 md:px-3 lg:px-4 font-medium text-muted-foreground w-[25%] lg:w-[20%]">
+                        <div className="truncate">Product</div>
+                      </th>
+                      <th className="text-left py-3 px-2 md:px-3 lg:px-4 font-medium text-muted-foreground w-[15%] lg:w-[12%]">
+                        <div className="truncate">SKU</div>
+                      </th>
+                      <th className="text-left py-3 px-2 md:px-3 lg:px-4 font-medium text-muted-foreground w-[18%] lg:w-[15%]">
+                        <div className="truncate">Price & Stock</div>
+                      </th>
+                      <th className="text-left py-3 px-2 md:px-3 lg:px-4 font-medium text-muted-foreground w-[12%] lg:w-[10%] hidden lg:table-cell">
+                        <div className="truncate">Weight/Unit</div>
+                      </th>
+                      <th className="text-left py-3 px-2 md:px-3 lg:px-4 font-medium text-muted-foreground w-[15%] lg:w-[12%]">
+                        <div className="truncate">Status</div>
+                      </th>
+                      <th className="text-left py-3 px-2 md:px-3 lg:px-4 font-medium text-muted-foreground w-[10%] lg:w-[8%] hidden lg:table-cell">
+                        <div className="truncate">Rating</div>
+                      </th>
+                      <th className="text-left py-3 px-2 md:px-3 lg:px-4 font-medium text-muted-foreground w-[15%] lg:w-[13%]">
+                        <div className="truncate">Actions</div>
+                      </th>
                     </tr>
-                  )}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {paginatedProducts.length > 0 ? (
+                      paginatedProducts.map((product) => (
+                        <ProductRow
+                          key={product.id}
+                          product={product}
+                          onEdit={handleEdit}
+                          onDelete={handleDelete}
+                          onView={handleView}
+                          onToggleFeatured={handleToggleFeatured}
+                          onDuplicate={handleDuplicate}
+                        />
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={7} className="py-12 text-center">
+                          <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                          <p className="text-foreground">No products found</p>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Try adjusting your search or filter criteria
+                          </p>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden space-y-3">
+              {paginatedProducts.length > 0 ? (
+                paginatedProducts.map((product) => (
+                  <div
+                    key={product.id}
+                    className="bg-card border border-border rounded-lg p-4 space-y-3"
+                  >
+                    {/* Product Header */}
+                    <div className="flex items-start space-x-3">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <h3
+                          className="font-medium text-foreground text-sm truncate"
+                          title={product.name}
+                        >
+                          {product.name}
+                        </h3>
+                        <p className="text-xs text-muted-foreground truncate">
+                          SKU: {product.id}
+                        </p>
+                        <div className="flex items-center mt-1">
+                          <span className="text-lg font-bold text-foreground">
+                            ${product.price}
+                          </span>
+                          <span className="text-xs text-muted-foreground ml-2">
+                            Stock: {product.quantity || 0}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-start space-x-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleView(product)}
+                          className="text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 p-1"
+                          title="View Product"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 p-1"
+                            >
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuItem
+                              onClick={() => handleEdit(product)}
+                            >
+                              <Edit3 className="mr-2 h-4 w-4" />
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleDuplicate(product)}
+                            >
+                              <Copy className="mr-2 h-4 w-4" />
+                              Duplicate
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleToggleFeatured(product)}
+                            >
+                              {product.featured ? (
+                                <>
+                                  <StarOff className="mr-2 h-4 w-4" />
+                                  Remove Featured
+                                </>
+                              ) : (
+                                <>
+                                  <Star className="mr-2 h-4 w-4" />
+                                  Mark Featured
+                                </>
+                              )}
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() => handleDelete(product.id)}
+                              className="text-red-600 dark:text-red-400"
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </div>
+
+                    {/* Product Details */}
+                    <div className="grid grid-cols-2 gap-4 text-xs">
+                      <div>
+                        <span className="text-muted-foreground">Category:</span>
+                        <p className="font-medium text-foreground">
+                          {product.category}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Status:</span>
+                        <div className="mt-1">
+                          <Badge
+                            variant={
+                              product.inStock ? "default" : "destructive"
+                            }
+                            className="text-xs"
+                          >
+                            {product.inStock ? "In Stock" : "Out of Stock"}
+                          </Badge>
+                        </div>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Weight:</span>
+                        <p className="font-medium text-foreground">
+                          {product.weight || 0} kg
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Rating:</span>
+                        <div className="flex items-center mt-1">
+                          <span className="font-medium text-foreground">
+                            {product.rating}
+                          </span>
+                          <div className="flex ml-1">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <Star
+                                key={star}
+                                className={`h-3 w-3 ${
+                                  star <= Math.floor(product.rating)
+                                    ? "fill-yellow-400 text-yellow-400"
+                                    : "text-gray-300"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="py-12 text-center">
+                  <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-foreground">No products found</p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Try adjusting your search or filter criteria
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Pagination */}
@@ -1076,7 +1486,9 @@ export default function AdminProductsPage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                      onClick={() =>
+                        setCurrentPage(Math.max(1, currentPage - 1))
+                      }
                       disabled={currentPage === 1}
                     >
                       Previous
@@ -1084,7 +1496,9 @@ export default function AdminProductsPage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                      onClick={() =>
+                        setCurrentPage(Math.min(totalPages, currentPage + 1))
+                      }
                       disabled={currentPage === totalPages}
                     >
                       Next
