@@ -72,6 +72,19 @@ const navigation = [
     icon: Image,
     permission: 'manage_products',
   },
+  // New Ads Management Section
+  {
+    name: 'Popup Ads',
+    href: '/admin/ads/popup',
+    icon: Image,
+    permission: 'manage_products',
+  },
+  {
+    name: 'Banner Ads',
+    href: '/admin/ads/banner',
+    icon: Image,
+    permission: 'manage_products',
+  },
   {
     name: 'Analytics',
     href: '/admin/analytics',
