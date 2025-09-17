@@ -46,16 +46,8 @@ export default function Footer() {
                   All Products
                 </Link>
               </li>
-              <li>
-                <Link href="/categories" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base block py-1">
-                  Categories
-                </Link>
-              </li>
-              <li>
-                <Link href="/deals" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base block py-1">
-                  Deals & Offers
-                </Link>
-              </li>
+             
+              
               <li>
                 <Link href="/about" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base block py-1">
                   About Us
@@ -73,26 +65,14 @@ export default function Footer() {
           <div>
             <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-white">Customer Service</h4>
             <ul className="space-y-2 sm:space-y-3">
-              <li>
-                <Link href="/help" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base block py-1">
-                  Help Center
-                </Link>
-              </li>
-              <li>
-                <Link href="/shipping" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base block py-1">
-                  Shipping Info
-                </Link>
-              </li>
+             
+              
               <li>
                 <Link href="/returns" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base block py-1">
                   Returns & Exchanges
                 </Link>
               </li>
-              <li>
-                <Link href="/warranty" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base block py-1">
-                  Warranty
-                </Link>
-              </li>
+              
               <li>
                 <Link href="/track" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base block py-1">
                   Track Your Order

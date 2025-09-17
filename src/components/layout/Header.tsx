@@ -25,7 +25,9 @@ import {
   Filter,
   CheckCircle,
   Truck,
-  Settings
+  Settings,
+  Users,
+  Mail
 } from 'lucide-react';
 
 export default function Header() {
@@ -185,6 +187,8 @@ export default function Header() {
               FurniStore
             </span>
           </Link>
+
+         
 
           {/* Category Dropdown - Improved Spacing and Icons */}
           <div className="relative hidden lg:block">
@@ -641,26 +645,7 @@ export default function Header() {
                 </Link>
               </div>
 
-              {/* Quick Actions */}
-              <div className="mt-6 px-4">
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-4">
-                  <h5 className="font-bold text-gray-900 mb-3 text-sm">Quick Actions</h5>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Link href="/categories" onClick={toggleMenu}>
-                      <Button variant="ghost" className="w-full justify-start text-left py-2 px-3 hover:bg-white transition-all duration-300 rounded-lg group">
-                        <Filter className="h-4 w-4 mr-2 group-hover:text-blue-600" />
-                        <span className="text-sm group-hover:text-blue-600">All Categories</span>
-                      </Button>
-                    </Link>
-                    <Link href="/deals" onClick={toggleMenu}>
-                      <Button variant="ghost" className="w-full justify-start text-left py-2 px-3 hover:bg-white transition-all duration-300 rounded-lg group">
-                        <Star className="h-4 w-4 mr-2 group-hover:text-yellow-500" />
-                        <span className="text-sm group-hover:text-yellow-600">Best Deals</span>
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              </div>
+             
             </nav>
           </div>
         )}
