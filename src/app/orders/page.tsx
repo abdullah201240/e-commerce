@@ -547,6 +547,8 @@ export default function OrdersPage() {
                 <div className="flex flex-wrap gap-2 sm:gap-3">
                   {/* Orders per page dropdown */}
                   <select
+                    aria-label="Orders per page"
+                    id="ordersPerPage"
                     value={ordersPerPage}
                     onChange={(e) => handleOrdersPerPageChange(Number(e.target.value))}
                     className="px-2 sm:px-3 md:px-4 py-2 sm:py-3 border border-slate-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-300 bg-white/80 backdrop-blur-sm text-xs sm:text-sm font-medium hover:bg-white transition-all duration-200 flex-1 sm:flex-none"
@@ -558,6 +560,8 @@ export default function OrdersPage() {
                   </select>
                   
                   <select
+                    aria-label="Sort by"
+                    id="sortBy"
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as 'date' | 'total' | 'status')}
                     className="px-2 sm:px-3 md:px-4 py-2 sm:py-3 border border-slate-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-300 bg-white/80 backdrop-blur-sm text-xs sm:text-sm font-medium hover:bg-white transition-all duration-200 flex-1 sm:flex-none"

@@ -43,6 +43,8 @@ export function EditOrderModal({ editingOrder, setEditingOrder, handleSaveEdit, 
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">Order Status</label>
                 <select
+                  aria-label="Order Status"
+                  id="orderStatus"
                   value={editingOrder.status}
                   onChange={(e) => setEditingOrder({ ...editingOrder, status: e.target.value as Order['status'] })}
                   className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
@@ -153,6 +155,8 @@ export function EditOrderModal({ editingOrder, setEditingOrder, handleSaveEdit, 
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">Shipping Method</label>
                 <select
+                  aria-label="Shipping Method"
+                  id="shippingMethod"
                   value={editingOrder.shippingInfo?.method || ''}
                   onChange={(e) => setEditingOrder({
                     ...editingOrder,
@@ -172,6 +176,8 @@ export function EditOrderModal({ editingOrder, setEditingOrder, handleSaveEdit, 
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">Estimated Delivery</label>
                 <Input
+                  aria-label="Estimated Delivery"
+                  id="estimatedDelivery"
                   type="date"
                   value={editingOrder.shippingInfo?.estimatedDelivery || ''}
                   onChange={(e) => setEditingOrder({
@@ -191,6 +197,8 @@ export function EditOrderModal({ editingOrder, setEditingOrder, handleSaveEdit, 
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">Subtotal</label>
                 <Input
+                  aria-label="Subtotal"
+                  id="subtotal"
                   type="number"
                   step="0.01"
                   value={editingOrder.subtotal || 0}
@@ -206,6 +214,8 @@ export function EditOrderModal({ editingOrder, setEditingOrder, handleSaveEdit, 
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">Shipping</label>
                 <Input
+                  aria-label="Shipping"
+                  id="shipping"
                   type="number"
                   step="0.01"
                   value={editingOrder.shipping || 0}
@@ -221,6 +231,8 @@ export function EditOrderModal({ editingOrder, setEditingOrder, handleSaveEdit, 
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">Tax</label>
                 <Input
+                  aria-label="Tax"
+                  id="tax"
                   type="number"
                   step="0.01"
                   value={editingOrder.tax || 0}
@@ -236,6 +248,8 @@ export function EditOrderModal({ editingOrder, setEditingOrder, handleSaveEdit, 
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">Total</label>
                 <Input
+                  aria-label="Total"
+                  id="total"
                   type="number"
                   step="0.01"
                   value={editingOrder.total || 0}

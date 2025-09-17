@@ -9,14 +9,11 @@ import { products } from '@/data/products';
 import {
   BarChart3,
   TrendingUp,
-  TrendingDown,
   DollarSign,
   ShoppingCart,
   Users,
   Package,
-  Calendar,
   Download,
-  Filter,
   RefreshCw,
   ArrowUpRight,
   ArrowDownRight,
@@ -146,6 +143,8 @@ export default function AdminAnalyticsPage() {
               </div>
               <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 <select
+                  aria-label="Time Range"
+                  id="timeRange"
                   value={timeRange}
                   onChange={(e) => setTimeRange(e.target.value)}
                   className="w-full sm:w-auto px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"

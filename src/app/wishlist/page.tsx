@@ -107,6 +107,8 @@ export default function WishlistPage() {
 
                   {/* Sort Dropdown */}
                   <select
+                    aria-label="Sort by"
+                    id="sortBy"
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as SortOption)}
                     className="px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-sm font-medium focus:ring-2 focus:ring-primary focus:border-transparent"

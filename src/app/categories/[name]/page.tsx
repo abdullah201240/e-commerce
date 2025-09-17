@@ -227,6 +227,8 @@ function CategoryContent() {
               {/* View Mode Toggle */}
               <div className="flex border rounded-lg">
                 <button
+                  aria-label="View Mode Toggle"
+                  id="viewModeToggle"
                   onClick={() => setViewMode('grid')}
                   className={`p-2 ${
                     viewMode === 'grid'
@@ -237,6 +239,8 @@ function CategoryContent() {
                   <Grid3X3 className="h-4 w-4" />
                 </button>
                 <button
+                  aria-label="View Mode Toggle"
+                  id="viewModeToggle"
                   onClick={() => setViewMode('list')}
                   className={`p-2 ${
                     viewMode === 'list'
@@ -250,6 +254,8 @@ function CategoryContent() {
 
               {/* Sort Dropdown */}
               <select
+                aria-label="Sort By"
+                id="sortBy"
                 className="text-sm border rounded-lg px-3 py-2 bg-white"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
@@ -299,6 +305,8 @@ function CategoryContent() {
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600">Show:</span>
                   <select
+                    aria-label="Products per page"
+                    id="productsPerPage"
                     className="text-sm border rounded-lg px-3 py-1 bg-white min-w-[80px]"
                     value={productsPerPage}
                     onChange={(e) => handleProductsPerPageChange(Number(e.target.value))}

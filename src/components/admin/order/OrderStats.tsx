@@ -19,7 +19,7 @@ interface OrderStatsProps {
 
 export function OrderStats({ totalOrders, pendingOrders, shippedOrders, deliveredOrders, totalRevenue }: OrderStatsProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-3">
       <Card className="border-0 shadow-sm">
         <CardContent className="p-4 sm:p-6">
           <div className="flex items-center justify-between">
@@ -83,9 +83,7 @@ export function OrderStats({ totalOrders, pendingOrders, shippedOrders, delivere
               <p className="text-sm font-medium text-muted-foreground">Revenue</p>
               <p className="text-2xl sm:text-3xl font-bold text-purple-600 dark:text-purple-400">${totalRevenue.toLocaleString()}</p>
             </div>
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <DollarSign className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-            </div>
+            
           </div>
         </CardContent>
       </Card>

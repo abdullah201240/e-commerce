@@ -544,6 +544,8 @@ export default function AdminCreateOrderPage() {
                         <div>
                           <label className="block text-sm font-medium mb-1">Customer Type</label>
                           <select
+                            aria-label="Customer Type"
+                            id="customerType"
                             value={newCustomer.type}
                             onChange={(e) => setNewCustomer({...newCustomer, type: e.target.value})}
                             className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground dark:bg-card/80"
@@ -609,6 +611,8 @@ export default function AdminCreateOrderPage() {
                         <div>
                           <label className="block text-sm font-medium mb-1">Tier</label>
                           <select
+                            aria-label="Tier"
+                            id="tier"
                             value={newCustomer.tier}
                             onChange={(e) => setNewCustomer({...newCustomer, tier: e.target.value})}
                             className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground dark:bg-card/80"
@@ -652,7 +656,7 @@ export default function AdminCreateOrderPage() {
                   {filteredCustomers.map((customer) => (
                     <div
                       key={customer.id}
-                      className={`p-2 sm:p-4 rounded-lg border border-2 shadow-sm cursor-pointer transition-all ${
+                      className={`p-2 sm:p-4 rounded-lg border border-border shadow-sm cursor-pointer transition-all ${
                         selectedCustomer?.id === customer.id
                           ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-md'
                           : 'border-border hover:border-blue-300 hover:bg-muted/50 dark:hover:bg-card/80'
@@ -766,6 +770,8 @@ export default function AdminCreateOrderPage() {
                       />
                     </div>
                     <select
+                      aria-label="Category Filter"
+                      id="categoryFilter"
                       value={categoryFilter}
                       onChange={(e) => setCategoryFilter(e.target.value)}
                       className="px-3 py-2 border border-border rounded-md bg-background text-foreground dark:bg-card/80"
@@ -989,6 +995,8 @@ export default function AdminCreateOrderPage() {
                   <div>
                     <label className="block text-sm font-medium mb-2">Shipping Method</label>
                     <select
+                      aria-label="Shipping Method"
+                      id="shippingMethod"
                       value={shippingMethod}
                       onChange={(e) => setShippingMethod(e.target.value)}
                       className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground dark:bg-card/80"
@@ -1002,6 +1010,8 @@ export default function AdminCreateOrderPage() {
                   <div>
                     <label className="block text-sm font-medium mb-2">Payment Method</label>
                     <select
+                      aria-label="Payment Method"
+                      id="paymentMethod"
                       value={paymentMethod}
                       onChange={(e) => setPaymentMethod(e.target.value)}
                       className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground dark:bg-card/80"

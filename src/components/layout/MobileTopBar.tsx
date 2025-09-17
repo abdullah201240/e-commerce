@@ -122,6 +122,7 @@ export default function MobileTopBar({
               />
               {searchQuery && (
                 <button
+                  aria-label="Clear search"
                   type="button"
                   onClick={() => {
                     setSearchQuery('');
@@ -141,6 +142,7 @@ export default function MobileTopBar({
                 <div className="py-1">
                   {searchResults.map((result, index) => (
                     <button
+                      aria-label="Search result"
                       key={index}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors duration-200"
                       onClick={() => handleResultClick(result)}

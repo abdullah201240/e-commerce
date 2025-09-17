@@ -23,6 +23,7 @@ import {
   BarChart3,
   Calendar,
 } from 'lucide-react';
+import Link from 'next/link';
 
 // Stats Card Component
 interface StatsCardProps {
@@ -359,22 +360,22 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Button variant="outline" className="h-20 flex flex-col items-center justify-center space-y-2">
+              <Link href="/admin/products/add" className="h-20 flex flex-col items-center justify-center space-y-2">
                 <Package className="h-6 w-6" />
                 <span className="text-sm">Add Product</span>
-              </Button>
-              <Button variant="outline" className="h-20 flex flex-col items-center justify-center space-y-2">
+              </Link>
+              <Link href="/admin/orders" className="h-20 flex flex-col items-center justify-center space-y-2">
                 <Eye className="h-6 w-6" />
                 <span className="text-sm">View Orders</span>
-              </Button>
-              <Button variant="outline" className="h-20 flex flex-col items-center justify-center space-y-2">
+              </Link>
+              <Link href="/admin/customers" className="h-20 flex flex-col items-center justify-center space-y-2">
                 <Users className="h-6 w-6" />
                 <span className="text-sm">Manage Users</span>
-              </Button>
-              <Button variant="outline" className="h-20 flex flex-col items-center justify-center space-y-2">
+              </Link>
+              <Link href="/admin/analytics" className="h-20 flex flex-col items-center justify-center space-y-2">
                 <BarChart3 className="h-6 w-6" />
                 <span className="text-sm">View Reports</span>
-              </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>

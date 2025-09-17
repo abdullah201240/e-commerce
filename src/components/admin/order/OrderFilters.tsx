@@ -45,6 +45,7 @@ export function OrderFilters({ searchQuery, setSearchQuery, statusFilter, setSta
         {/* Filters Row 1 */}
         <div className="grid grid-cols-2 gap-2">
           <select
+            title='filter by status'
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             className="px-2 py-2 rounded-none bg-background text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -58,6 +59,7 @@ export function OrderFilters({ searchQuery, setSearchQuery, statusFilter, setSta
           </select>
           
           <select
+            title='filter by date'
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
             className="px-2 py-2 rounded-none bg-background text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -72,6 +74,7 @@ export function OrderFilters({ searchQuery, setSearchQuery, statusFilter, setSta
         {/* Filters Row 2 */}
         <div className="grid grid-cols-2 gap-2">
           <select
+            title='sort by'
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
             className="px-2 py-2 rounded-none bg-background text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -82,6 +85,7 @@ export function OrderFilters({ searchQuery, setSearchQuery, statusFilter, setSta
           </select>
           
           <select
+            title='items per page'
             value={itemsPerPage}
             onChange={(e) => {
               setItemsPerPage(Number(e.target.value));
@@ -131,6 +135,7 @@ export function OrderFilters({ searchQuery, setSearchQuery, statusFilter, setSta
 
             {/* Status Filter */}
             <select
+              title='filter by status'
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className="px-3 py-2  rounded-none bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
@@ -146,6 +151,7 @@ export function OrderFilters({ searchQuery, setSearchQuery, statusFilter, setSta
 
             {/* Date Filter */}
             <select
+              title='filter by date'
               value={dateFilter}
               onChange={(e) => setDateFilter(e.target.value)}
               className="px-3 py-2 rounded-none bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
@@ -158,6 +164,7 @@ export function OrderFilters({ searchQuery, setSearchQuery, statusFilter, setSta
 
             {/* Sort */}
             <select
+              title='sort by'
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
               className="px-3 py-2 rounded-none bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
@@ -169,6 +176,7 @@ export function OrderFilters({ searchQuery, setSearchQuery, statusFilter, setSta
 
             {/* Items per page */}
             <select
+              title='items per page'
               value={itemsPerPage}
               onChange={(e) => {
                 setItemsPerPage(Number(e.target.value));

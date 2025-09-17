@@ -181,6 +181,8 @@ function ProductsContent() {
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600 font-medium">Show:</span>
                   <select
+                    aria-label="Items per page"
+                    id="itemsPerPage"
                     className="text-sm border border-gray-300 rounded-md px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     value={itemsPerPage}
                     onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
@@ -196,6 +198,8 @@ function ProductsContent() {
                 <div className="flex items-center gap-3">
                   <span className="text-sm text-gray-600 font-medium">Sort by:</span>
                   <select
+                    aria-label="Sort by"
+                    id="sortBy"
                     className="text-sm border border-gray-300 rounded-md px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}

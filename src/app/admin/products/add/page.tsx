@@ -154,6 +154,8 @@ function MediaUpload({ type, urls, onUrlsChange, maxFiles = 10 }: MediaUploadPro
           Upload {type === 'image' ? 'Images' : 'Videos'}
         </Button>
         <input
+          aria-label="Upload {type === 'image' ? 'Images' : 'Videos'}"
+          id="fileInput"
           ref={fileInputRef}
           type="file"
           multiple
@@ -547,6 +549,8 @@ export default function AddProductPage() {
                     Category <span className="text-red-500 ml-1">*</span>
                   </label>
                   <select
+                    aria-label="Category"
+                    id="category"
                     value={formData.category}
                     onChange={(e) => handleInputChange('category', e.target.value)}
                     className="w-full h-11 px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
@@ -566,6 +570,8 @@ export default function AddProductPage() {
                     Sub-Category
                   </label>
                   <select
+                    aria-label="Sub-Category"
+                    id="subCategory"
                     value={formData.subCategory}
                     onChange={(e) => handleInputChange('subCategory', e.target.value)}
                     className="w-full h-11 px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent transition-all disabled:opacity-50"
@@ -588,6 +594,8 @@ export default function AddProductPage() {
                     Weight (kg)
                   </label>
                   <Input
+                    aria-label="Weight (kg)"
+                    id="weight"
                     type="number"
                     step="0.1"
                     value={formData.weight}
@@ -602,6 +610,8 @@ export default function AddProductPage() {
                     Unit Name
                   </label>
                   <select
+                    aria-label="Unit Name"
+                    id="unitName"
                     value={formData.unitName}
                     onChange={(e) => handleInputChange('unitName', e.target.value)}
                     className="w-full h-11 px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent transition-all"

@@ -90,6 +90,8 @@ export default function AdminSettingsPage() {
                   Currency
                 </label>
                 <select
+                  aria-label="Currency"
+                  id="currency"
                   value={settings.currency}
                   onChange={(e) => setSettings(prev => ({ ...prev, currency: e.target.value }))}
                   className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
@@ -105,6 +107,8 @@ export default function AdminSettingsPage() {
                   Timezone
                 </label>
                 <select
+                  aria-label="Timezone"
+                  id="timezone"
                   value={settings.timezone}
                   onChange={(e) => setSettings(prev => ({ ...prev, timezone: e.target.value }))}
                   className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
@@ -120,6 +124,8 @@ export default function AdminSettingsPage() {
                   Language
                 </label>
                 <select
+                  aria-label="Language"
+                  id="language"
                   value={settings.language}
                   onChange={(e) => setSettings(prev => ({ ...prev, language: e.target.value }))}
                   className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
@@ -184,6 +190,8 @@ export default function AdminSettingsPage() {
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
+                    aria-label="Email Notifications"
+                    id="emailNotifications"
                     type="checkbox"
                     checked={settings.emailNotifications}
                     onChange={(e) => setSettings(prev => ({ ...prev, emailNotifications: e.target.checked }))}
@@ -199,6 +207,8 @@ export default function AdminSettingsPage() {
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
+                    aria-label="Order Notifications"
+                    id="orderNotifications"
                     type="checkbox"
                     checked={settings.orderNotifications}
                     onChange={(e) => setSettings(prev => ({ ...prev, orderNotifications: e.target.checked }))}
@@ -214,6 +224,8 @@ export default function AdminSettingsPage() {
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
+                    aria-label="Low Stock Alerts"
+                    id="lowStockAlerts"
                     type="checkbox"
                     checked={settings.lowStockAlerts}
                     onChange={(e) => setSettings(prev => ({ ...prev, lowStockAlerts: e.target.checked }))}
@@ -237,6 +249,8 @@ export default function AdminSettingsPage() {
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
+                    aria-label="Allow User Registration"
+                    id="allowRegistration"
                     type="checkbox"
                     checked={settings.allowRegistration}
                     onChange={(e) => setSettings(prev => ({ ...prev, allowRegistration: e.target.checked }))}
@@ -252,6 +266,8 @@ export default function AdminSettingsPage() {
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
+                    aria-label="Require Email Verification"
+                    id="requireEmailVerification"
                     type="checkbox"
                     checked={settings.requireEmailVerification}
                     onChange={(e) => setSettings(prev => ({ ...prev, requireEmailVerification: e.target.checked }))}
@@ -366,6 +382,8 @@ export default function AdminSettingsPage() {
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
+                    aria-label="Maintenance Mode"
+                    id="maintenanceMode"
                     type="checkbox"
                     checked={settings.maintenanceMode}
                     onChange={(e) => setSettings(prev => ({ ...prev, maintenanceMode: e.target.checked }))}
@@ -381,6 +399,8 @@ export default function AdminSettingsPage() {
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
+                    aria-label="Auto-Approve Reviews"
+                    id="autoApproveReviews"
                     type="checkbox"
                     checked={settings.autoApproveReviews}
                     onChange={(e) => setSettings(prev => ({ ...prev, autoApproveReviews: e.target.checked }))}

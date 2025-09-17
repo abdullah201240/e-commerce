@@ -526,6 +526,8 @@ export default function AdminCustomersPage() {
 
                 {/* Status Filter */}
                 <select
+                  aria-label="Status Filter"
+                  id="statusFilter"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                   className="px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
@@ -538,6 +540,8 @@ export default function AdminCustomersPage() {
 
                 {/* Sort */}
                 <select
+                  aria-label="Sort By"
+                  id="sortBy"
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                   className="px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-background dark:border-border"
