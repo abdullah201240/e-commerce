@@ -1,15 +1,22 @@
+'use client';
+
+import React from 'react';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import HeroSlider from '@/components/ui/hero-slider';
 import ProductGrid from '@/components/product/ProductGrid';
 import NewArrivals from '@/components/product/NewArrivals';
 import MobileLayout from '@/components/layout/MobileLayout';
+import PopupAd from '@/components/ui/PopupAd';
 import { featuredProducts, discountedProducts, newArrivalProducts, categories, heroSlides } from '@/data/products';
-
+import AdBanner from '@/components/ui/AdBanner';
 export default function Home() {
+
   return (
     <MobileLayout>
       <div className="min-h-screen bg-gray-50">
+        <PopupAd />
+
         {/* Hero Slider */}
         <HeroSlider slides={heroSlides} />
 
@@ -68,6 +75,13 @@ export default function Home() {
       <section className="py-8 bg-gradient-to-br from-green-50 via-emerald-50 to-cyan-50">
         <div className="container mx-auto px-4">
           <NewArrivals products={newArrivalProducts} />
+        </div>
+      </section>
+      
+      {/* Ad Banner */}
+      <section className=" bg-white">
+        <div className="container mx-auto px-4">
+          <AdBanner />
         </div>
       </section>
 
