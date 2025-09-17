@@ -29,7 +29,7 @@ export function OrderTable({ orders, onView, onEdit, onUpdateStatus, onPrintInvo
       <div className="hidden lg:flex flex-col h-full">
         <div className="rounded-none overflow-hidden">
           <div className="overflow-x-auto">
-            <div className="min-w-[1200px]">
+            <div>
               <Table>
                 <TableHeader className="bg-muted/50 dark:bg-muted/30 sticky top-0 z-10">
                   <TableRow>
