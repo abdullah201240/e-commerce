@@ -424,15 +424,7 @@ export default function AdminHeader({ title, subtitle, onMenuClick, isMobile }: 
               {getThemeIcon()}
             </Button>
 
-            {/* Settings - Hidden on small mobile */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="hidden sm:flex text-muted-foreground hover:text-foreground hover:bg-accent backdrop-blur-sm transition-all duration-200 p-2"
-              title="Settings"
-            >
-              <Settings className="h-4 w-4" />
-            </Button>
+           
           </div>
 
           {/* User Profile Dropdown */}
