@@ -9,7 +9,6 @@ import { useAdmin } from '@/contexts/AdminContext';
 import {
   User,
   Mail,
-  Phone,
   Camera,
   Save,
   Key,

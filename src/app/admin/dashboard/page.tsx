@@ -127,8 +127,10 @@ function RecentOrdersCard() {
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-semibold">Recent Orders</CardTitle>
-          <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
-            View All <ArrowUpRight className="h-4 w-4 ml-1" />
+          <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700" asChild>
+            <Link href="/admin/orders">
+              View All <ArrowUpRight className="h-4 w-4 ml-1" />
+            </Link>
           </Button>
         </div>
       </CardHeader>
@@ -173,8 +175,10 @@ function LowStockAlert() {
             <AlertTriangle className="h-5 w-5 mr-2 text-orange-500" />
             Low Stock Alert
           </CardTitle>
-          <Button variant="ghost" size="sm" className="text-orange-600 hover:text-orange-700">
-            View All <ArrowUpRight className="h-4 w-4 ml-1" />
+          <Button variant="ghost" size="sm" className="text-orange-600 hover:text-orange-700" asChild>
+            <Link href="/admin/products?statusFilter=outofstock">
+              View All <ArrowUpRight className="h-4 w-4 ml-1" />
+            </Link>
           </Button>
         </div>
       </CardHeader>

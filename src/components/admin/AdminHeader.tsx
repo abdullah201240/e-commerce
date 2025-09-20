@@ -2,10 +2,14 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAdmin } from '@/contexts/AdminContext';
+import { useNotifications } from '@/contexts/NotificationContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useOrders } from '@/contexts/OrderContext';
+import { products } from '@/data/products';
 import {
   Search,
   Bell,
@@ -17,6 +21,10 @@ import {
   Monitor,
   LogOut,
   ChevronDown,
+  Package,
+  ShoppingCart,
+  Users,
+  FileText,
 } from 'lucide-react';
 
 interface AdminHeaderProps {
@@ -26,17 +34,124 @@ interface AdminHeaderProps {
   isMobile?: boolean;
 }
 
+interface SearchResult {
+  id: string;
+  title: string;
+  subtitle?: string;
+  type: 'product' | 'order' | 'customer' | 'category';
+  url: string;
+  icon: React.ElementType;
+}
+
+interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  avatar?: string;
+  joinDate: string;
+  totalOrders: number;
+  totalSpent: number;
+  lastOrderDate?: string;
+  status: "active" | "inactive" | "vip";
+  location: string;
+  loyaltyPoints?: number;
+}
+
+// Mock customer data - in a real app this would come from an API
+const mockCustomers: Customer[] = [
+  {
+    id: "cust-001",
+    name: "Sarah Johnson",
+    email: "sarah.johnson@email.com",
+    phone: "+1 (555) 123-4567",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face",
+    joinDate: "2023-01-15",
+    totalOrders: 8,
+    totalSpent: 2340.5,
+    lastOrderDate: "2024-01-15",
+    status: "vip",
+    location: "New York, NY",
+    loyaltyPoints: 1200,
+  },
+  {
+    id: "cust-002",
+    name: "Michael Chen",
+    email: "michael.chen@email.com",
+    phone: "+1 (555) 234-5678",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
+    joinDate: "2023-03-22",
+    totalOrders: 5,
+    totalSpent: 1580.25,
+    lastOrderDate: "2024-01-10",
+    status: "active",
+    location: "Los Angeles, CA",
+    loyaltyPoints: 790,
+  },
+  {
+    id: "cust-003",
+    name: "Emily Davis",
+    email: "emily.davis@email.com",
+    phone: "+1 (555) 345-6789",
+    joinDate: "2023-05-10",
+    totalOrders: 12,
+    totalSpent: 3850.75,
+    lastOrderDate: "2024-01-05",
+    status: "vip",
+    location: "Chicago, IL",
+    loyaltyPoints: 1925,
+  },
+  {
+    id: "cust-004",
+    name: "David Wilson",
+    email: "david.wilson@email.com",
+    joinDate: "2023-07-18",
+    totalOrders: 2,
+    totalSpent: 650.0,
+    lastOrderDate: "2023-12-28",
+    status: "active",
+    location: "Miami, FL",
+    loyaltyPoints: 325,
+  },
+  {
+    id: "cust-005",
+    name: "Lisa Brown",
+    email: "lisa.brown@email.com",
+    phone: "+1 (555) 456-7890",
+    avatar:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
+    joinDate: "2023-09-05",
+    totalOrders: 0,
+    totalSpent: 0,
+    status: "inactive",
+    location: "Seattle, WA",
+    loyaltyPoints: 0,
+  },
+];
+
 export default function AdminHeader({ title, subtitle, onMenuClick, isMobile }: AdminHeaderProps) {
+  const router = useRouter();
   const { state, refreshStats, logout } = useAdmin();
+  const { unreadCount } = useNotifications();
+  const { state: orderState } = useOrders();
   const { theme, actualTheme, toggleTheme } = useTheme();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const searchRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
-  // Close user menu when clicking outside
+  // Close menus when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
         setShowUserMenu(false);
+      }
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSearchResults(false);
       }
     };
 
@@ -45,6 +160,102 @@ export default function AdminHeader({ title, subtitle, onMenuClick, isMobile }: 
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  // Search function
+  const performSearch = (query: string) => {
+    if (!query.trim()) {
+      setSearchResults([]);
+      setShowSearchResults(false);
+      return;
+    }
+
+    const trimmedQuery = query.toLowerCase().trim();
+    const results: SearchResult[] = [];
+
+    // Search products
+    const productResults = products
+      .filter(product => 
+        product.name.toLowerCase().includes(trimmedQuery) ||
+        product.category.toLowerCase().includes(trimmedQuery) ||
+        product.id.toLowerCase().includes(trimmedQuery)
+      )
+      .slice(0, 3)
+      .map(product => ({
+        id: product.id,
+        title: product.name,
+        subtitle: `${product.category} - $${product.price}`,
+        type: 'product' as const,
+        url: `/admin/products?search=${encodeURIComponent(query)}`,
+        icon: Package,
+      }));
+
+    // Search orders
+    const orderResults = orderState.orders
+      .filter(order => 
+        order.id.toLowerCase().includes(trimmedQuery) ||
+        order.status.toLowerCase().includes(trimmedQuery) ||
+        order.items.some(item => item.name.toLowerCase().includes(trimmedQuery))
+      )
+      .slice(0, 3)
+      .map(order => ({
+        id: order.id,
+        title: order.id,
+        subtitle: `${order.status} - $${order.total.toFixed(2)}`,
+        type: 'order' as const,
+        url: `/admin/orders?search=${encodeURIComponent(query)}`,
+        icon: ShoppingCart,
+      }));
+
+    // Search customers
+    const customerResults = mockCustomers
+      .filter((customer: Customer) => 
+        customer.name.toLowerCase().includes(trimmedQuery) ||
+        customer.email.toLowerCase().includes(trimmedQuery) ||
+        customer.id.toLowerCase().includes(trimmedQuery)
+      )
+      .slice(0, 3)
+      .map((customer: Customer) => ({
+        id: customer.id,
+        title: customer.name,
+        subtitle: customer.email,
+        type: 'customer' as const,
+        url: `/admin/customers?search=${encodeURIComponent(query)}`,
+        icon: Users,
+      }));
+
+    // Combine results
+    results.push(...productResults, ...orderResults, ...customerResults);
+
+    setSearchResults(results);
+    setShowSearchResults(results.length > 0);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    performSearch(value);
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      if (searchQuery.trim()) {
+        // If there are search results, navigate to the first one
+        if (searchResults.length > 0) {
+          router.push(searchResults[0].url);
+          setShowSearchResults(false);
+        } else {
+          // Otherwise, go to a general search results page
+          router.push(`/admin/products?search=${encodeURIComponent(searchQuery)}`);
+        }
+      }
+    }
+  };
+
+  const handleSearchResultClick = (url: string) => {
+    router.push(url);
+    setShowSearchResults(false);
+    setSearchQuery('');
+  };
 
   const getThemeIcon = () => {
     if (theme === 'system') {
@@ -88,15 +299,52 @@ export default function AdminHeader({ title, subtitle, onMenuClick, isMobile }: 
         </div>
 
         {/* Center - Large Search */}
-        <div className="hidden lg:flex flex-1 justify-center">
+        <div className="hidden lg:flex flex-1 justify-center relative" ref={searchRef}>
           <div className="relative w-full max-w-xl">
             <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 h-6 w-6 text-muted-foreground z-10" />
             <Input
               type="text"
               placeholder="Search products, orders, customers..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              onKeyDown={handleSearchKeyDown}
+              onFocus={() => searchQuery && setShowSearchResults(true)}
               className="pl-14 pr-6 py-3 w-full text-lg bg-background/90 backdrop-blur-sm border-border focus:border-primary focus:ring-primary focus:bg-background transition-all duration-200 rounded-xl shadow-none"
             />
           </div>
+          
+          {/* Search Results Dropdown */}
+          {showSearchResults && searchResults.length > 0 && (
+            <div className="absolute top-full mt-2 w-full bg-card border border-border rounded-lg shadow-lg py-2 z-50 max-h-96 overflow-y-auto">
+              <div className="px-4 py-2 text-sm text-muted-foreground border-b border-border">
+                Search Results
+              </div>
+              {searchResults.map((result) => {
+                const Icon = result.icon;
+                return (
+                  <button
+                    key={`${result.type}-${result.id}`}
+                    onClick={() => handleSearchResultClick(result.url)}
+                    className="w-full text-left px-4 py-3 hover:bg-accent flex items-center space-x-3"
+                  >
+                    <Icon className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">{result.title}</p>
+                      {result.subtitle && (
+                        <p className="text-xs text-muted-foreground truncate">{result.subtitle}</p>
+                      )}
+                    </div>
+                    <span className="text-xs px-2 py-1 bg-muted rounded capitalize">
+                      {result.type}
+                    </span>
+                  </button>
+                );
+              })}
+              <div className="px-4 py-2 text-xs text-muted-foreground border-t border-border">
+                Press Enter to search all results
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right Side Actions */}
@@ -136,7 +384,7 @@ export default function AdminHeader({ title, subtitle, onMenuClick, isMobile }: 
                         console.log('Searching for:', value);
                         // You can add actual search implementation here
                         // For example, redirect to search results page or filter current view
-                        window.location.href = `/admin/products?search=${encodeURIComponent(value)}`;
+                        router.push(`/admin/products?search=${encodeURIComponent(value)}`);
                       }
                     }
                   }}
@@ -148,16 +396,22 @@ export default function AdminHeader({ title, subtitle, onMenuClick, isMobile }: 
           {/* Action Buttons - Condensed on mobile */}
           <div className="flex items-center space-x-1 sm:space-x-2">
             {/* Notifications */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground hover:text-foreground hover:bg-accent backdrop-blur-sm relative transition-all duration-200 p-2"
-              title="Notifications"
-            >
-              <Bell className="h-3 w-3 sm:h-4 sm:w-4" />
-              {/* Notification badge */}
-              <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 sm:h-3 sm:w-3 bg-destructive rounded-full"></span>
-            </Button>
+            <Link href="/admin/notifications">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground hover:text-foreground hover:bg-accent backdrop-blur-sm relative transition-all duration-200 p-2"
+                title="Notifications"
+              >
+                <Bell className="h-3 w-3 sm:h-4 sm:w-4" />
+                {/* Notification badge */}
+                {unreadCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 sm:h-3 sm:w-3 bg-destructive rounded-full flex items-center justify-center text-[0.5rem] text-white font-bold">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
+              </Button>
+            </Link>
 
             {/* Dark Mode Toggle - Visible on all devices */}
             <Button
