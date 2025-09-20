@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAdmin } from '@/contexts/AdminContext';
@@ -14,6 +15,8 @@ import {
   Sun,
   Menu,
   Monitor,
+  LogOut,
+  ChevronDown,
 } from 'lucide-react';
 
 interface AdminHeaderProps {
@@ -24,8 +27,24 @@ interface AdminHeaderProps {
 }
 
 export default function AdminHeader({ title, subtitle, onMenuClick, isMobile }: AdminHeaderProps) {
-  const { state, refreshStats } = useAdmin();
+  const { state, refreshStats, logout } = useAdmin();
   const { theme, actualTheme, toggleTheme } = useTheme();
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setShowUserMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const getThemeIcon = () => {
     if (theme === 'system') {
@@ -40,7 +59,6 @@ export default function AdminHeader({ title, subtitle, onMenuClick, isMobile }: 
     }
     return actualTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
   };
-
 
   return (
     <header className="bg-card/80 backdrop-blur-md border-b border-border px-4 sm:px-6 py-3 sm:py-4 shadow-none">
@@ -163,28 +181,70 @@ export default function AdminHeader({ title, subtitle, onMenuClick, isMobile }: 
             </Button>
           </div>
 
-          {/* User Profile */}
+          {/* User Profile Dropdown */}
           {state.user && (
-            <div className="flex items-center space-x-2 sm:space-x-3 pl-2 sm:pl-4 border-l border-border">
-              <div className="hidden md:block text-right">
-                <p className="text-sm font-medium text-foreground">
-                  {state.user.name}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {state.user.role.replace('_', ' ').toUpperCase()}
-                </p>
-              </div>
-              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-none">
-                {state.user.avatar ? (
-                  <img
-                    src={state.user.avatar}
-                    alt={state.user.name}
-                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover"
-                  />
-                ) : (
-                  <User className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
-                )}
-              </div>
+            <div className="relative" ref={userMenuRef}>
+              <button
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                className="flex items-center space-x-2 sm:space-x-3 pl-2 sm:pl-4 border-l border-border focus:outline-none"
+              >
+                <div className="hidden md:block text-right">
+                  <p className="text-sm font-medium text-foreground">
+                    {state.user.name}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {state.user.role.replace('_', ' ').toUpperCase()}
+                  </p>
+                </div>
+                <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-none">
+                  {state.user.avatar ? (
+                    <img
+                      src={state.user.avatar}
+                      alt={state.user.name}
+                      className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <User className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
+                  )}
+                </div>
+                <ChevronDown className="h-3 w-3 text-muted-foreground hidden sm:block" />
+              </button>
+
+              {/* User Menu Dropdown */}
+              {showUserMenu && (
+                <div className="absolute right-0 mt-2 w-56 bg-card border border-border rounded-lg shadow-lg py-1 z-50">
+                  <div className="px-4 py-3 border-b border-border">
+                    <p className="text-sm font-medium text-foreground">{state.user.name}</p>
+                    <p className="text-xs text-muted-foreground">{state.user.email}</p>
+                  </div>
+                  <Link 
+                    href="/admin/profile" 
+                    className="block px-4 py-2 text-sm text-foreground hover:bg-accent"
+                    onClick={() => setShowUserMenu(false)}
+                  >
+                    <User className="h-4 w-4 inline mr-2" />
+                    My Profile
+                  </Link>
+                  <Link 
+                    href="/admin/settings" 
+                    className="block px-4 py-2 text-sm text-foreground hover:bg-accent"
+                    onClick={() => setShowUserMenu(false)}
+                  >
+                    <Settings className="h-4 w-4 inline mr-2" />
+                    Settings
+                  </Link>
+                  <button
+                    onClick={() => {
+                      logout();
+                      setShowUserMenu(false);
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-accent flex items-center"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>

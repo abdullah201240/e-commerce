@@ -20,6 +20,9 @@ import {
   FolderTree,
   Plus,
   Image,
+  Wallet,
+  Shield,
+  User,
 } from 'lucide-react';
 
 interface AdminSidebarProps {
@@ -35,6 +38,24 @@ const navigation = [
     href: '/admin/dashboard',
     icon: LayoutDashboard,
     permission: 'view_analytics',
+  },
+  {
+    name: 'Accounts',
+    href: '/admin/accounts',
+    icon: Wallet,
+    permission: 'view_analytics',
+  },
+  {
+    name: 'Profile',
+    href: '/admin/profile',
+    icon: User,
+    permission: 'view_analytics', // All authenticated users can access their profile
+  },
+  {
+    name: 'Admins',
+    href: '/admin/admins',
+    icon: Shield,
+    permission: 'manage_admin_users',
   },
   {
     name: 'Products',
