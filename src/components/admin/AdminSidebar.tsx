@@ -17,7 +17,6 @@ import {
   ChevronRight,
   Home,
   Tags,
-  FolderTree,
   Plus,
   Image,
   Wallet,
@@ -44,12 +43,6 @@ const navigation = [
     href: '/admin/accounts',
     icon: Wallet,
     permission: 'view_analytics',
-  },
-  {
-    name: 'Profile',
-    href: '/admin/profile',
-    icon: User,
-    permission: 'view_analytics', // All authenticated users can access their profile
   },
   {
     name: 'Admins',
@@ -165,24 +158,7 @@ export default function AdminSidebar({ isCollapsed, onToggle, isMobile, onMobile
             )}
           </Button>
         </div>
-        
-        {(!isCollapsed || isMobile) && state.user && (
-          <div className="mt-3 sm:mt-4 flex items-center space-x-2 sm:space-x-3">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-              <span className="text-xs sm:text-sm font-medium text-white">
-                {state.user.name.charAt(0)}
-              </span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs sm:text-sm font-medium text-foreground truncate">
-                {state.user.name}
-              </p>
-              <p className="text-xs text-muted-foreground truncate">
-                {state.user.role.replace('_', ' ').toUpperCase()}
-              </p>
-            </div>
-          </div>
-        )}
+ 
       </div>
 
       {/* Navigation */}
